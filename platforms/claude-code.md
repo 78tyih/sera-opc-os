@@ -11,7 +11,7 @@ Anthropic Claude Code 原生支持 Agent Skills（SKILL.md + frontmatter name/de
 
 ```bash
 # 个人级软链
-REPO=~/sera-agent-skills
+REPO=~/sera-agent-os
 mkdir -p ~/.claude/skills
 for d in "$REPO"/core/*/ "$REPO"/business/*/ "$REPO"/creative/*/ "$REPO"/adapters/*/; do
   [ -d "$d" ] && ln -sfn "$d" ~/.claude/skills/$(basename "$d")
@@ -26,7 +26,7 @@ done
 Claude Code 内置 Bash，直接执行：
 
 ```bash
-python3 ~/sera-agent-skills/core/sera-agent-router/router.py "帮我做 TradeSpan 产品发布页"
+python3 ~/sera-agent-os/core/sera-agent-router/router.py "帮我做 TradeSpan 产品发布页"
 ```
 
 ## 技能发现

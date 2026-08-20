@@ -11,7 +11,7 @@ WorkBuddy 原生支持 Agent Skills，是 Sera Agent OS 的主阵地。
 
 ```bash
 # 方式 A：软链（推荐，git pull 后自动同步）
-REPO=~/sera-agent-skills
+REPO=~/sera-agent-os
 for d in "$REPO"/core/*/ "$REPO"/business/*/ "$REPO"/creative/*/ "$REPO"/adapters/*/; do
   [ -d "$d" ] && ln -sfn "$d" ~/.workbuddy/skills/$(basename "$d")
 done
@@ -23,7 +23,7 @@ done
 ## Router 调用
 
 ```bash
-python3 ~/sera-agent-skills/core/sera-agent-router/router.py "做一条 PropFirm.TV 视频"
+python3 ~/sera-agent-os/core/sera-agent-router/router.py "做一条 PropFirm.TV 视频"
 ```
 
 WorkBuddy 的 Bash 工具可直接执行，输出 JSON 编排链后按序调度各 Skill。

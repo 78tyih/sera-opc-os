@@ -11,7 +11,7 @@ OpenAI Codex CLI 支持 Agent Skills 标准格式（SKILL.md + frontmatter）。
 
 ```bash
 # 软链用户级
-REPO=~/sera-agent-skills
+REPO=~/sera-agent-os
 mkdir -p ~/.codex/skills
 for d in "$REPO"/core/*/ "$REPO"/business/*/ "$REPO"/creative/*/ "$REPO"/adapters/*/; do
   [ -d "$d" ] && ln -sfn "$d" ~/.codex/skills/$(basename "$d")
@@ -26,7 +26,7 @@ done
 Codex 内置 Bash，直接执行：
 
 ```bash
-python3 ~/sera-agent-skills/core/sera-agent-router/router.py "复盘这周的交易"
+python3 ~/sera-agent-os/core/sera-agent-router/router.py "复盘这周的交易"
 ```
 
 ## 配置建议

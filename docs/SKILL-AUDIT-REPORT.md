@@ -112,7 +112,7 @@ stock-research-report-expert / comps-analysis / dcf-model / tear-sheet / ...
 ## 七、目标仓库结构（重构蓝图）
 
 ```
-sera-agent-skills/
+sera-agent-os/
 ├── README.md
 ├── core/                  # Sera 核心（记忆/知识/算力/注册）
 │   ├── sera-context-system/

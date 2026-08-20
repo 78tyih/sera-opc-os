@@ -155,8 +155,8 @@ research→DeepSeek / coding→Codex / design→Trae / automation→WorkBuddy / 
 ### 方式 A：一键安装（推荐）
 
 ```bash
-git clone https://github.com/78tyih/sera-agent-skills.git ~/sera-agent-skills
-cd ~/sera-agent-skills
+git clone https://github.com/78tyih/sera-agent-os.git ~/sera-agent-os
+cd ~/sera-agent-os
 ./install.sh --all                  # 安装到全部 5 平台
 ./install.sh --platform workbuddy   # 或指定平台
 ./install.sh --copy                 # Windows/无软链环境用复制
@@ -165,7 +165,7 @@ cd ~/sera-agent-skills
 ### 方式 B：手动软链（WorkBuddy）
 
 ```bash
-for d in ~/sera-agent-skills/{core,business,creative,adapters}/*/; do
+for d in ~/sera-agent-os/{core,business,creative,adapters}/*/; do
   [ -f "$d/SKILL.md" ] && ln -s "$d" ~/.workbuddy/skills/$(basename "$d")
 done
 ```
@@ -195,7 +195,7 @@ cp -r core/sera-context-system ~/.workbuddy/skills/sera-context-system
 ## 仓库结构
 
 ```
-sera-agent-skills/
+sera-agent-os/
 ├── README.md
 ├── architecture/
 │   ├── sera-agent-os-v1.md           # 架构 V1.0 文档

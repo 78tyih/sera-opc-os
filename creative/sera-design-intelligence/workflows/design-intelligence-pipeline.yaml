@@ -1,0 +1,138 @@
+# Sera Design Intelligence Pipeline — V3.2
+# 完整设计智能流水线：从产品输入到设计产出 + 记忆更新
+
+name: design-intelligence-pipeline
+version: 3.2.0
+description: 完整设计智能流水线 — 分析 → 决策 → 设计 → 审查 → 迭代
+
+triggers:
+  - "设计新产品 [产品名]"
+  - "生成 [产品名] 的设计方案"
+  - "分析 [产品名] 的设计需求"
+  - "design for [product]"
+
+steps:
+  # Step 1: 产品需求分析
+  - agent: design-director-agent
+    description: 分析产品需求，确定设计方向
+    inputs:
+      - product_name
+      - industry
+      - audience
+      - goal
+    outputs:
+      - design_direction
+      - style_recommendation
+
+  # Step 2: 心理学分析
+  - skill: sera-design-intelligence
+    description: 根据产品类型，分析目标用户心理
+    inputs:
+      - design_direction
+      - audience
+    knowledge_ref:
+      - knowledge/psychology/trust-design.md
+      - knowledge/psychology/first-impression.md
+      - knowledge/psychology/conversion-psychology.md
+    outputs:
+      - psychology_factors
+
+  # Step 3: 风格路由
+  - skill: sera-design-intelligence
+    description: 调用 Style Router 获取风格推荐
+    inputs:
+      - design_direction
+    tool: style-router/router.py
+    outputs:
+      - style_selection
+      - style_weights
+
+  # Step 4: Design DNA 匹配
+  - skill: sera-design-intelligence
+    description: 匹配已有 Design DNA 案例
+    inputs:
+      - style_selection
+    knowledge_ref:
+      - dna-engine/examples/
+      - benchmark/
+    outputs:
+      - dna_match
+      - reference_cases
+
+  # Step 5: 设计系统生成
+  - agent: design-system-agent
+    description: 根据风格方向生成设计系统规范
+    inputs:
+      - style_selection
+      - design_direction
+    outputs:
+      - design_system
+      - color_system
+      - typography
+      - component_specs
+
+  # Step 6: 页面生成
+  - agent: design-generator-agent
+    description: 生成页面设计
+    inputs:
+      - design_system
+      - page_requirements
+    outputs:
+      - page_designs
+
+  # Step 7: UX 转化审查
+  - agent: ux-conversion-agent
+    description: 审查设计的商业转化能力
+    inputs:
+      - page_designs
+      - conversion_goal
+    outputs:
+      - conversion_report
+    gate:
+      pass: conversion_report.overall_score >= 70
+      fail_behavior: return_to_step_5_with_issues
+
+  # Step 8: 设计总监评审
+  - agent: design-critic-agent
+    description: 高级设计总监审查
+    inputs:
+      - page_designs
+      - design_direction
+    outputs:
+      - critic_report
+    gate:
+      pass: critic_report.visual_score >= 70 AND critic_report.brand_score >= 70
+      fail_behavior: return_to_step_5_with_issues
+
+  # Step 9: 资产生成
+  - agent: asset-manager-agent
+    description: 生成并管理设计资产
+    inputs:
+      - page_designs
+      - design_system
+    outputs:
+      - assets
+      - asset_index
+
+  # Step 10: 记忆更新
+  - skill: sera-design-intelligence
+    description: 将本次设计决策写入 Design Memory
+    inputs:
+      - product_name
+      - design_direction
+      - style_selection
+      - conversion_report
+      - critic_report
+    outputs:
+      - memory_update
+    knowledge_ref:
+      - memory/design-feedback/iteration-log.md
+
+finalize:
+  - sera-knowledge-sync
+  - sera-context-system
+
+on_error:
+  retry: true
+  max_retries: 2
+  fallback_agent: sera-agent-orchestrator

@@ -1,0 +1,31 @@
+version: 1.0.0
+agent: ux-conversion-agent
+role:
+  title: UX Conversion Specialist
+  goal: 负责商业转化设计审查，优化用户路径与转化率
+  avatar: 📈
+
+capabilities:
+  - CTA 设计与审查
+  - 用户路径优化
+  - 信息层级评估
+  - 注册流程审查
+  - 信任元素检查
+  - 转化漏斗分析
+
+inputs:
+  - design_concept: string
+  - user_flow: string[]
+  - conversion_goal: string
+
+outputs:
+  conversion_report:
+    cta_score: integer
+    flow_score: integer
+    trust_score: integer
+    issues: string[]
+    suggestions: string[]
+
+skill_ref: sera-design-intelligence
+department: design-department
+superior: design-agent

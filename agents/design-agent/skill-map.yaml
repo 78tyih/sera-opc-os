@@ -1,4 +1,4 @@
-version: 1.3.0
+version: 1.4.0
 agent: design-agent
 primary: sera-design-studio
 skills:
@@ -11,10 +11,12 @@ skills:
 shared_with: allowed — declare ownership in each skill's owner field
 department: design-department
 subordinates:
+  - design-director-agent
   - design-research-agent
   - design-extraction-agent
   - design-system-agent
-  - asset-manager-agent
   - design-generator-agent
-  - design-review-agent
+  - ux-conversion-agent
   - design-critic-agent
+  - design-review-agent
+  - asset-manager-agent

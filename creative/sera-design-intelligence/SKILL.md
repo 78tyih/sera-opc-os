@@ -21,7 +21,12 @@ status: active
 
 ## Purpose
 
-从已完成的设计项目中提取、沉淀并复用 Sera 的视觉语言体系。核心产出物是 `awesome-design.md`（Sera FinTech Visual Language），它定义了 Sera 对金融科技、高价值服务、AI 产品的视觉表达规范。
+从已完成的设计项目中提取、沉淀并复用 Sera 的视觉语言体系。V3.2 升级为 Cyber Design Intelligence Engine，具备：
+1. **学习** — 从 Benchmark 和案例中学习优秀设计
+2. **提取** — 通过 DNA Engine 自动提取 Design DNA
+3. **决策** — 通过 Style Router 自动选择设计方向
+4. **生成** — 完整流水线自动生成设计系统
+5. **优化** — 通过 Design Memory 循环持续改进
 
 ## When to Use
 
@@ -55,6 +60,13 @@ status: active
 | `styles/registry.json` | 风格注册表 |
 | `assets/library-index.md` | 资产库索引 |
 | `workflows/design-extraction.yaml` | 设计提取工作流 |
+| `knowledge/` | 设计知识库（原则/心理/模式/商业） |
+| `benchmark/` | 设计基准评分系统（6 维度评分） |
+| `dna-engine/` | 设计 DNA 提取器（STYLE_DNA.json） |
+| `style-router/` | 风格路由引擎（router.py + rules.yaml） |
+| `memory/` | 设计记忆循环（反馈/实验/迭代） |
+| `interfaces/` | 产品线接口定义 |
+| `docs/DESIGN-INTELLIGENCE-V3.2.md` | V3.2 完整报告 |
 
 ## Sera Design Philosophy
 
@@ -133,95 +145,154 @@ Conversion（转化）
 ### 文件结构
 
 ```
-	sera-design-intelligence/          ← 📁 Design Intelligence System
-	│
-	│   # 核心文档
-	├── SKILL.md                       ← 技能定义
-	├── SYSTEM.md                      ← 系统架构文档
-	├── README.md                      ← 系统总览
-	├── awesome-design.md              ← Sera FinTech Visual Language V1.0
-	├── design-system.md               ← 设计系统规范
-	├── component-library.md           ← 组件库
-	├── motion-guidelines.md           ← 动效指南
-	├── visual-language.md             ← 视觉语言定义
-	│
-	│   # 规则参考
-	├── references/
-	│   ├── design-rules.md
-	│   ├── color-system.md
-	│   ├── typography.md
-	│   └── layout-system.md
-	│
-	│   # 案例研究
-	├── case-studies/
-	│   ├── htx-otc-v1/
-	│   │   ├── analysis.md
-	│   │   ├── extracted-rules.md
-	│   │   ├── reproduction-prompt.md
-	│   │   └── assets/               ← 实物资产
-	│   ├── propfirm-tv/
-	│   └── tradespan/
-	│
-	│   # 注册表
-	├── styles/
-	│   └── registry.json              ← 风格注册表
-	│
-	│   # 资产库
-	├── assets/
-	│   └── library-index.md           ← 资产库索引
-	│
-	│   # 模板库
-	├── templates/
-	│   ├── design-case-study-template.md
-	│   ├── fintech-landing/
-	│   └── dashboard/
-	│
-	│   # 工作流
-	└── workflows/
-	    └── design-extraction.yaml     ← 设计提取工作流
+	sera-design-intelligence/          ← 📁 Design Intelligence System V3.2
+		│
+		│   # 核心文档
+		├── SKILL.md                       ← 技能定义
+		├── SYSTEM.md                      ← 系统架构文档
+		├── README.md                      ← 系统总览
+		├── awesome-design.md              ← Sera FinTech Visual Language V1.0
+		├── design-system.md               ← 设计系统规范
+		├── component-library.md           ← 组件库
+		├── motion-guidelines.md           ← 动效指南
+		├── visual-language.md             ← 视觉语言定义
+		│
+		│   # 设计知识库（V3.2 新增）
+		├── knowledge/
+		│   ├── principles/                ← 5 个设计原则
+		│   ├── psychology/                ← 6 个设计心理学
+		│   ├── patterns/                  ← 6 个 UI 模式
+		│   └── business/                  ← 3 个商业设计框架
+		│
+		│   # 设计基准系统（V3.2 新增）
+		├── benchmark/
+		│   ├── scoring-system.md          ← 评分标准
+		│   ├── benchmark-index.json       ← 基准排名
+		│   ├── fintech/                   ← 金融案例
+		│   ├── ai-products/               ← AI 产品案例
+		│   ├── saas/                      ← SaaS 案例
+		│   ├── dashboards/                ← Dashboard 案例
+		│   └── landing-pages/             ← 着陆页案例
+		│
+		│   # Design DNA 提取器（V3.2 新增）
+		├── dna-engine/
+		│   ├── README.md                  ← 引擎文档
+		│   ├── extraction-schema.json     ← 提取 Schema
+		│   ├── dna-template.json          ← DNA 模板
+		│   └── examples/                  ← 示例 DNA
+		│
+		│   # 风格注册表
+		├── styles/
+		│   └── registry.json              ← 风格 DNA 注册表 V3.0
+		│
+		│   # 风格路由引擎（V3.2 升级）
+		├── style-router/
+		│   ├── README.md                  ← 引擎文档
+		│   ├── router.py                  ← 路由引擎（Python）
+		│   ├── rules.yaml                 ← 路由规则（8 条）
+		│   └── style-selection.json       ← 选择结果
+		│
+		│   # 设计记忆循环（V3.2 新增）
+		├── memory/
+		│   └── design-feedback/
+		│       ├── experiments/           ← 实验记录
+		│       ├── user-feedback/         ← 用户反馈
+		│       ├── conversion-results/    ← 转化数据
+		│       └── iteration-log.md       ← 迭代日志
+		│
+		│   # 产品线接口（V3.2 新增）
+		├── interfaces/
+		│   ├── design-input.schema.json   ← 输入接口
+		│   └── design-output.schema.json  ← 输出接口
+		│
+		│   # 资产库
+		├── assets/
+		│   └── library-index.md           ← 资产库索引
+		│
+		│   # 模板库
+		├── templates/
+		│   ├── design-case-study-template.md
+		│   ├── fintech-landing/
+		│   └── dashboard/
+		│
+		│   # 工作流
+		├── workflows/
+		│   ├── design-extraction.yaml     ← 设计提取工作流
+		│   └── design-intelligence-pipeline.yaml  ← 完整流水线（V3.2）
+		│
+		│   # 文档
+		└── docs/
+		    └── DESIGN-INTELLIGENCE-V3.2.md  ← V3.2 完整报告
 ```
 
 ## 与 Design Department 的关系
 
 ```
-Design Department
+Design Department V3.2
 │
+├── Design Director Agent     → 设计战略决策（战略层）⭐
 ├── Design Research Agent     → 发现优秀设计（探索层）
 ├── Design Extraction Agent   → 拆解网站设计（提取层）
 ├── Design System Agent       → 生成设计规范（规范层）
-├── Asset Manager Agent       → 资产管理（资产层）
 ├── Design Generator Agent    → 生成页面（执行层）
-└── Design Reviewer Agent     → 审查产出（质检层）
+├── UX Conversion Agent       → 商业转化审查（转化层）⭐
+├── Design Critic Agent       → 高级设计审查（审查层）
+├── Design Reviewer Agent     → 审查产出（质检层）
+└── Asset Manager Agent       → 资产管理（资产层）
 ```
 
 | 层 | Agent | 职责 | 关联 Skill |
 |---|---|---|---|
+| **战略层** | `design-director-agent` | **设计战略决策** ⭐ | sera-design-intelligence |
 | 探索层 | `design-research-agent` | 发现优秀设计 | sera-browser-automation |
 | 提取层 | `design-extraction-agent` | 拆解网站 | sera-design-intelligence |
 | 规范层 | `design-system-agent` | 生成规范 | sera-design-studio |
-| 资产层 | `asset-manager-agent` | 资产管理 | sera-asset-manager |
 | 执行层 | `design-generator-agent` | 生成页面 | sera-design-studio |
+| **转化层** | `ux-conversion-agent` | **商业转化审查** ⭐ | sera-design-intelligence |
+| **审查层** | `design-critic-agent` | **高级设计审查** | sera-design-intelligence |
 | 质检层 | `design-review-agent` | 审查产出 | figma-review |
+| 资产层 | `asset-manager-agent` | 资产管理 | sera-asset-manager |
 | **知识层** | **`sera-design-intelligence`** | **设计经验沉淀** | **(本 Skill)** |
 
 ## 设计经验积累路线
 
 ```
-Phase 1: HTX OTC
+V1.0: HTX OTC
   ✅ Landing Page（金融信任）
   ✅ Progress Hub（Dashboard）
 
-Phase 2: PropFirm TV
-  ⏳ 内容平台设计模式
+V1.1: Knowledge Engine
+  ✅ 设计知识库（原则/心理/模式）
+  ✅ 设计逆向工程模板
+  ✅ Style DNA Registry
+  ✅ Design Critic Agent
+  ✅ Style Router
 
-Phase 3: TradeSpan
-  ⏳ SaaS 交易软件设计模式
+V3.2: Cyber Design Intelligence Engine  ← 当前
+  ✅ 商业设计知识库（business/）
+  ✅ Design Benchmark 评分系统
+  ✅ Design DNA Extractor
+  ✅ Style Router Engine（Python）
+  ✅ Design Director Agent
+  ✅ UX Conversion Agent
+  ✅ Design Memory 循环
+  ✅ Product Factory 接口
+  ✅ 完整设计流水线
 
-Phase 4: 牛牛 AI
-  ⏳ AI 产品设计模式
+V3.3: 自动化增强
+  ⏳ DNA 自动提取
+  ⏳ 评分自动化
+  ⏳ 集成到 Product Factory 流水线
 
-Phase 5: Sera Design Language V1.0
-  🎯 合并所有经验，形成完整设计语言
+V3.4: 智能学习
+  ⏳ 设计趋势分析
+  ⏳ 竞品设计监控
+  ⏳ 用户反馈闭环
+
+V3.5: 全自动化
+  ⏳ 端到端设计流水线
+  ⏳ A/B 测试自动设计
+  ⏳ 设计系统自修复
 ```
 
 ## 调用方式

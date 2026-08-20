@@ -177,11 +177,72 @@ routes:
       - design-agent:sera-design-studio       # 品牌+视觉设计
       - design-agent:sera-asset-manager       # 素材管理
       - video-agent:sera-video-pipeline       # 视频内容
+      - design-agent:sera-design-intelligence  # 设计智能分析
       - figma-review                          # 设计审查（代码级）
+      - ux-conversion-agent:sera-design-intelligence  # UX 转化审查⭐
       - design-critic-agent:sera-design-intelligence  # 设计总监审查（设计级）⭐
     finalize:
       - sera-knowledge-sync
       - sera-context-system
+
+  # ============ 设计智能流水线（完整）============
+  - id: design-intelligence-pipeline
+    intent: 完整设计智能流水线
+    agent: multi
+    keywords:
+      - 设计智能
+      - 设计方向
+      - 设计系统
+      - 设计流水线
+      - 生成设计
+      - 设计方案
+    pipeline:
+      - design-director-agent:sera-design-intelligence       # 设计战略
+      - design-extraction-agent:sera-design-intelligence     # 知识提取
+      - design-system-agent:sera-design-studio               # 系统生成
+      - design-generator-agent:sera-design-studio            # 页面生成
+      - ux-conversion-agent:sera-design-intelligence         # 转化审查
+      - design-critic-agent:sera-design-intelligence         # 设计审查
+      - asset-manager-agent:sera-asset-manager               # 资产生成
+    finalize:
+      - sera-knowledge-sync
+      - sera-context-system
+
+  # ============ 设计方向决策（design-director）============
+  - id: design-direction
+    intent: 设计方向/策略
+    agent: design-department
+    keywords:
+      - 设计方向
+      - 设计策略
+      - 设计定位
+      - 设计决策
+      - 风格选择
+      - 设计总监
+      - 设计风格
+      - 品牌方向
+    pipeline:
+      - design-director-agent:sera-design-intelligence
+    finalize:
+      - sera-knowledge-sync
+
+  # ============ UX 转化审查（ux-conversion）============
+  - id: ux-conversion-review
+    intent: UX 转化审查
+    agent: design-department
+    keywords:
+      - 转化审查
+      - 转化优化
+      - CTA 审查
+      - 用户路径
+      - 注册流程
+      - 转化率
+      - conversion
+      - UX 审查
+    pipeline:
+      - ux-conversion-agent:sera-design-intelligence
+    finalize:
+      - sera-knowledge-sync
 
   # ============ 设计审查（design-department）============
   - id: design-critic-review

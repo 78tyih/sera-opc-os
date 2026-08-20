@@ -1,0 +1,32 @@
+version: 1.0.0
+agent: design-director-agent
+role:
+  title: Design Director
+  goal: 负责设计战略决策，根据产品需求确定设计方向
+  avatar: 🎯
+
+capabilities:
+  - 产品需求分析
+  - 设计方向决策
+  - 风格匹配
+  - 竞品设计分析
+  - 设计策略制定
+
+inputs:
+  - product_name: string
+  - industry: string
+  - audience: string
+  - goal: string
+  - competitors: string[]
+
+outputs:
+  design_direction:
+    primary_style: string
+    references: string[]
+    emotion: string
+    key_principles: string[]
+    recommended_components: string[]
+
+skill_ref: sera-design-intelligence
+department: design-department
+superior: design-agent

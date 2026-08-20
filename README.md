@@ -1,134 +1,173 @@
-# Sera Agent Skills
+# Sera Agent OS
 
-Sera 个人 AI Agent 技能库（私有仓库）。把 WorkBuddy 中**用户自定义**的 Skill 转换为标准 Agent Skill 格式，供 WorkBuddy / Trae / Codex / ChatGPT 等 Agent 跨环境复用。
+**Build once, execute everywhere.**
 
-> 只包含用户级 Skill。WorkBuddy 内置 Skill、Tencent/Feishu Connector、Marketplace Skill **不迁移**。
+Sera Agent OS 是一个跨 Agent 的个人 AI 操作系统。它把孤立的 AI 工具（WorkBuddy / Codex / Trae / Claude Code / Cursor）统一为一个人工智能系统。
+
+> Skill 不属于任何单一 AI 平台 —— **Skill 属于 Sera Agent OS。**
 
 ---
 
+## 架构（V1.0）
+
+```
+                    Sera Agent OS
+                         User
+                          |
+              Agent Orchestrator Layer
+                    |
+        ----------------------------
+        |            |             |
+   Codex        WorkBuddy       Trae
+        ----------------------------
+                          |
+              Skill Registry Layer
+        Core | Business | Creative | Platform
+                          |
+              Memory System
+        Context Hub | Obsidian | Project State | Decision Logs
+                          |
+              Compute Layer
+        Mac | Serawin | Cloud GPU | API Services
+```
+
+完整架构文档：[`architecture/sera-agent-os-v1.md`](architecture/sera-agent-os-v1.md)
+
 ## Skill Registry
 
-共 **13** 个用户级 Skill。
+### 🧠 core/ — 核心系统层
 
-### P0（核心，7 个）
+| Skill | 来源 | 用途 |
+|---|---|---|
+| [`sera-agent-orchestrator`](core/sera-agent-orchestrator/SKILL.md) | 新建 | 任务路由 / Agent 选择 / 执行规划 / 冲突检测 |
+| [`sera-memory-system`](core/sera-memory-system/SKILL.md) | 新建 | 共享记忆层：Context Hub + Obsidian + Project State + Decision Logs |
+| [`sera-skill-registry`](core/sera-skill-registry/SKILL.md) | 新建 | Skill 注册表与标准格式 |
+| [`sera-context-system`](core/sera-context-system/SKILL.md) | context-hub | 多 Agent 共享上下文（Sera Context Hub 协议） |
+| [`sera-knowledge-sync`](core/sera-knowledge-sync/SKILL.md) | obsidian-sync | 知识资产同步（Obsidian 归档/去重/版本化） |
+| [`sera-compute-control`](core/sera-compute-control/SKILL.md) | serawin-remote | 远程算力控制（Mac→serawin→ComfyUI/Ollama） |
 
-| Skill | 用途 | 关键输入 | 关键输出 |
-|---|---|---|---|
-| [`context-hub`](skills/context-hub/SKILL.md) | 读取/维护 Sera Context Hub 跨 Agent 上下文（SESSION START/END 协议） | 项目任务、多 Agent 交接需求 | 项目上下文、CURRENT_STATE/AGENT_HANDOFF 更新、MEMORY.jsonl 追加 |
-| [`obsidian-sync`](skills/obsidian-sync/SKILL.md) | 产物自动归档到 Obsidian Vault（分类/去重/版本化/Front Matter） | 产物文件或目录、可选 --category | 归档文件、重建 index.md、同步日志 |
-| [`serawin-remote`](skills/serawin-remote/SKILL.md) | SSH 免密远程操控 Windows 台式机（serawin）+ 远程 AI 服务 | PowerShell 命令 / .ps1 脚本 / 文件 | 远程命令结果、AI 服务输出（ComfyUI/Ollama） |
-| [`propfirm-feed`](skills/propfirm-feed/SKILL.md) | PropFirm.TV 资讯推送管线（采集→过滤→门禁→隔离→企微推送） | JSON 原始情报、settings.json | feed_items、企业微信推送 |
-| [`propfirm-official-site-assets`](skills/propfirm-official-site-assets/SKILL.md) | 考试盘官网素材工厂（capture→事实/品牌色→HyperFrames 5s B-roll×5→Eagle） | 官网 URL、firm key、截图 | 5s 无声 B-roll mp4×5、Eagle 入库、manifest |
-| [`heygen-knowledge-shortvideo`](skills/heygen-knowledge-shortvideo/SKILL.md) | HeyGen 口播 → 16:9 1080p 知识型短视频合成（图卡+字幕+BGM） | HeyGen 口播 mp4、文案、分镜 | 合成短视频（PIL+numpy+ffmpeg 全本地） |
-| [`propfirm-eagle-import`](skills/propfirm-eagle-import/SKILL.md) | 媒体文件自动导入 Eagle「Sera 资源库」（V2 API 优先） | 媒体文件/staging 目录、tags/annotation | Eagle item ID、.eagle.imported.json |
+### 📈 business/ — 商业情报层
 
-### P1（6 个）
+| Skill | 来源 | 用途 |
+|---|---|---|
+| [`sera-intelligence-monitor`](business/sera-intelligence-monitor/SKILL.md) | propfirm-feed | PropFirm 商业情报（采集→过滤→门禁→推送企微） |
+| [`sera-content-factory`](business/sera-content-factory/SKILL.md) | propfirm-official-site-assets | 官网素材工厂（capture→事实→5s B-roll×5→Eagle） |
 
-| Skill | 用途 | 关键输入 | 关键输出 |
-|---|---|---|---|
-| [`frontend-dev`](skills/frontend-dev/SKILL.md) | 全栈前端开发（设计+动画+AI 素材+文案+视觉艺术） | 页面需求、品牌信息 | 完整网页工程、本地媒体资产、转化文案 |
-| [`lark-unified`](skills/lark-unified/SKILL.md) | 飞书/Lark CLI 套件（18 域 200+ 命令，Meegle 按需转子技能） | 飞书操作意图、lark-cli 授权 | 各域业务结果、OpenAPI 响应 |
-| [`wecom-unified`](skills/wecom-unified/SKILL.md) | 企业微信 CLI 套件（通讯录/文档/表格/日程/会议/待办/微盘/邮件/消息） | 办公意图、企微链接、授权 | 可读名称形式的业务结果 |
-| [`gmail`](skills/gmail/SKILL.md) | Gmail API（托管 OAuth）读写邮件/线程/标签/草稿 | MATON_API_KEY、Gmail 连接 | 邮件列表/正文、发送回执 |
-| [`browser-use`](skills/browser-use/SKILL.md) | 浏览器自动化（导航/点击/截图/提取/多会话/云浏览器） | URL、操作意图 | 页面状态、截图、交互结果 |
-| [`peekaboo`](skills/peekaboo/SKILL.md) | macOS UI 自动化（截图/元素定位/输入驱动/应用管理） | UI 操作意图、定位参数 | 截图、UI 快照、操作结果 |
+### 🎬 creative/ — 内容创作层
 
-## 支持的 Agent
+| Skill | 来源 | 用途 |
+|---|---|---|
+| [`sera-video-pipeline`](creative/sera-video-pipeline/SKILL.md) | heygen-knowledge-shortvideo | 数字人口播→知识短视频合成（图卡+字幕+BGM） |
+| [`sera-asset-manager`](creative/sera-asset-manager/SKILL.md) | propfirm-eagle-import | 素材资产管理（Eagle 自动导入/打标） |
+| [`sera-design-studio`](creative/sera-design-studio/SKILL.md) | frontend-dev | 前端设计开发规范（设计+动效+AI 素材+文案） |
 
-| Agent | 说明 |
+### 🔌 adapters/ — 平台适配层
+
+| Skill | 来源 | 用途 |
+|---|---|---|
+| [`sera-lark-suite`](adapters/sera-lark-suite/SKILL.md) | lark-unified | 飞书/Lark 套件（18 域 + Meegle 子技能） |
+| [`sera-wecom-suite`](adapters/sera-wecom-suite/SKILL.md) | wecom-unified | 企业微信套件（通讯录/文档/日程/会议/消息） |
+| [`sera-mail-hub`](adapters/sera-mail-hub/SKILL.md) | gmail | 邮件（Gmail API） |
+| [`sera-browser-automation`](adapters/sera-browser-automation/SKILL.md) | browser-use | 浏览器自动化 |
+| [`sera-macos-ui`](adapters/sera-macos-ui/SKILL.md) | peekaboo | macOS UI 自动化 |
+
+### 📋 模板
+
+| 文件 | 用途 |
 |---|---|
-| **WorkBuddy** | 原生支持：`~/.workbuddy/skills/` 或项目 `.workbuddy/skills/` 目录放置 SKILL.md |
-| **Trae** | 读取 `~/SeraContextHub/99_System/adapters/ADAPTER_TRAE.md` 接入细则 |
-| **Codex** | 读取 `~/SeraContextHub/99_System/adapters/ADAPTER_CODEX.md` 接入细则 |
-| **ChatGPT Desktop** | 读取 `~/SeraContextHub/99_System/adapters/ADAPTER_CHATGPT_DESKTOP.md` 接入细则 |
-| **Claude/通用 Agent** | SKILL.md 遵循 Anthropic Agent Skills 标准格式（name/purpose 前置 YAML + Markdown 正文） |
+| [`SKILL.template.md`](templates/SKILL.template.md) | 新 Skill 标准格式模板 |
+| [`workflow.yaml`](templates/workflow.yaml) | 多 Skill 工作流编排模板 |
+| [`agent.yaml`](templates/agent.yaml) | 领域专家 Agent 定义模板 |
+
+---
+
+## 支持 Agent
+
+| Agent | 接入方式 |
+|---|---|
+| **WorkBuddy** | `~/.workbuddy/skills/` 或项目 `.workbuddy/skills/` 放置 SKILL.md |
+| **Codex** | 读 `~/SeraContextHub/99_System/adapters/ADAPTER_CODEX.md` 接入细则 |
+| **Trae** | 读 `~/SeraContextHub/99_System/adapters/ADAPTER_TRAE.md` 接入细则 |
+| **Claude Code** | `.claude/skills/` 目录（frontmatter 即识别） |
+| **Cursor / 未来 Agent** | 遵循标准 SKILL.md 格式即可 |
 
 ## 安装方式
 
-### 方式 A：WorkBuddy（推荐，一键）
+### 方式 A：WorkBuddy（推荐）
 
 ```bash
-# 克隆到用户级 skills 目录
-git clone https://github.com/<your-gh>/sera-agent-skills.git ~/.workbuddy/skills-src/sera-agent-skills
+git clone https://github.com/78tyih/sera-agent-skills.git ~/.workbuddy/skills-src/sera-agent-skills
 
-# 软链每个 skill 到 WorkBuddy 用户级 skills 目录
-for d in ~/.workbuddy/skills-src/sera-agent-skills/skills/*/; do
+for d in ~/.workbuddy/skills-src/sera-agent-skills/{core,business,creative,adapters}/*/; do
   ln -s "$d" ~/.workbuddy/skills/$(basename "$d")
 done
 ```
 
-重启 WorkBuddy 后，对话中直接说对应触发词即可（如「导入 Eagle」「让 serawin 做 XX」「跑 propfirm 管线」）。
-
 ### 方式 B：手动复制
 
-把 `skills/<name>/` 整个目录复制到目标 Agent 的 skills 目录：
-
 ```bash
-cp -r skills/context-hub ~/.workbuddy/skills/context-hub
+cp -r core/sera-context-system ~/.workbuddy/skills/sera-context-system
 ```
 
 ### 方式 C：Claude Code / 通用 Agent
 
-把 `skills/<name>/SKILL.md` 放入 Agent 的 skills 目录（如 Claude Code 的 `.claude/skills/`），frontmatter 满足 `name` + `description`（或 `purpose`）即可被识别。
+把 `skills/<name>/SKILL.md` 放入 Agent 的 skills 目录，frontmatter 满足 `name` + `description` 即可被识别。
 
-## 前提依赖
+## 依赖清单（Layer 0，不迁移）
 
-| Skill | 依赖 |
-|---|---|
-| context-hub | `~/SeraContextHub/` 仓库（AGENT_CONTEXT_PROTOCOL.md） |
-| obsidian-sync | Python 3.13+、`~/.workbuddy/obsidian-sync/workbuddy_obsidian_sync.py`、Obsidian Sera Vault |
-| serawin-remote | Tailscale、SSH 免密（密钥 `~/.ssh/id_ed25519`）、Windows 端 sshd |
-| propfirm-feed | Python 3.13、项目 `/Users/a1234/WorkBuddy/2026-08-17-03-48-26/propfirm-feed/`、企微 webhook |
-| propfirm-official-site-assets | Node 22（hyperframes）、browser-use（CDP）、ffmpeg、Eagle |
-| heygen-knowledge-shortvideo | ffmpeg、Python（PIL/numpy）、HeyGen 口播视频 |
-| propfirm-eagle-import | Eagle（本地 API :41595）、Python 3 |
-| frontend-dev | Node/npm、MiniMax API key（`MINIMAX_API_KEY`） |
-| lark-unified | `lark-cli`（npx @larksuite/cli）、`meegle`（按需） |
-| wecom-unified | `wecom-cli`（npm @wecom/cli ≥1.1.0）、企微授权 |
-| gmail | Maton CLI、`MATON_API_KEY`、Google OAuth 连接 |
-| browser-use | browser-use CLI（daemon） |
-| peekaboo | Peekaboo CLI（macOS 权限：屏幕录制+辅助功能） |
+以下能力来自 WorkBuddy 平台 / Connector / Marketplace，**作为依赖登记**，需要时按官方方式安装，不从本仓库复制：
+
+- **平台内置**：tencent-docx 文档流水线、ardot-* 设计、weixinpay-* 支付、sheetagent 表格、skill-* 元技能
+- **飞书 Connector**：lark-* 27 个（本仓库 `sera-lark-suite` 是统一入口封装）
+- **金融 Marketplace**：cb_teams_marketplace 53 个（金融分析/权益研究/投行/PE/LSEG/财富管理）
+- **写作专家**：tencent-docx experts 9 个
+- **GitHub / 腾讯会议** Connector
+
+详见 [`docs/SKILL-AUDIT-REPORT.md`](docs/SKILL-AUDIT-REPORT.md)（151 Skill 四层分类审计，2026-08-21）。
 
 ## 仓库结构
 
 ```
 sera-agent-skills/
-├── README.md                      # 本文件（Skill Registry / 支持 Agent / 安装方式）
-├── skills/                        # 13 个用户级 Skill
-│   ├── context-hub/SKILL.md
-│   ├── obsidian-sync/SKILL.md
-│   ├── serawin-remote/SKILL.md
-│   ├── propfirm-feed/SKILL.md
-│   ├── propfirm-official-site-assets/SKILL.md
-│   ├── heygen-knowledge-shortvideo/SKILL.md
-│   ├── propfirm-eagle-import/SKILL.md
-│   ├── frontend-dev/SKILL.md
-│   ├── lark-unified/SKILL.md
-│   ├── wecom-unified/SKILL.md
-│   ├── gmail/SKILL.md
-│   ├── browser-use/SKILL.md
-│   └── peekaboo/SKILL.md
-└── archive/                       # （本地保留）2026-08-21 全量扫描归档，不推 GitHub
+├── README.md
+├── architecture/
+│   └── sera-agent-os-v1.md          # 架构 V1.0 文档
+├── core/                             # 系统层
+│   ├── sera-agent-orchestrator/
+│   ├── sera-memory-system/
+│   ├── sera-skill-registry/
+│   ├── sera-context-system/
+│   ├── sera-knowledge-sync/
+│   └── sera-compute-control/
+├── business/                         # 商业情报
+│   ├── sera-intelligence-monitor/
+│   └── sera-content-factory/
+├── creative/                         # 内容创作
+│   ├── sera-video-pipeline/
+│   ├── sera-asset-manager/
+│   └── sera-design-studio/
+├── adapters/                         # 平台适配
+│   ├── sera-lark-suite/
+│   ├── sera-wecom-suite/
+│   ├── sera-mail-hub/
+│   ├── sera-browser-automation/
+│   └── sera-macos-ui/
+├── templates/                        # 模板
+│   ├── SKILL.template.md
+│   ├── workflow.yaml
+│   └── agent.yaml
+├── docs/
+│   └── SKILL-AUDIT-REPORT.md         # 审计报告
+└── archive/                          # 全量扫描归档（gitignore，不推）
 ```
 
-## SKILL.md 标准格式
+## Development Roadmap
 
-每个 Skill 采用统一标准格式：
-
-```yaml
----
-name: <skill 名>
-purpose: <一句话用途>
-inputs: <输入>
-outputs: <输出>
-workflow: <多步流程>
-tools: <依赖工具>
-examples: <示例命令>
----
-# <skill 名>
-## Purpose / Inputs / Outputs / Workflow / Tools / Examples / Iron Rules
-```
+- [x] **Phase 1**：仓库落地（README + 架构文档 + 13 Skill 归位 + 系统层骨架 + 模板）
+- [ ] **Phase 2**：提取/重命名剩余个人 Skill（已做 7 个 P0 改名 sera-*，P1 已归位）
+- [ ] **Phase 3**：创建领域专家（PropFirm PM / OTC BD / Trading Analyst / AI Video Producer / Design Reviewer）
+- [ ] **Phase 4**：连接 Codex / Trae / WorkBuddy / Claude 到同一 Skill Registry
 
 ---
 
-*私人技能库 · 由 WorkBuddy 扫描转换生成（2026-08-21）*
+*Sera Agent OS V1.0 · 2026-08-21 · 由 WorkBuddy 构建*

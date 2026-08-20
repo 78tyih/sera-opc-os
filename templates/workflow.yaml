@@ -1,0 +1,41 @@
+# Sera Agent OS Workflow Template
+# 工作流定义：多 Skill 编排的通用模板
+# 用法：每个工作流 = 有序 skill 步骤，每步声明输入/输出契约
+
+name: <workflow-name>          # 工作流名
+version: 1.0.0
+description: <一句话说明>
+
+# 触发条件
+triggers:
+  - <用户话语示例>
+
+# 有序执行链（引用 Skill Registry 中的 Skill）
+steps:
+  - skill: <skill-1>           # 第一步 Skill
+    inputs:                     # 该步需要的输入
+      - <input-1>
+    outputs:                    # 该步产出（传给下一步）
+      - <output-1>
+
+  - skill: <skill-2>
+    inputs:
+      - <from-previous-step>    # 上一步的输出
+    outputs:
+      - <output-2>
+
+  - skill: <skill-3>
+    inputs:
+      - <input-3>
+    outputs:
+      - <final-output>
+
+# 可选：完成后的收尾动作
+finalize:
+  - sera-knowledge-sync         # 归档产物
+  - sera-context-system         # 更新上下文/记忆
+
+# 错误处理
+on_error:
+  retry: <true|false>
+  fallback_skill: <skill>

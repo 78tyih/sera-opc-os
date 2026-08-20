@@ -1,0 +1,37 @@
+# Sera Agent OS Agent Template
+# Agent 定义模板：把一个 Skill 打包成可被编排器调用的 Agent
+# 用法：定义领域专家 Agent（PropFirm PM / OTC BD / Trading Analyst 等）
+
+name: <agent-name>             # Agent 名（如 sera-propfirm-product-manager）
+version: 1.0.0
+type: <domain-expert|general|assistant>
+
+# 角色定位
+role: <一句话角色描述>
+
+# 挂载的 Skill（Agent 的核心能力）
+skills:
+  - <skill-1>
+  - <skill-2>
+
+# 可用的工具/权限
+tools:
+  - <tool-1>                   # 如 Bash / Read / WebSearch / MCP
+  - <tool-2>
+
+# 知识来源（可选）
+knowledge:
+  - <path-to-knowledge>        # 如 references/ 目录
+
+# 行为规范
+behavior:
+  tone: <formal|casual|professional>
+  max_autonomy: <low|medium|high>   # 何时需要用户确认
+  escalate_on:                      # 什么情况升级给人
+    - <condition>
+
+# 编排提示（给 orchestrator）
+orchestration:
+  primary_domain: <business|creative|core|adapters>
+  dependent_skills:
+    - <skill-that-this-agent-delegates-to>

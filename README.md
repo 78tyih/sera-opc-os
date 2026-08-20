@@ -33,6 +33,20 @@ Sera Agent OS 是一个跨 Agent 的个人 AI 操作系统。它把孤立的 AI 
 
 完整架构文档：[`architecture/sera-agent-os-v1.md`](architecture/sera-agent-os-v1.md)
 
+## Agent Registry（个人 AI 团队）
+
+Agent = 多个 Skill 的组合，是用户真正直接调用的入口。
+
+| Agent | 类别 | 组合 Skills | 负责 |
+|---|---|---|---|
+| [`propfirm-agent`](agents/propfirm-agent/SKILL.md) | business | intelligence-monitor + content-factory + browser-automation + design-studio | 竞品分析 / 网站拆解 / 产品手册 / 营销素材 |
+| [`otc-agent`](agents/otc-agent/SKILL.md) | business | mail-hub + memory-system + context-system + knowledge-sync | 客户分析 / 报价回复 / 跟进 / 风险判断 |
+| [`trading-agent`](agents/trading-agent/SKILL.md) | business | trading-analysis + finance-suite + knowledge-reader | ATAS / Order Flow / 市场研究 |
+| [`video-agent`](agents/video-agent/SKILL.md) | creative | content-factory + video-pipeline + asset-manager + compute-control | 官网素材 → 数字人视频 → 合成 → 入库（最成熟） |
+| [`design-agent`](agents/design-agent/SKILL.md) | creative | design-studio + figma-review | 品牌 / UI / 海报 / 网站 |
+
+调用关系：**Agent → Skill → Adapter → Tool**（分层调用，不混在一起）
+
 ## Skill Registry
 
 ### 🧠 core/ — 核心系统层
@@ -41,6 +55,7 @@ Sera Agent OS 是一个跨 Agent 的个人 AI 操作系统。它把孤立的 AI 
 |---|---|---|
 | [`sera-agent-orchestrator`](core/sera-agent-orchestrator/SKILL.md) | 新建 | 任务路由 / Agent 选择 / 执行规划 / 冲突检测 |
 | [`sera-memory-system`](core/sera-memory-system/SKILL.md) | 新建 | 共享记忆层：Context Hub + Obsidian + Project State + Decision Logs |
+| [`sera-state-manager`](core/sera-state-manager/SKILL.md) | 新建 | 工作状态管理：当前阶段 / 阻塞 / 下一步（Memory 的实时补充） |
 | [`sera-skill-registry`](core/sera-skill-registry/SKILL.md) | 新建 | Skill 注册表与标准格式 |
 | [`sera-context-system`](core/sera-context-system/SKILL.md) | context-hub | 多 Agent 共享上下文（Sera Context Hub 协议） |
 | [`sera-knowledge-sync`](core/sera-knowledge-sync/SKILL.md) | obsidian-sync | 知识资产同步（Obsidian 归档/去重/版本化） |
@@ -135,10 +150,17 @@ sera-agent-skills/
 ├── core/                             # 系统层
 │   ├── sera-agent-orchestrator/
 │   ├── sera-memory-system/
+│   ├── sera-state-manager/
 │   ├── sera-skill-registry/
 │   ├── sera-context-system/
 │   ├── sera-knowledge-sync/
 │   └── sera-compute-control/
+├── agents/                           # Agent 层（个人 AI 团队）
+│   ├── propfirm-agent/
+│   ├── otc-agent/
+│   ├── trading-agent/
+│   ├── video-agent/
+│   └── design-agent/
 ├── business/                         # 商业情报
 │   ├── sera-intelligence-monitor/
 │   └── sera-content-factory/
@@ -164,9 +186,10 @@ sera-agent-skills/
 ## Development Roadmap
 
 - [x] **Phase 1**：仓库落地（README + 架构文档 + 13 Skill 归位 + 系统层骨架 + 模板）
-- [ ] **Phase 2**：提取/重命名剩余个人 Skill（已做 7 个 P0 改名 sera-*，P1 已归位）
-- [ ] **Phase 3**：创建领域专家（PropFirm PM / OTC BD / Trading Analyst / AI Video Producer / Design Reviewer）
-- [ ] **Phase 4**：连接 Codex / Trae / WorkBuddy / Claude 到同一 Skill Registry
+- [x] **Phase 2.5**：Agent 层建立（5 个核心 Agent：propfirm/otc/trading/video/design）+ sera-state-manager
+- [ ] **Phase 3**：补齐领域专家 Skill（figma-review / trading-analysis / CRM adapter）
+- [ ] **Phase 4**：实现 Agent Router（输入自然语言 → 自动编排多 Agent 协作）
+- [ ] **Phase 5**：连接 Codex / Trae / WorkBuddy / Claude 到同一 Skill Registry
 
 ---
 

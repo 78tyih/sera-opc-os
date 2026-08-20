@@ -102,33 +102,43 @@ Agent = 多个 Skill 的组合，是用户真正直接调用的入口。
 
 ## 支持 Agent
 
-| Agent | 接入方式 |
-|---|---|
-| **WorkBuddy** | `~/.workbuddy/skills/` 或项目 `.workbuddy/skills/` 放置 SKILL.md |
-| **Codex** | 读 `~/SeraContextHub/99_System/adapters/ADAPTER_CODEX.md` 接入细则 |
-| **Trae** | 读 `~/SeraContextHub/99_System/adapters/ADAPTER_TRAE.md` 接入细则 |
-| **Claude Code** | `.claude/skills/` 目录（frontmatter 即识别） |
-| **Cursor / 未来 Agent** | 遵循标准 SKILL.md 格式即可 |
+| Agent | 接入方式 | 文档 |
+|---|---|---|
+| **WorkBuddy** | `~/.workbuddy/skills/`（用户级）或项目 `.workbuddy/skills/` | [platforms/workbuddy.md](platforms/workbuddy.md) |
+| **Codex** | `~/.codex/skills/`（用户级）或 `.codex/skills/`（项目） | [platforms/codex.md](platforms/codex.md) |
+| **Trae** | `.trae/skills/`（项目）或 `~/.trae/skills/`（全局） | [platforms/trae.md](platforms/trae.md) |
+| **Claude Code** | `~/.claude/skills/`（个人）或 `.claude/skills/`（项目） | [platforms/claude-code.md](platforms/claude-code.md) |
+| **Cursor** | `.cursor/skills/`（项目）或 `~/.cursor/skills/`（全局） | [platforms/cursor.md](platforms/cursor.md) |
+
+所有平台共用同一 Router：`python3 core/sera-agent-router/router.py "<请求>"`（纯 stdlib 零依赖）。
 
 ## 安装方式
 
-### 方式 A：WorkBuddy（推荐）
+### 方式 A：一键安装（推荐）
 
 ```bash
-git clone https://github.com/78tyih/sera-agent-skills.git ~/.workbuddy/skills-src/sera-agent-skills
+git clone https://github.com/78tyih/sera-agent-skills.git ~/sera-agent-skills
+cd ~/sera-agent-skills
+./install.sh --all                  # 安装到全部 5 平台
+./install.sh --platform workbuddy   # 或指定平台
+./install.sh --copy                 # Windows/无软链环境用复制
+```
 
-for d in ~/.workbuddy/skills-src/sera-agent-skills/{core,business,creative,adapters}/*/; do
-  ln -s "$d" ~/.workbuddy/skills/$(basename "$d")
+### 方式 B：手动软链（WorkBuddy）
+
+```bash
+for d in ~/sera-agent-skills/{core,business,creative,adapters}/*/; do
+  [ -f "$d/SKILL.md" ] && ln -s "$d" ~/.workbuddy/skills/$(basename "$d")
 done
 ```
 
-### 方式 B：手动复制
+### 方式 C：手动复制
 
 ```bash
 cp -r core/sera-context-system ~/.workbuddy/skills/sera-context-system
 ```
 
-### 方式 C：Claude Code / 通用 Agent
+### 方式 D：Claude Code / 通用 Agent
 
 把 `skills/<name>/SKILL.md` 放入 Agent 的 skills 目录，frontmatter 满足 `name` + `description` 即可被识别。
 
@@ -172,12 +182,21 @@ sera-agent-skills/
 │   ├── sera-video-pipeline/
 │   ├── sera-asset-manager/
 │   └── sera-design-studio/
-├── adapters/                         # 平台适配
+├── adapters/                         # 平台适配（Skill 级）
 │   ├── sera-lark-suite/
 │   ├── sera-wecom-suite/
 │   ├── sera-mail-hub/
 │   ├── sera-browser-automation/
-│   └── sera-macos-ui/
+│   ├── sera-macos-ui/
+│   └── sera-crm-adapter/
+├── platforms/                        # 平台接入（Agent 级）
+│   ├── README.md
+│   ├── workbuddy.md
+│   ├── codex.md
+│   ├── trae.md
+│   ├── claude-code.md
+│   └── cursor.md
+├── install.sh                        # 一键安装脚本
 ├── templates/                        # 模板
 │   ├── SKILL.template.md
 │   ├── workflow.yaml
@@ -193,7 +212,7 @@ sera-agent-skills/
 - [x] **Phase 2.5**：Agent 层建立（5 个核心 Agent：propfirm/otc/trading/video/design）+ sera-state-manager
 - [x] **Phase 3**：补齐领域专家 Skill（figma-review / trading-analysis / sera-crm-adapter），5 个 Agent 全部 active
 - [x] **Phase 4**：实现 Agent Router（sera-agent-router：router.py 规则引擎 + routes.yaml，自然语言→编排链，12/12 自测通过）
-- [ ] **Phase 5**：连接 Codex / Trae / WorkBuddy / Claude 到同一 Skill Registry
+- [x] **Phase 5**：多 Agent 平台接入（platforms/ 五平台文档 + install.sh 一键安装）—— **v2.0 就绪**
 
 ---
 

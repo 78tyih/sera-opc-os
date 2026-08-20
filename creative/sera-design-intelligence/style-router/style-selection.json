@@ -1,0 +1,83 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-08-21",
+  "description": "Sera Style Router — 根据产品属性自动推荐设计风格",
+  "engine": "style-router",
+  "rules": [
+    {
+      "id": "fintech-premium",
+      "product_pattern": {
+        "industry": ["finance", "trading", "investment", "crypto", "payment"],
+        "emotion": ["professional", "trust", "institutional"],
+        "audience": ["high-net-worth", "institutional", "enterprise"],
+        "product_type": ["platform", "service", "exchange"]
+      },
+      "recommendation": {
+        "primary_style": "sera-fintech-premium",
+        "weight": 0.6,
+        "secondary_style": "sera-saas-landing",
+        "secondary_weight": 0.2,
+        "custom_adjustments": {
+          "trust_level_boost": 2,
+          "luxury_level_boost": 1
+        }
+      }
+    },
+    {
+      "id": "ai-product",
+      "product_pattern": {
+        "industry": ["ai", "machine-learning", "intelligence", "automation"],
+        "emotion": ["innovative", "smart", "futuristic"],
+        "audience": ["developer", "tech-savvy", "early-adopter"],
+        "product_type": ["tool", "assistant", "platform", "saas"]
+      },
+      "recommendation": {
+        "primary_style": "sera-fintech-premium",
+        "weight": 0.4,
+        "secondary_style": "sera-saas-landing",
+        "secondary_weight": 0.3,
+        "custom_adjustments": {
+          "technology_level_boost": 2,
+          "playfulness_level_boost": 1
+        }
+      }
+    },
+    {
+      "id": "saas-b2b",
+      "product_pattern": {
+        "industry": ["saas", "b2b", "enterprise-software", "platform"],
+        "emotion": ["professional", "efficient", "reliable"],
+        "audience": ["decision-maker", "manager", "enterprise"],
+        "product_type": ["saas", "tool", "platform", "dashboard"]
+      },
+      "recommendation": {
+        "primary_style": "sera-saas-landing",
+        "weight": 0.5,
+        "secondary_style": "sera-fintech-premium",
+        "secondary_weight": 0.25,
+        "custom_adjustments": {
+          "trust_level_boost": 1,
+          "minimalism_level_boost": 1
+        }
+      }
+    },
+    {
+      "id": "operations-dashboard",
+      "product_pattern": {
+        "industry": ["operations", "management", "logistics", "project"],
+        "emotion": ["efficient", "clear", "data-driven"],
+        "audience": ["manager", "operator", "analyst"],
+        "product_type": ["dashboard", "admin", "monitoring"]
+      },
+      "recommendation": {
+        "primary_style": "sera-operations-dashboard",
+        "weight": 0.7,
+        "secondary_style": "sera-saas-landing",
+        "secondary_weight": 0.15,
+        "custom_adjustments": {
+          "information_density_boost": 2
+        }
+      }
+    }
+  ]
+}

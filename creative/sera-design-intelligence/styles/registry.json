@@ -1,0 +1,175 @@
+{
+  "version": "2.0.0",
+  "updated": "2026-08-21",
+  "schema": "style-dna-registry",
+  "description": "Sera Design Intelligence — Style DNA Registry V1.1",
+  "styles": [
+    {
+      "id": "sera-fintech-premium",
+      "name": "Sera FinTech Premium",
+      "type": "visual-style",
+      "version": "2.0.0",
+      "source": [
+        "HTX OTC Desk Landing",
+        "Stripe",
+        "Linear"
+      ],
+      "keywords": [
+        "finance",
+        "premium",
+        "trust",
+        "institutional",
+        "professional"
+      ],
+      "recommended_for": [
+        "Fintech",
+        "SaaS",
+        "AI Product",
+        "High-value Service"
+      ],
+      "industry": "finance",
+      "emotion": "professional",
+      "audience": "institutional",
+      "trust_level": 10,
+      "technology_level": 8,
+      "luxury_level": 7,
+      "playfulness_level": 2,
+      "minimalism_level": 8,
+      "color_system": {
+        "primary": "#0052FF",
+        "background": "#FFFFFF",
+        "dark_background": "#060708",
+        "card_style": "glass-morphism"
+      },
+      "typography": {
+        "hero_size": "clamp(44px, 6vw, 64px)",
+        "hero_weight": 800,
+        "body_size": "14-15px"
+      },
+      "motion_language": {
+        "easing": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "reveal_duration": "0.72s",
+        "hover_duration": "0.3s"
+      },
+      "case_studies": ["htx-otc-v1"],
+      "skill_ref": "sera-design-intelligence",
+      "assets": "case-studies/htx-otc-v1/assets/",
+      "compatible_products": [
+        "OTC Trading",
+        "Trading Platform",
+        "AI Finance",
+        "Investment Service",
+        "Premium SaaS"
+      ]
+    },
+    {
+      "id": "sera-operations-dashboard",
+      "name": "Sera Operations Dashboard",
+      "type": "layout-style",
+      "version": "2.0.0",
+      "source": [
+        "HTX OTC Progress Hub"
+      ],
+      "keywords": [
+        "dashboard",
+        "data-driven",
+        "operations",
+        "kpi",
+        "status",
+        "pipeline"
+      ],
+      "recommended_for": [
+        "Operations Dashboard",
+        "Project Management",
+        "KPI Monitoring",
+        "Admin Panel"
+      ],
+      "industry": "operations",
+      "emotion": "efficient",
+      "audience": "management",
+      "trust_level": 6,
+      "technology_level": 7,
+      "luxury_level": 3,
+      "playfulness_level": 1,
+      "minimalism_level": 6,
+      "color_system": {
+        "primary": "#0052FF",
+        "background": "#FFFFFF",
+        "card_style": "solid"
+      },
+      "typography": {
+        "hero_size": "24px",
+        "hero_weight": 700,
+        "body_size": "13-14px"
+      },
+      "motion_language": {
+        "easing": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "hover_duration": "0.3s"
+      },
+      "case_studies": ["htx-otc-v1"],
+      "skill_ref": "sera-design-intelligence",
+      "assets": "case-studies/htx-otc-v1/assets/",
+      "compatible_products": [
+        "Project Dashboard",
+        "Operation Center",
+        "KPI Dashboard",
+        "Admin Console"
+      ]
+    },
+    {
+      "id": "sera-saas-landing",
+      "name": "Sera SaaS Landing",
+      "type": "layout-style",
+      "version": "2.0.0",
+      "source": [
+        "HTX OTC Desk Landing",
+        "Linear",
+        "Vercel"
+      ],
+      "keywords": [
+        "saas",
+        "landing-page",
+        "conversion",
+        "feature-showcase",
+        "pricing"
+      ],
+      "recommended_for": [
+        "SaaS Product Page",
+        "Feature Landing",
+        "Pricing Page"
+      ],
+      "industry": "saas",
+      "emotion": "professional",
+      "audience": "decision-maker",
+      "trust_level": 7,
+      "technology_level": 9,
+      "luxury_level": 5,
+      "playfulness_level": 3,
+      "minimalism_level": 7,
+      "color_system": {
+        "primary": "#0052FF",
+        "background": "#FFFFFF",
+        "card_style": "glass-morphism"
+      },
+      "typography": {
+        "hero_size": "clamp(44px, 6vw, 64px)",
+        "hero_weight": 800,
+        "body_size": "14-15px"
+      },
+      "motion_language": {
+        "easing": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "reveal_duration": "0.72s",
+        "hover_duration": "0.3s"
+      },
+      "case_studies": ["htx-otc-v1"],
+      "skill_ref": "sera-design-intelligence",
+      "assets": "case-studies/htx-otc-v1/assets/",
+      "compatible_products": [
+        "SaaS Product",
+        "B2B Platform",
+        "Developer Tool",
+        "API Service"
+      ]
+    }
+  ]
+}

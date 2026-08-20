@@ -1,0 +1,112 @@
+# 工作流：设计提取（Design Extraction）
+# 输入 URL/项目 → 输出 Case Study + Asset Library + Style Registry
+# 适用于：发现优秀网站后，将其拆解为 Sera 可复用的设计资产
+
+name: design-extraction
+version: 1.0.0
+description: 拆解优秀网站设计，提取视觉规则、资产和风格，入库 Sera Design Intelligence System
+
+triggers:
+  - "分析这个网站的设计 [URL]"
+  - "拆解 [项目名] 的设计系统"
+  - "提取 [项目名] 的设计资产"
+  - "把 [项目名] 做成 Design Case Study"
+
+steps:
+  # Step 1: 网站捕获
+  - skill: sera-browser-automation
+    description: 打开目标 URL，全页截图，收集页面结构
+    inputs:
+      - url
+    outputs:
+      - fullpage-screenshot
+      - section-screenshots
+      - html-source
+      - css-source
+
+  # Step 2: 资产提取
+  - skill: sera-design-extraction
+    description: 从 HTML/CSS 中提取颜色、字体、图标、组件
+    inputs:
+      - html-source
+      - css-source
+      - fullpage-screenshot
+    outputs:
+      - color-tokens
+      - font-stack
+      - icon-set
+      - component-list
+      - layout-architecture
+
+  # Step 3: 视觉分析
+  - skill: design-system-agent
+    description: 分析品牌定位、视觉系统、布局架构、动效模式
+    inputs:
+      - color-tokens
+      - font-stack
+      - layout-architecture
+      - component-list
+      - section-screenshots
+    outputs:
+      - brand-analysis
+      - visual-system
+      - motion-patterns
+      - copywriting-patterns
+
+  # Step 4: 生成 Case Study
+  - skill: content-factory
+    description: 按照 design-case-study-template.md 生成完整案例文档
+    inputs:
+      - brand-analysis
+      - visual-system
+      - layout-architecture
+      - component-list
+      - motion-patterns
+      - copywriting-patterns
+    outputs:
+      - case-study-analysis.md
+      - extracted-rules.md
+      - reproduction-prompt.md
+
+  # Step 5: 注册风格
+  - skill: sera-design-intelligence
+    description: 将新风格注册到 Style Registry，更新 Skill
+    inputs:
+      - case-study-analysis.md
+      - extracted-rules.md
+    outputs:
+      - registry-update
+      - skill-update
+
+  # Step 6: 资产入库
+  - skill: asset-manager-agent
+    description: 将提取的资产保存到 Asset Library，同步 Eagle
+    inputs:
+      - color-tokens
+      - font-stack
+      - icon-set
+      - component-list
+      - screenshots
+    outputs:
+      - asset-library-update
+      - eagle-sync
+
+finalize:
+  - sera-knowledge-sync
+  - sera-context-system
+
+on_error:
+  retry: true
+  fallback_skill: sera-agent-orchestrator
+
+# 输出目录结构
+outputs:
+  base_path: creative/sera-design-intelligence/case-studies/<case-name>/
+  structure:
+    - analysis.md
+    - extracted-rules.md
+    - reproduction-prompt.md
+    - assets/colors/tokens.json
+    - assets/icons/
+    - assets/images/
+    - assets/components/

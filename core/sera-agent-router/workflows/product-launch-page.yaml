@@ -19,6 +19,7 @@ steps:
     inputs:
       - 产品素材
       - 品牌规范
+      - 设计风格（来自 Style Registry）
     outputs:
       - 页面设计稿
 

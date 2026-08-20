@@ -1,0 +1,19 @@
+version: 1.1.0
+agent: product-agent
+primary: sera-project-profile
+skills:
+- skill: sera-project-profile
+  relation: primary
+- skill: sera-product-analysis
+  relation: primary
+- skill: sera-market-research
+  relation: support
+- skill: sera-user-persona
+  relation: support
+- skill: sera-positioning
+  relation: support
+- skill: sera-copywriting
+  relation: support
+- skill: sera-product-manual
+  relation: primary
+shared_with: allowed — declare ownership in each skill's owner field

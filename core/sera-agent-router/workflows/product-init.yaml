@@ -1,0 +1,79 @@
+# Sera Product Factory — Product Init Workflow
+# 从模糊想法到结构化项目文档
+
+name: product-init
+version: 1.0.0
+description: 项目初始化工作流 — 把模糊想法转化为结构化项目文档
+
+triggers:
+  - "创建新产品项目"
+  - "我要推广 [产品名]"
+  - "帮我分析这个产品"
+  - "启动产品发布流程"
+
+steps:
+  - skill: sera-project-profile
+    inputs:
+      - 产品想法描述
+      - 参考链接/资料（可选）
+    outputs:
+      - PROJECT_PROFILE.md
+
+  - skill: sera-product-analysis
+    inputs:
+      - PROJECT_PROFILE.md
+    outputs:
+      - product-analysis.md
+
+  - skill: sera-market-research
+    inputs:
+      - PROJECT_PROFILE.md
+      - product-analysis.md
+    outputs:
+      - market-research.md
+
+  - skill: sera-user-persona
+    inputs:
+      - PROJECT_PROFILE.md
+      - product-analysis.md
+      - market-research.md
+    outputs:
+      - PERSONA.md
+
+  - skill: sera-positioning
+    inputs:
+      - PROJECT_PROFILE.md
+      - product-analysis.md
+      - market-research.md
+      - PERSONA.md
+    outputs:
+      - POSITIONING.md
+
+  - skill: sera-copywriting
+    inputs:
+      - PROJECT_PROFILE.md
+      - POSITIONING.md
+      - PERSONA.md
+    outputs:
+      - copywriting/hero-copy.md
+      - copywriting/feature-copy.md
+      - copywriting/sales-script.md
+
+  - skill: sera-product-manual
+    inputs:
+      - PROJECT_PROFILE.md
+      - product-analysis.md
+      - market-research.md
+      - PERSONA.md
+      - POSITIONING.md
+      - copywriting/
+    outputs:
+      - PRODUCT_MANUAL.md
+
+finalize:
+  - sera-knowledge-sync
+  - sera-context-system
+
+on_error:
+  retry: true
+  fallback_skill: sera-project-profile

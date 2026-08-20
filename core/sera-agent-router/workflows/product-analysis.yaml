@@ -1,0 +1,31 @@
+# Sera Product Factory — Product Analysis Workflow
+# 快速产品分析（不需要完整项目初始化时）
+
+name: product-analysis
+version: 1.0.0
+description: 快速产品分析 — 只做理解和研究，不生成完整项目文档
+
+triggers:
+  - "分析这个产品"
+  - "做竞品分析"
+  - "研究一下这个市场"
+
+steps:
+  - skill: sera-product-analysis
+    inputs:
+      - 产品资料/URL
+    outputs:
+      - product-analysis.md
+
+  - skill: sera-market-research
+    inputs:
+      - product-analysis.md
+    outputs:
+      - market-research.md
+
+finalize:
+  - sera-knowledge-sync
+
+on_error:
+  retry: true
+  fallback_skill: sera-product-analysis

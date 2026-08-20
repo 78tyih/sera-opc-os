@@ -1,0 +1,29 @@
+name: product-agent
+version: 1.1.0
+type: domain-expert
+status: active
+role:
+  title: Product Launch Specialist
+  goal: Transform product ideas into structured, market-ready launch assets
+skills:
+- sera-project-profile
+- sera-product-analysis
+- sera-market-research
+- sera-user-persona
+- sera-positioning
+- sera-copywriting
+- sera-product-manual
+memory:
+  read:
+  - product
+  - market
+  - competitor
+  write:
+  - project-profiles
+  - product-manuals
+  - decisions
+model_preference:
+  research: DeepSeek
+  analysis: DeepSeek
+  writing: DeepSeek
+  design: Trae

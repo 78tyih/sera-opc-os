@@ -5,17 +5,33 @@
 version: 1.0.0
 
 routes:
+  # ============ 远程算力（最高优先级，compute > video > 领域）============
+  - id: compute
+    intent: 远程算力
+    agent: core
+    keywords:
+      - serawin
+      - 远程
+      - windows
+      - comfyui
+      - ollama
+      - gpu
+      - 台式机
+      - 渲染服务器
+    pipeline:
+      - sera-compute-control
+    finalize: []
+
   # ============ 内容生产（video-agent）============
   - id: video-produce
     intent: 视频/素材生产
     agent: video-agent
     keywords:
-      - 做一条视频
+      - 视频
       - 短视频
       - 口播
       - 数字人
       - 合成
-      - 渲染
       - B-roll
       - 素材工厂
       - 官网素材
@@ -61,9 +77,42 @@ routes:
     finalize:
       - sera-knowledge-sync
 
-  # ============ 复合：多 Agent 编排 ============
-  - id: page-product-launch
-    intent: 产品发布页（多 Agent）
+  # ============ Product Factory：产品发布（product-agent）============
+  - id: product-init
+    intent: 产品发布/项目初始化
+    agent: product-agent
+    keywords:
+      - 产品发布
+      - 推广
+      - 推广产品
+      - 新产品
+      - 项目初始化
+      - 产品项目
+      - 创建项目
+      - 产品分析
+      - 产品手册
+      - 项目档案
+      - product launch
+      - 产品定位
+      - 产品规划
+      - 产品定义
+      - 发布计划
+      - 启动项目
+    pipeline:
+      - sera-project-profile              # 项目初始化
+      - sera-product-analysis             # 产品理解
+      - sera-market-research              # 市场研究
+      - sera-user-persona                 # 用户画像
+      - sera-positioning                  # 产品定位
+      - sera-copywriting                  # 文案撰写
+      - sera-product-manual               # 产品手册
+    finalize:
+      - sera-knowledge-sync
+      - sera-context-system
+
+  # ============ 复合：多 Agent 编排（完整产品发布流水线）============
+  - id: product-factory-pipeline
+    intent: 完整产品发布流水线（多 Agent）
     agent: multi
     keywords:
       - 发布页
@@ -72,11 +121,58 @@ routes:
       - landing page
       - 网站
       - 官网
+      - 产品发布页
+      - 产品官网
     pipeline:
-      - propfirm-agent:sera-content-factory   # 产品素材/事实
-      - design-agent:sera-design-studio       # 设计
-      - video-agent:sera-video-pipeline       # 内容（可选）
-      - figma-review                          # 审查
+      - product-agent:sera-project-profile    # 产品定义
+      - product-agent:sera-market-research    # 市场研究
+      - product-agent:sera-positioning        # 定位
+      - product-agent:sera-copywriting        # 文案
+      - design-agent:sera-design-studio       # 品牌+视觉设计
+      - design-agent:sera-asset-manager       # 素材管理
+      - video-agent:sera-video-pipeline       # 视频内容
+      - figma-review                          # 设计审查（代码级）
+      - design-critic-agent:sera-design-intelligence  # 设计总监审查（设计级）⭐
+    finalize:
+      - sera-knowledge-sync
+      - sera-context-system
+
+  # ============ 设计审查（design-department）============
+  - id: design-critic-review
+    intent: 设计审查/批评
+    agent: design-department
+    keywords:
+      - 审查设计
+      - 设计批评
+      - 设计评审
+      - 设计总监
+      - 设计检查
+      - design review
+      - 评审设计
+    pipeline:
+      - design-critic-agent:sera-design-intelligence
+    finalize:
+      - sera-knowledge-sync
+
+  # ============ 设计提取（design-department）============
+  - id: design-extraction
+    intent: 设计提取/分析
+    agent: design-department
+    keywords:
+      - 分析设计
+      - 提取设计
+      - 拆解网站
+      - 设计复盘
+      - design extraction
+      - 设计案例
+      - 参考设计
+      - 保存设计
+    pipeline:
+      - design-research-agent:sera-browser-automation    # 捕获
+      - design-extraction-agent:sera-design-intelligence  # 提取
+      - design-system-agent:sera-design-studio            # 生成规范
+      - asset-manager-agent:sera-asset-manager            # 入库
+      - design-review-agent:figma-review                  # 审查
     finalize:
       - sera-knowledge-sync
 
@@ -166,25 +262,6 @@ routes:
       - sera-state-manager           # 状态查询/更新
       - sera-knowledge-sync          # 归档
     finalize: []
-
-  # ============ 复合：多 Agent 编排 ============
-  - id: page-product-launch
-    intent: 产品发布页（多 Agent）
-    agent: multi
-    keywords:
-      - 发布页
-      - 产品页
-      - 落地页
-      - landing page
-      - 网站
-      - 官网
-    pipeline:
-      - propfirm-agent:sera-content-factory   # 产品素材/事实
-      - design-agent:sera-design-studio       # 设计
-      - video-agent:sera-video-pipeline       # 内容（可选）
-      - figma-review                          # 审查
-    finalize:
-      - sera-knowledge-sync
 
   # ============ 兜底 ============
   - id: fallback

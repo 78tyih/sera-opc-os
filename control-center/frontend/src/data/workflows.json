@@ -1,0 +1,73 @@
+{
+  "workflows": [
+    {
+      "id": "wf-1",
+      "name": "Product Launch Pipeline",
+      "description": "End-to-end product launch workflow from research to distribution",
+      "status": "active",
+      "lastRun": "2026-08-21T03:00:00Z",
+      "nodes": [
+        { "id": "input", "type": "input", "label": "Product Input", "agent": "user", "skill": "Brief", "status": "completed", "icon": "package" },
+        { "id": "research", "type": "process", "label": "Market Research", "agent": "Product Agent", "skill": "Market Research", "status": "completed", "icon": "search" },
+        { "id": "positioning", "type": "process", "label": "Positioning", "agent": "Product Agent", "skill": "Strategy", "status": "running", "icon": "target" },
+        { "id": "brand", "type": "process", "label": "Brand Design", "agent": "Brand Agent", "skill": "Visual Identity", "status": "pending", "icon": "palette" },
+        { "id": "website", "type": "process", "label": "Website", "agent": "Frontend Agent", "skill": "Landing Page", "status": "pending", "icon": "globe" },
+        { "id": "content", "type": "process", "label": "Content", "agent": "Script Agent", "skill": "Copywriting", "status": "pending", "icon": "file-text" },
+        { "id": "video", "type": "process", "label": "Video", "agent": "Video Agent", "skill": "Production", "status": "pending", "icon": "video" },
+        { "id": "launch", "type": "output", "label": "Launch", "agent": "multi", "skill": "Distribution", "status": "pending", "icon": "rocket" }
+      ],
+      "edges": [
+        { "source": "input", "target": "research" },
+        { "source": "research", "target": "positioning" },
+        { "source": "positioning", "target": "brand" },
+        { "source": "brand", "target": "website" },
+        { "source": "brand", "target": "content" },
+        { "source": "website", "target": "launch" },
+        { "source": "content", "target": "video" },
+        { "source": "video", "target": "launch" }
+      ]
+    },
+    {
+      "id": "wf-2",
+      "name": "Daily Intelligence Brief",
+      "description": "Automated competitor monitoring and intelligence report generation",
+      "status": "active",
+      "lastRun": "2026-08-21T08:00:00Z",
+      "nodes": [
+        { "id": "trigger", "type": "input", "label": "Daily Trigger", "agent": "system", "skill": "Cron", "status": "completed", "icon": "clock" },
+        { "id": "scrape", "type": "process", "label": "Scrape Competitors", "agent": "PropFirm Agent", "skill": "Browser Automation", "status": "completed", "icon": "globe" },
+        { "id": "analyze", "type": "process", "label": "Analyze Intel", "agent": "PropFirm Agent", "skill": "Intelligence", "status": "completed", "icon": "brain" },
+        { "id": "generate", "type": "process", "label": "Generate Report", "agent": "Content Agent", "skill": "Content Factory", "status": "completed", "icon": "file-text" },
+        { "id": "notify", "type": "output", "label": "Push to WeCom", "agent": "system", "skill": "Notification", "status": "completed", "icon": "bell" }
+      ],
+      "edges": [
+        { "source": "trigger", "target": "scrape" },
+        { "source": "scrape", "target": "analyze" },
+        { "source": "analyze", "target": "generate" },
+        { "source": "generate", "target": "notify" }
+      ]
+    },
+    {
+      "id": "wf-3",
+      "name": "Video Production Pipeline",
+      "description": "From script to published video asset",
+      "status": "idle",
+      "lastRun": "2026-08-20T14:00:00Z",
+      "nodes": [
+        { "id": "script", "type": "input", "label": "Script Input", "agent": "Script Agent", "skill": "Writing", "status": "completed", "icon": "edit" },
+        { "id": "storyboard", "type": "process", "label": "Storyboard", "agent": "Design Agent", "skill": "Visual Planning", "status": "completed", "icon": "image" },
+        { "id": "voiceover", "type": "process", "label": "Voiceover", "agent": "Content Agent", "skill": "TTS/Recording", "status": "completed", "icon": "mic" },
+        { "id": "render", "type": "process", "label": "Render", "agent": "Video Agent", "skill": "ComfyUI", "status": "running", "icon": "monitor" },
+        { "id": "review", "type": "process", "label": "Review", "agent": "Design Agent", "skill": "Quality Check", "status": "pending", "icon": "eye" },
+        { "id": "archive", "type": "output", "label": "Archive to Eagle", "agent": "system", "skill": "Asset Manager", "status": "pending", "icon": "archive" }
+      ],
+      "edges": [
+        { "source": "script", "target": "storyboard" },
+        { "source": "storyboard", "target": "voiceover" },
+        { "source": "voiceover", "target": "render" },
+        { "source": "render", "target": "review" },
+        { "source": "review", "target": "archive" }
+      ]
+    }
+  ]
+}

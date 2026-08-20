@@ -1,0 +1,145 @@
+[
+  {
+    "id": "product-agent",
+    "name": "Product Agent",
+    "role": "Product Strategy & Roadmap",
+    "department": "product",
+    "status": "active",
+    "model": "DeepSeek",
+    "skills": ["Market Research", "PRD Writing", "User Story Mapping", "A/B Testing"],
+    "tools": ["Linear", "Notion", "Figma"],
+    "description": "Defines product vision, prioritizes features, and manages the product lifecycle."
+  },
+  {
+    "id": "brand-agent",
+    "name": "Brand Agent",
+    "role": "Brand Identity & Strategy",
+    "department": "design",
+    "status": "active",
+    "model": "Trae",
+    "skills": ["Brand Strategy", "Visual Identity", "Design System", "Copywriting"],
+    "tools": ["Figma", "Adobe Creative Suite", "Brand Guidelines"],
+    "description": "Guardian of brand consistency across all touchpoints."
+  },
+  {
+    "id": "ui-agent",
+    "name": "UI Agent",
+    "role": "User Interface Design",
+    "department": "design",
+    "status": "active",
+    "model": "Trae",
+    "skills": ["UI Design", "Component Library", "Prototyping", "Design Tokens"],
+    "tools": ["Figma", "Storybook", "Tailwind"],
+    "description": "Crafts pixel-perfect interfaces and maintains the component library."
+  },
+  {
+    "id": "motion-agent",
+    "name": "Motion Agent",
+    "role": "Animation & Interaction",
+    "department": "design",
+    "status": "idle",
+    "model": "Trae",
+    "skills": ["Motion Design", "Micro-interactions", "Lottie", "GSAP"],
+    "tools": ["After Effects", "Rive", "LottieFiles"],
+    "description": "Brings interfaces to life with purposeful animation."
+  },
+  {
+    "id": "seo-agent",
+    "name": "SEO Agent",
+    "role": "Search Engine Optimization",
+    "department": "marketing",
+    "status": "active",
+    "model": "DeepSeek",
+    "skills": ["Keyword Research", "Content Strategy", "Technical SEO", "Analytics"],
+    "tools": ["Ahrefs", "Google Search Console", "SEMrush"],
+    "description": "Drives organic growth through data-driven SEO strategies."
+  },
+  {
+    "id": "growth-agent",
+    "name": "Growth Agent",
+    "role": "Growth Marketing",
+    "department": "marketing",
+    "status": "active",
+    "model": "DeepSeek",
+    "skills": ["Growth Strategy", "Campaign Management", "Analytics", "Experimentation"],
+    "tools": ["Mixpanel", "Google Analytics", "HubSpot"],
+    "description": "Experiments and scales growth channels across the funnel."
+  },
+  {
+    "id": "script-agent",
+    "name": "Script Agent",
+    "role": "Content Script Writing",
+    "department": "content",
+    "status": "active",
+    "model": "DeepSeek",
+    "skills": ["Script Writing", "Storyboarding", "Voice Direction", "Narration"],
+    "tools": ["Notion", "Final Draft", "ElevenLabs"],
+    "description": "Writes compelling scripts for video content and presentations."
+  },
+  {
+    "id": "video-agent",
+    "name": "Video Agent",
+    "role": "Video Production & Editing",
+    "department": "content",
+    "status": "active",
+    "model": "Serawin",
+    "skills": ["Video Editing", "Motion Graphics", "Color Grading", "Compositing"],
+    "tools": ["ComfyUI", "Premiere Pro", "After Effects", "Eagle"],
+    "description": "Produces polished video content from raw footage to final delivery."
+  },
+  {
+    "id": "frontend-agent",
+    "name": "Frontend Agent",
+    "role": "Frontend Development",
+    "department": "engineering",
+    "status": "active",
+    "model": "Codex",
+    "skills": ["React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
+    "tools": ["VS Code", "Chrome DevTools", "Vercel"],
+    "description": "Builds responsive, performant user interfaces with modern frameworks."
+  },
+  {
+    "id": "backend-agent",
+    "name": "Backend Agent",
+    "role": "Backend Development",
+    "department": "engineering",
+    "status": "idle",
+    "model": "Codex",
+    "skills": ["Node.js", "Python", "PostgreSQL", "Redis", "Docker"],
+    "tools": ["Docker", "Postman", "DataGrip"],
+    "description": "Designs and implements scalable server-side architecture."
+  },
+  {
+    "id": "propfirm-agent",
+    "name": "PropFirm Agent",
+    "role": "PropFirm Industry Intelligence",
+    "department": "business",
+    "status": "active",
+    "model": "DeepSeek",
+    "skills": ["Competitive Analysis", "Market Intelligence", "Browser Automation", "Content Factory"],
+    "tools": ["Browser", "Eagle", "WeCom", "Lark"],
+    "description": "Monitors PropFirm competitors, analyzes products, and generates marketing assets."
+  },
+  {
+    "id": "otc-agent",
+    "name": "OTC Agent",
+    "role": "OTC Trading & Client Management",
+    "department": "business",
+    "status": "active",
+    "model": "DeepSeek",
+    "skills": ["Client Profiling", "Risk Assessment", "Quote Management", "CRM"],
+    "tools": ["Mail", "CRM", "Lark", "WeCom"],
+    "description": "Manages OTC client relationships, quotes, and risk assessment workflows."
+  },
+  {
+    "id": "trading-agent",
+    "name": "Trading Agent",
+    "role": "Trading Research & Analysis",
+    "department": "business",
+    "status": "idle",
+    "model": "DeepSeek",
+    "skills": ["Technical Analysis", "Order Flow", "Backtesting", "Market Research"],
+    "tools": ["ATAS", "TradingView", "Jupyter"],
+    "description": "Conducts trading research, backtests strategies, and analyzes market structure."
+  }
+]

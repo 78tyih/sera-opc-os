@@ -1,0 +1,56 @@
+[
+  {
+    "id": "product",
+    "name": "Product",
+    "leadAgent": "product-agent",
+    "color": "#6366f1",
+    "description": "Defines product vision, strategy, and roadmap.",
+    "projects": ["Niuniu AI", "TradeSpan", "Sera Agent OS"],
+    "agents": ["product-agent"]
+  },
+  {
+    "id": "design",
+    "name": "Design",
+    "leadAgent": "brand-agent",
+    "color": "#ec4899",
+    "description": "Crafts brand identity, UI, and motion experiences.",
+    "projects": ["PropFirm TV", "Niuniu AI", "TradeSpan", "Sera Agent OS"],
+    "agents": ["brand-agent", "ui-agent", "motion-agent"]
+  },
+  {
+    "id": "marketing",
+    "name": "Marketing",
+    "leadAgent": "growth-agent",
+    "color": "#14b8a6",
+    "description": "Drives growth through SEO, campaigns, and analytics.",
+    "projects": ["PropFirm TV", "TradeSpan"],
+    "agents": ["seo-agent", "growth-agent"]
+  },
+  {
+    "id": "content",
+    "name": "Content",
+    "leadAgent": "script-agent",
+    "color": "#f59e0b",
+    "description": "Creates compelling scripts and video content.",
+    "projects": ["PropFirm TV", "TradeSpan", "Content Factory"],
+    "agents": ["script-agent", "video-agent"]
+  },
+  {
+    "id": "engineering",
+    "name": "Engineering",
+    "leadAgent": "frontend-agent",
+    "color": "#3b82f6",
+    "description": "Builds and maintains the technical infrastructure.",
+    "projects": ["Sera Agent OS", "Content Factory"],
+    "agents": ["frontend-agent", "backend-agent"]
+  },
+  {
+    "id": "business",
+    "name": "Business",
+    "leadAgent": "propfirm-agent",
+    "color": "#10b981",
+    "description": "Manages PropFirm intelligence, OTC trading, and market research.",
+    "projects": ["PropFirm TV", "TradeSpan", "OTC CRM"],
+    "agents": ["propfirm-agent", "otc-agent", "trading-agent"]
+  }
+]

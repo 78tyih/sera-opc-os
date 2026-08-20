@@ -1,0 +1,74 @@
+[
+  {
+    "id": "proj-1",
+    "name": "PropFirm TV",
+    "category": "Content",
+    "status": "active",
+    "priority": "high",
+    "agents": ["propfirm-agent", "video-agent", "design-agent"],
+    "progress": 78,
+    "description": "Daily PropFirm intelligence video production pipeline",
+    "lastActivity": "2026-08-21T03:30:00Z",
+    "deadline": "2026-09-15"
+  },
+  {
+    "id": "proj-2",
+    "name": "Niuniu AI",
+    "category": "Product",
+    "status": "active",
+    "priority": "high",
+    "agents": ["design-agent", "content-agent", "frontend-agent"],
+    "progress": 45,
+    "description": "AI-powered education platform for children",
+    "lastActivity": "2026-08-20T16:00:00Z",
+    "deadline": "2026-10-01"
+  },
+  {
+    "id": "proj-3",
+    "name": "TradeSpan",
+    "category": "Product",
+    "status": "active",
+    "priority": "high",
+    "agents": ["propfirm-agent", "design-agent", "content-agent", "video-agent"],
+    "progress": 62,
+    "description": "MT4/MT5 trading software product launch",
+    "lastActivity": "2026-08-21T02:00:00Z",
+    "deadline": "2026-09-30"
+  },
+  {
+    "id": "proj-4",
+    "name": "Sera Agent OS",
+    "category": "Infrastructure",
+    "status": "active",
+    "priority": "critical",
+    "agents": ["all"],
+    "progress": 35,
+    "description": "Personal AI Operating System — cross-platform agent orchestration",
+    "lastActivity": "2026-08-21T04:00:00Z",
+    "deadline": "2026-12-31"
+  },
+  {
+    "id": "proj-5",
+    "name": "Content Factory",
+    "category": "Content",
+    "status": "active",
+    "priority": "medium",
+    "agents": ["content-agent", "video-agent"],
+    "progress": 88,
+    "description": "Automated content generation and asset management pipeline",
+    "lastActivity": "2026-08-20T12:00:00Z",
+    "deadline": "2026-08-30"
+  },
+  {
+    "id": "proj-6",
+    "name": "OTC CRM",
+    "category": "Business",
+    "status": "planning",
+    "priority": "medium",
+    "agents": ["otc-agent"],
+    "progress": 15,
+    "description": "OTC customer relationship management system",
+    "lastActivity": "2026-08-19T10:00:00Z",
+    "deadline": "2026-11-01"
+  }
+]

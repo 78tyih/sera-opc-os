@@ -1,0 +1,12 @@
+# 本地归档（2026-08-21 全量扫描产物），不推 GitHub
+archive/
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+
+# 临时
+*.tmp

@@ -1,0 +1,42 @@
+# 工作流：产品发布页（多 Agent 编排）
+# 输入一句话 → 自动编排 3 个 Agent + 审查
+
+name: product-launch-page
+version: 1.0.0
+triggers:
+  - "帮我做 TradeSpan 产品发布页"
+  - "做一个 [产品] 的落地页"
+  - "生成 [产品] 官网页面"
+
+steps:
+  - skill: propfirm-agent:sera-content-factory
+    inputs:
+      - 产品事实（特性/定价/卖点）
+    outputs:
+      - 产品素材与事实卡
+
+  - skill: design-agent:sera-design-studio
+    inputs:
+      - 产品素材
+      - 品牌规范
+    outputs:
+      - 页面设计稿
+
+  - skill: video-agent:sera-video-pipeline
+    inputs:
+      - 口播/演示素材（可选）
+    outputs:
+      - 页面内嵌视频
+
+  - skill: figma-review
+    inputs:
+      - 设计稿
+    outputs:
+      - 审查结论（pass / needs_work）
+
+finalize:
+  - sera-knowledge-sync
+
+on_error:
+  retry: true
+  fallback_skill: sera-agent-orchestrator

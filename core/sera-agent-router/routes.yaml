@@ -1,0 +1,196 @@
+# Sera Agent Router — 路由规则表
+# 自然语言意图 → Agent/Skill 编排链
+# 优先级从上到下（先匹配先命中）；规则 = 关键词列表（任一命中即触发）
+
+version: 1.0.0
+
+routes:
+  # ============ 内容生产（video-agent）============
+  - id: video-produce
+    intent: 视频/素材生产
+    agent: video-agent
+    keywords:
+      - 做一条视频
+      - 短视频
+      - 口播
+      - 数字人
+      - 合成
+      - 渲染
+      - B-roll
+      - 素材工厂
+      - 官网素材
+      - 生成视频
+    pipeline:
+      - sera-content-factory        # 官网素材 → 5s B-roll
+      - sera-video-pipeline         # 口播 → 知识短视频合成
+      - sera-asset-manager          # 入库 Eagle
+      - sera-compute-control        # serawin 远程渲染（重活）
+    finalize:
+      - sera-knowledge-sync         # 归档 Obsidian
+
+  # ============ PropFirm 情报（propfirm-agent）============
+  - id: propfirm-intel
+    intent: PropFirm 情报/竞品
+    agent: propfirm-agent
+    keywords:
+      - propfirm
+      - 考试盘
+      - 竞品
+      - 情报
+      - 优惠
+      - 规则更新
+      - 出金
+      - 推送
+      - 官网拆解
+      - 产品对比
+      - 营销素材
+      - 规则
+      - topstep
+      - tradeify
+      - fundednext
+      - takeprofittrader
+      - apex
+      - tradeday
+      - blue guardian
+      - lucid
+      - fff
+    pipeline:
+      - sera-intelligence-monitor    # 采集→过滤→门禁→推送
+      - sera-browser-automation      # 官网抓取/交互截图
+      - sera-content-factory         # 素材生产
+    finalize:
+      - sera-knowledge-sync
+
+  # ============ 复合：多 Agent 编排 ============
+  - id: page-product-launch
+    intent: 产品发布页（多 Agent）
+    agent: multi
+    keywords:
+      - 发布页
+      - 产品页
+      - 落地页
+      - landing page
+      - 网站
+      - 官网
+    pipeline:
+      - propfirm-agent:sera-content-factory   # 产品素材/事实
+      - design-agent:sera-design-studio       # 设计
+      - video-agent:sera-video-pipeline       # 内容（可选）
+      - figma-review                          # 审查
+    finalize:
+      - sera-knowledge-sync
+
+  # ============ 设计（design-agent）============
+  - id: design-produce
+    intent: 设计/品牌/UI/海报
+    agent: design-agent
+    keywords:
+      - 设计
+      - 海报
+      - 品牌
+      - logo
+      - 落地页
+      - 界面
+      - UI
+      - 设计稿
+      - 规范
+      - Design Token
+      - 视觉
+      - 发布页
+    pipeline:
+      - sera-design-studio           # 设计产出
+      - figma-review                 # 审查门禁
+    finalize:
+      - sera-knowledge-sync
+
+  # ============ 交易研究（trading-agent）============
+  - id: trading-research
+    intent: 交易研究/复盘
+    agent: trading-agent
+    keywords:
+      - 复盘
+      - 交易
+      - 策略
+      - 回测
+      - ATAS
+      - 订单流
+      - order flow
+      - 胜率
+      - 盈亏比
+      - 市场结构
+      - 量化
+    pipeline:
+      - trading-analysis             # 复盘/回测/订单流
+      - sera-finance-suite           # 行情/数据辅助
+      - sera-knowledge-reader        # 历史研究检索
+    finalize:
+      - sera-knowledge-sync
+
+  # ============ OTC 商务（otc-agent）============
+  - id: otc-bd
+    intent: OTC 商务/客户
+    agent: otc-agent
+    keywords:
+      - 客户
+      - 报价
+      - 跟进
+      - OTC
+      - 商务
+      - 风控
+      - 资信
+      - 回复
+      - 交易对手
+    pipeline:
+      - sera-crm-adapter             # 客户档案/跟进
+      - sera-mail-hub                # 邮件沟通
+      - sera-memory-system           # 决策记忆
+    finalize:
+      - sera-knowledge-sync
+
+  # ============ 知识/记忆（系统层）============
+  - id: knowledge-ops
+    intent: 知识/记忆/归档
+    agent: core
+    keywords:
+      - 归档
+      - 同步到
+      - 存入知识库
+      - 记录
+      - 记忆
+      - 上下文
+      - 交接
+      - 状态
+      - 上次做到
+    pipeline:
+      - sera-context-system          # 上下文读写
+      - sera-state-manager           # 状态查询/更新
+      - sera-knowledge-sync          # 归档
+    finalize: []
+
+  # ============ 复合：多 Agent 编排 ============
+  - id: page-product-launch
+    intent: 产品发布页（多 Agent）
+    agent: multi
+    keywords:
+      - 发布页
+      - 产品页
+      - 落地页
+      - landing page
+      - 网站
+      - 官网
+    pipeline:
+      - propfirm-agent:sera-content-factory   # 产品素材/事实
+      - design-agent:sera-design-studio       # 设计
+      - video-agent:sera-video-pipeline       # 内容（可选）
+      - figma-review                          # 审查
+    finalize:
+      - sera-knowledge-sync
+
+  # ============ 兜底 ============
+  - id: fallback
+    intent: 未匹配
+    agent: sera-agent-orchestrator
+    keywords: []
+    pipeline:
+      - sera-agent-orchestrator      # 人工/LLM 判定
+    finalize: []

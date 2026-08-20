@@ -53,7 +53,8 @@ Agent = 多个 Skill 的组合，是用户真正直接调用的入口。
 
 | Skill | 来源 | 用途 |
 |---|---|---|
-| [`sera-agent-orchestrator`](core/sera-agent-orchestrator/SKILL.md) | 新建 | 任务路由 / Agent 选择 / 执行规划 / 冲突检测 |
+| [`sera-agent-orchestrator`](core/sera-agent-orchestrator/SKILL.md) | 新建 | 任务路由 / Agent 选择 / 执行规划 / 冲突检测（引擎=router） |
+| [`sera-agent-router`](core/sera-agent-router/SKILL.md) | 新建 | **Agent Router 规则引擎**：自然语言 → 编排链（router.py，12/12 自测通过） |
 | [`sera-memory-system`](core/sera-memory-system/SKILL.md) | 新建 | 共享记忆层：Context Hub + Obsidian + Project State + Decision Logs |
 | [`sera-state-manager`](core/sera-state-manager/SKILL.md) | 新建 | 工作状态管理：当前阶段 / 阻塞 / 下一步（Memory 的实时补充） |
 | [`sera-skill-registry`](core/sera-skill-registry/SKILL.md) | 新建 | Skill 注册表与标准格式 |
@@ -191,7 +192,7 @@ sera-agent-skills/
 - [x] **Phase 1**：仓库落地（README + 架构文档 + 13 Skill 归位 + 系统层骨架 + 模板）
 - [x] **Phase 2.5**：Agent 层建立（5 个核心 Agent：propfirm/otc/trading/video/design）+ sera-state-manager
 - [x] **Phase 3**：补齐领域专家 Skill（figma-review / trading-analysis / sera-crm-adapter），5 个 Agent 全部 active
-- [ ] **Phase 4**：实现 Agent Router（输入自然语言 → 自动编排多 Agent 协作）
+- [x] **Phase 4**：实现 Agent Router（sera-agent-router：router.py 规则引擎 + routes.yaml，自然语言→编排链，12/12 自测通过）
 - [ ] **Phase 5**：连接 Codex / Trae / WorkBuddy / Claude 到同一 Skill Registry
 
 ---

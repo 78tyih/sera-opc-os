@@ -1,0 +1,44 @@
+# 工作流：PropFirm.TV 知识短视频生产（video-agent）
+# 从官网素材到成品短视频的端到端链路
+
+name: propfirm-video
+version: 1.0.0
+triggers:
+  - "做一条 PropFirm.TV 视频"
+  - "生成 [firm] 的短视频素材"
+  - "把这段口播合成 16:9 视频"
+
+steps:
+  - skill: sera-content-factory
+    inputs:
+      - firm key（如 tradeify）
+      - 官网 URL
+    outputs:
+      - 5s B-roll × 5（HOME/ACCOUNT/RULES/FUNDED/PAYOUT）
+
+  - skill: sera-video-pipeline
+    inputs:
+      - HeyGen 口播视频
+      - 分镜表
+      - B-roll 素材
+    outputs:
+      - 16:9 1080p 知识短视频
+
+  - skill: sera-asset-manager
+    inputs:
+      - 成品 mp4
+    outputs:
+      - Eagle item ID（入库）
+
+  - skill: sera-compute-control
+    inputs:
+      - 重渲染任务（可选，serawin）
+    outputs:
+      - 远程渲染结果
+
+finalize:
+  - sera-knowledge-sync
+
+on_error:
+  retry: true
+  fallback_skill: sera-agent-orchestrator

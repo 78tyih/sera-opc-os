@@ -15,7 +15,7 @@ const departmentMap: Record<string, { name: string; gradient: string }> = {
 }
 
 function AgentCard({ agent, index }: { agent: typeof agentsData[0]; index: number }) {
-  const { t } = useLang()
+  const { t, tt } = useLang()
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -29,8 +29,8 @@ function AgentCard({ agent, index }: { agent: typeof agentsData[0]; index: numbe
             <Bot className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>{agent.name}</h3>
-            <span className="text-xs" style={{ color: "var(--text-muted)" }}>{agent.role}</span>
+            <h3 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>{tt(agent.name)}</h3>
+            <span className="text-xs" style={{ color: "var(--text-muted)" }}>{tt(agent.role)}</span>
           </div>
         </div>
         <span className={`badge ${agent.status === "active" ? "badge-active" : "badge-idle"}`}>
@@ -47,7 +47,7 @@ function AgentCard({ agent, index }: { agent: typeof agentsData[0]; index: numbe
         <div className="flex flex-wrap gap-1.5">
           {agent.skills.map(skill => (
             <span key={skill} className="px-2 py-0.5 rounded text-[10px]" style={{ background: "var(--bg-surface-hover)", color: "var(--text-secondary)", border: "1px solid var(--border)" }}>
-              {skill}
+              {tt(skill)}
             </span>
           ))}
         </div>
@@ -58,7 +58,7 @@ function AgentCard({ agent, index }: { agent: typeof agentsData[0]; index: numbe
       </div>
 
       <div className="flex items-center justify-between pt-3" style={{ borderTop: "1px solid var(--border)" }}>
-        <span className="text-xs" style={{ color: "var(--text-muted)" }}>{agent.description}</span>
+        <span className="text-xs" style={{ color: "var(--text-muted)" }}>{tt(agent.description)}</span>
         <ExternalLink className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
       </div>
     </motion.div>

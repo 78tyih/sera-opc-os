@@ -44,6 +44,7 @@ type WorkflowNodeData = {
 type WorkflowNodeType = Node<WorkflowNodeData, 'workflowNode'>
 
 function WorkflowNode({ data }: NodeProps<WorkflowNodeType>) {
+  const { tt } = useLang()
   const StatusIcon = statusIcons[data.status] || Clock
   const NodeIcon = iconMap[data.icon] || Bot
 
@@ -62,8 +63,8 @@ function WorkflowNode({ data }: NodeProps<WorkflowNodeType>) {
           }} />
         </div>
         <div className="min-w-0">
-          <div className="text-sm font-medium truncate" style={{ color: "var(--text-primary)" }}>{data.label}</div>
-          <div className="text-[10px] truncate" style={{ color: "var(--text-muted)" }}>{data.agent}</div>
+          <div className="text-sm font-medium truncate" style={{ color: "var(--text-primary)" }}>{tt(data.label)}</div>
+          <div className="text-[10px] truncate" style={{ color: "var(--text-muted)" }}>{tt(data.agent)}</div>
         </div>
         <div className="shrink-0">
           <StatusIcon className="w-4 h-4" style={{
@@ -74,7 +75,7 @@ function WorkflowNode({ data }: NodeProps<WorkflowNodeType>) {
       </div>
       <div className="mt-2 flex items-center gap-1.5">
         <span className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: "var(--bg-surface-hover)", color: "var(--text-muted)", border: "1px solid var(--border)" }}>
-          {data.skill}
+          {tt(data.skill)}
         </span>
       </div>
       <Handle type="source" position={Position.Bottom} style={{ background: "var(--border-strong)", width: 8, height: 8, border: "2px solid var(--bg-base)" }} />
@@ -175,7 +176,7 @@ function WorkflowCanvas({ workflow }: { workflow: typeof workflowsData.workflows
 }
 
 export default function WorkflowsPage() {
-  const { t } = useLang()
+  const { t, tt } = useLang()
   const [activeWorkflow, setActiveWorkflow] = useState(workflowsData.workflows[0])
 
   return (
@@ -215,13 +216,13 @@ export default function WorkflowsPage() {
               border: activeWorkflow.id === wf.id ? "1px solid rgba(0,102,255,0.2)" : "1px solid var(--border)",
             }}
           >
-            {wf.name}
+            {tt(wf.name)}
           </button>
         ))}
       </div>
 
       <div className="flex items-center justify-between text-sm">
-        <span style={{ color: "var(--text-muted)" }}>{activeWorkflow.description}</span>
+        <span style={{ color: "var(--text-muted)" }}>{tt(activeWorkflow.description)}</span>
         <span className="flex items-center gap-1" style={{ color: "var(--text-muted)" }}>
           <Clock className="w-3.5 h-3.5" />
           {t("workflows.last-run")}: {new Date(activeWorkflow.lastRun).toLocaleString()}

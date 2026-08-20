@@ -24,13 +24,19 @@ const categoryColors: Record<string, string> = {
 }
 
 export function ProjectCard({ name, category, status, progress, description, index }: ProjectCardProps) {
-  const { t } = useLang()
+  const { t, tt } = useLang()
   const color = categoryColors[category] || "var(--text-muted)"
 
   const statusLabel = status === "active" ? t("status.active")
     : status === "planning" ? t("status.planning")
     : status === "completed" ? t("status.completed")
     : status
+
+  const catLabel = category === "Product" ? t("cat.product")
+    : category === "Content" ? t("cat.content")
+    : category === "Infrastructure" ? t("cat.infrastructure")
+    : category === "Business" ? t("cat.business")
+    : category
 
   return (
     <motion.div
@@ -48,13 +54,13 @@ export function ProjectCard({ name, category, status, progress, description, ind
           </div>
           <div>
             <h3 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>{name}</h3>
-            <span className="text-[10px] uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>{category}</span>
+            <span className="text-[10px] uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>{catLabel}</span>
           </div>
         </div>
         <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "var(--text-muted)" }} />
       </div>
 
-      <p className="text-xs mb-3 line-clamp-2" style={{ color: "var(--text-secondary)" }}>{description}</p>
+      <p className="text-xs mb-3 line-clamp-2" style={{ color: "var(--text-secondary)" }}>{tt(description)}</p>
 
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs" style={{ color: "var(--text-muted)" }}>{statusLabel}</span>

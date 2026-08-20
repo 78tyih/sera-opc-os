@@ -25,7 +25,7 @@ const deptNameKey: Record<string, string> = {
 }
 
 function DepartmentSection({ dept, index }: { dept: typeof departmentsData[0]; index: number }) {
-  const { t } = useLang()
+  const { t, tt } = useLang()
   const deptAgents = agentsData.filter(a => dept.agents.includes(a.id))
   const gradient = gradientMap[dept.id] || "var(--brand-gradient)"
 
@@ -46,7 +46,7 @@ function DepartmentSection({ dept, index }: { dept: typeof departmentsData[0]; i
               <h3 className="text-base font-semibold" style={{ color: "var(--text-primary)" }}>
                 {t(deptNameKey[dept.id] || dept.id)}
               </h3>
-              <p className="text-xs" style={{ color: "var(--text-muted)" }}>{dept.description}</p>
+              <p className="text-xs" style={{ color: "var(--text-muted)" }}>{tt(dept.description)}</p>
             </div>
           </div>
           <div className="flex items-center gap-3 text-xs" style={{ color: "var(--text-muted)" }}>
@@ -81,16 +81,16 @@ function DepartmentSection({ dept, index }: { dept: typeof departmentsData[0]; i
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>{agent.name}</span>
+                  <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>{tt(agent.name)}</span>
                   <span className={`status-dot ${agent.status}`} />
                 </div>
-                <span className="text-xs" style={{ color: "var(--text-muted)" }}>{agent.role}</span>
+                <span className="text-xs" style={{ color: "var(--text-muted)" }}>{tt(agent.role)}</span>
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <div className="flex flex-wrap gap-1">
                   {agent.skills.slice(0, 2).map(s => (
                     <span key={s} className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: "var(--bg-surface-hover)", color: "var(--text-muted)", border: "1px solid var(--border)" }}>
-                      {s}
+                      {tt(s)}
                     </span>
                   ))}
                   {agent.skills.length > 2 && (

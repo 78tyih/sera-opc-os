@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
   "updated": "2026-08-21",
   "description": "Sera Style Router — 根据产品属性自动推荐设计风格",
   "engine": "style-router",
@@ -21,7 +21,8 @@
           "trust_level_boost": 2,
           "luxury_level_boost": 1
         }
-      }
+      },
+      "examples": ["HTX OTC Desk", "Stripe", "Bloomberg Terminal", "Coinbase Pro"]
     },
     {
       "id": "ai-product",
@@ -40,7 +41,8 @@
           "technology_level_boost": 2,
           "playfulness_level_boost": 1
         }
-      }
+      },
+      "examples": ["ChatGPT", "Claude", "GitHub Copilot", "Midjourney"]
     },
     {
       "id": "saas-b2b",
@@ -59,7 +61,8 @@
           "trust_level_boost": 1,
           "minimalism_level_boost": 1
         }
-      }
+      },
+      "examples": ["Linear", "Vercel", "Notion", "Slack", "Figma"]
     },
     {
       "id": "operations-dashboard",
@@ -77,7 +80,68 @@
         "custom_adjustments": {
           "information_density_boost": 2
         }
-      }
+      },
+      "examples": ["HTX OTC Progress Hub", "Datadog", "Grafana", "Tableau"]
+    },
+    {
+      "id": "ai-future-minimal",
+      "product_pattern": {
+        "industry": ["ai", "machine-learning", "intelligence"],
+        "emotion": ["intelligent", "minimal", "futuristic", "clean"],
+        "audience": ["developer", "tech-savvy", "professional"],
+        "product_type": ["tool", "assistant", "chat", "platform"]
+      },
+      "recommendation": {
+        "primary_style": "sera-ai-future",
+        "weight": 0.5,
+        "secondary_style": "sera-saas-landing",
+        "secondary_weight": 0.3,
+        "custom_adjustments": {
+          "technology_level_boost": 1,
+          "minimalism_level_boost": 1
+        }
+      },
+      "examples": ["Kimi", "ChatGPT", "Linear", "Perplexity"]
+    },
+    {
+      "id": "content-platform",
+      "product_pattern": {
+        "industry": ["media", "content", "blog", "education", "publishing"],
+        "emotion": ["informative", "clean", "trustworthy", "educational"],
+        "audience": ["reader", "learner", "consumer", "general"],
+        "product_type": ["platform", "blog", "education", "publishing"]
+      },
+      "recommendation": {
+        "primary_style": "sera-content-platform",
+        "weight": 0.6,
+        "secondary_style": "sera-saas-landing",
+        "secondary_weight": 0.2,
+        "custom_adjustments": {
+          "trust_level_boost": 1,
+          "playfulness_level_boost": 1
+        }
+      },
+      "examples": ["Medium", "Notion", "Readwise", "Substack", "Wikipedia"]
+    },
+    {
+      "id": "consumer-ai",
+      "product_pattern": {
+        "industry": ["ai", "intelligence", "automation"],
+        "emotion": ["friendly", "approachable", "helpful", "intelligent"],
+        "audience": ["consumer", "general", "end-user"],
+        "product_type": ["app", "assistant", "chat", "service"]
+      },
+      "recommendation": {
+        "primary_style": "sera-ai-future",
+        "weight": 0.45,
+        "secondary_style": "sera-content-platform",
+        "secondary_weight": 0.3,
+        "custom_adjustments": {
+          "playfulness_level_boost": 2,
+          "trust_level_boost": 1
+        }
+      },
+      "examples": ["ChatGPT Consumer", "Pi", "Character.ai", "Perplexity Consumer"]
     }
   ]
 }

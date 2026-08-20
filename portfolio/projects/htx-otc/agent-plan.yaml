@@ -1,0 +1,23 @@
+# HTX OTC — Agent Plan
+
+version: 1.0.0
+project: htx-otc
+status: active
+
+pipeline:
+  - agent: otc-agent
+    phase: 1
+    skills:
+    - sera-crm-adapter
+    - sera-mail-hub
+    deliverables:
+    - customer-report.md
+    - quote-template.md
+
+  - agent: design-agent
+    phase: 2
+    skills:
+    - sera-design-studio
+    - sera-design-intelligence
+    deliverables:
+    - ui-optimization.md

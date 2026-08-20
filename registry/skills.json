@@ -4,6 +4,24 @@
   "description": "Sera Agent OS — 所有 Skill 注册表",
   "skills": [
     {
+      "id": "sera-decision-framework",
+      "name": "Decision Framework",
+      "category": "executive",
+      "status": "active",
+      "purpose": "CEO 商业决策评估框架 — 6 维度评估",
+      "source": "agents/executive/sera-ceo-agent/decision-framework.md",
+      "owner_agent": "sera-ceo-agent"
+    },
+    {
+      "id": "sera-priority-engine",
+      "name": "Priority Engine",
+      "category": "executive",
+      "status": "active",
+      "purpose": "项目优先级评分与资源分配引擎",
+      "source": "agents/executive/sera-ceo-agent/priority-engine.md",
+      "owner_agent": "sera-ceo-agent"
+    },
+    {
       "id": "sera-project-profile",
       "name": "Project Profile",
       "category": "product",

@@ -1,22 +1,25 @@
 # Sera Design Intelligence System
 
-> 版本：1.0.0
-> 定位：Sera Agent OS 的设计智能子系统
-> 核心理念：**发现优秀设计 → 拆解其价值 → 提取为资产与规则 → 复用至新产品**
+> 版本：3.2.0
+> 定位：Sera Agent OS 的 Cyber Design Intelligence Engine
+> 核心理念：**学习优秀设计 → 提炼 Design DNA → 自动驱动产品设计 → 持续反馈优化**
 
 ---
 
 ## 系统架构
 
 ```
-Design Intelligence System
+Design Intelligence Engine V3.2
 │
-├── 01 Case Study Engine    ← 审美分析：这个网站为什么好看？
-├── 02 Asset Library        ← 资产提取：它由什么组成？
-├── 03 Style Registry       ← 风格分类：什么产品适合什么风格？
-├── 04 Design Skill         ← 设计规则：它遵循什么规律？
-├── 05 Template Library     ← 模板复用：怎么快速复用？
-└── 06 Design Department    ← Agent 编排：谁来执行？
+├── 01 Knowledge Architecture  ← 设计知识库（原则/心理/模式/商业）
+├── 02 Design Benchmark        ← 设计基准评分系统
+├── 03 DNA Engine              ← 设计 DNA 提取器
+├── 04 Style Registry          ← 风格 DNA 注册表
+├── 05 Style Router            ← 风格路由引擎
+├── 06 Design Memory           ← 设计记忆循环
+├── 07 Design Department       ← 9 个 Agent 编排
+├── 08 Product Factory SDK     ← 产品线接口
+└── 09 Workflow Pipeline       ← 全自动流水线
 ```
 
 ## 目录
@@ -25,40 +28,62 @@ Design Intelligence System
 |---|---|
 | `SKILL.md` | Design Intelligence Skill 定义 |
 | `SYSTEM.md` | 系统架构文档 |
-| `awesome-design.md` | 核心视觉语言（Sera FinTech Visual Language V1.0） |
+| `knowledge/` | 设计知识库（原则/心理/模式/商业） |
+| `benchmark/` | 设计基准评分系统 |
+| `dna-engine/` | 设计 DNA 提取器 |
+| `styles/` | 风格 DNA 注册表 |
+| `style-router/` | 风格路由引擎 |
+| `memory/` | 设计记忆循环 |
+| `interfaces/` | 产品线接口定义 |
+| `workflows/` | 工作流定义 |
+| `docs/` | 项目文档 |
 | `case-studies/` | 设计案例研究 |
-| `templates/` | 模板库（Case Study 模板 + 页面模板） |
-| `styles/` | 风格注册表 |
+| `templates/` | 模板库 |
 | `assets/` | 资产库索引 |
-| `workflows/` | 设计提取工作流 |
 | `references/` | 详细设计规则 |
+
+## 核心能力
+
+1. **学习优秀网站设计** — Design Benchmark + DNA Extractor
+2. **提炼 Design DNA** — 自动生成 STYLE_DNA.json
+3. **建立视觉知识库** — 4 个知识维度，19 个知识文件
+4. **自动选择设计方向** — Style Router 8 条路由规则
+5. **自动生成设计系统** — 完整流水线 10 步
+6. **持续优化** — Design Memory 反馈循环
 
 ## 快速开始
 
 ```bash
-# 新增一个设计案例
-1. 复制 templates/design-case-study-template.md
-2. 填写分析
-3. 提取资产到 assets/<case>/
-4. 注册风格到 styles/registry.json
-5. 更新 awesome-design.md（如有新规则）
+# 1. 分析产品需求
+python style-router/router.py --industry ai --audience trader --goal sales
+
+# 2. 查看基准评分
+cat benchmark/benchmark-index.json
+
+# 3. 查看 Design DNA 示例
+cat dna-engine/examples/htx-otc-dna.json
+
+# 4. 设计新产品的完整流程
+→ 触发 design-intelligence-pipeline 工作流
 ```
 
-## 第一批案例
+## 已注册风格
 
-| 案例 | 状态 | 类型 | 风格 |
-|---|---|---|---|
-| HTX OTC Landing | ✅ active | 金融 Landing Page | Premium · Trust |
-| HTX OTC Progress Hub | ✅ active | 运营 Dashboard | Data-Driven |
-| PropFirm TV | ⏳ pending | 内容平台 | — |
-| TradeSpan | ⏳ pending | 交易 SaaS | — |
+| 风格 ID | 行业 | 信任分 | 科技分 | 适用场景 |
+|---|---|---|---|---|
+| `sera-fintech-premium` | finance | 10 | 8 | 金融/高端 |
+| `sera-ai-future` | ai | 7 | 10 | AI 产品 |
+| `sera-saas-landing` | saas | 7 | 9 | SaaS 产品 |
+| `sera-operations-dashboard` | operations | 6 | 7 | Dashboard |
+| `sera-content-platform` | media | 8 | 6 | 内容平台 |
 
 ## 设计经验积累路线
 
 ```
-Phase 1: HTX OTC          ✅ 金融产品 + Dashboard
-Phase 2: PropFirm TV      ⏳ 内容平台
-Phase 3: TradeSpan        ⏳ 交易 SaaS
-Phase 4: 牛牛 AI          ⏳ AI 产品
-Phase 5: Sera Design Language V1.0  🎯 合并
+V1.0: HTX OTC          ✅ 金融产品 + Dashboard
+V1.1: Knowledge Engine  ✅ 知识库 + 逆向工程 + DNA Registry
+V3.2: Cyber Engine      ✅ 9 Agents + Pipeline + Memory Loop  ← 当前
+V3.3: 自动化增强        ⏳ DNA 自动提取 + 评分自动化
+V3.4: 智能学习          ⏳ 趋势分析 + 竞品监控
+V3.5: 全自动化          ⏳ 端到端设计流水线
 ```

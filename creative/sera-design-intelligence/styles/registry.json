@@ -1,8 +1,8 @@
 {
-  "version": "2.0.0",
+  "version": "3.0.0",
   "updated": "2026-08-21",
-  "schema": "style-dna-registry",
-  "description": "Sera Design Intelligence — Style DNA Registry V1.1",
+  "schema": "style-dna-registry-v3",
+  "description": "Sera Design Intelligence — Style DNA Registry V3",
   "styles": [
     {
       "id": "sera-fintech-premium",
@@ -60,7 +60,11 @@
         "AI Finance",
         "Investment Service",
         "Premium SaaS"
-      ]
+      ],
+      "conversion_goal": "trust & conversion",
+      "target_user": "institutional investors, high-net-worth traders",
+      "components": ["hero-section", "trust-bar", "feature-grid", "testimonial-carousel", "cta-section"],
+      "brand_personality": ["professional", "premium", "trustworthy", "sophisticated"]
     },
     {
       "id": "sera-operations-dashboard",
@@ -114,7 +118,11 @@
         "Operation Center",
         "KPI Dashboard",
         "Admin Console"
-      ]
+      ],
+      "conversion_goal": "operational efficiency",
+      "target_user": "operations managers, team leads, analysts",
+      "components": ["kpi-cards", "data-table", "status-pipeline", "activity-feed", "filter-bar"],
+      "brand_personality": ["efficient", "clear", "data-driven", "professional"]
     },
     {
       "id": "sera-saas-landing",
@@ -169,7 +177,125 @@
         "B2B Platform",
         "Developer Tool",
         "API Service"
-      ]
+      ],
+      "conversion_goal": "free trial signup",
+      "target_user": "decision-makers, tech leads, managers",
+      "components": ["hero-section", "feature-showcase", "pricing-table", "testimonial-section", "cta-section"],
+      "brand_personality": ["professional", "innovative", "reliable", "modern"]
+    },
+    {
+      "id": "sera-ai-future",
+      "name": "Sera AI Future",
+      "type": "visual-style",
+      "version": "1.0.0",
+      "source": [
+        "Kimi",
+        "ChatGPT",
+        "Linear"
+      ],
+      "keywords": [
+        "ai",
+        "future",
+        "minimal",
+        "tech",
+        "intelligent"
+      ],
+      "recommended_for": [
+        "AI Chat",
+        "AI SaaS",
+        "ML Platform",
+        "Developer AI Tool"
+      ],
+      "industry": "ai",
+      "emotion": "intelligent",
+      "audience": "developer",
+      "trust_level": 7,
+      "technology_level": 10,
+      "luxury_level": 5,
+      "playfulness_level": 6,
+      "minimalism_level": 9,
+      "color_system": {
+        "primary": "#8B5CF6",
+        "background": "#FFFFFF",
+        "dark_background": "#0A0A0F"
+      },
+      "typography": {
+        "hero_size": "clamp(40px, 5vw, 56px)",
+        "hero_weight": 700,
+        "body_size": "16px"
+      },
+      "motion_language": {
+        "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "reveal_duration": "0.5s",
+        "hover_duration": "0.25s"
+      },
+      "compatible_products": [
+        "AI Chat",
+        "AI SaaS",
+        "Machine Learning Platform",
+        "Developer AI Tool"
+      ],
+      "conversion_goal": "free trial signup",
+      "target_user": "developers, tech-savvy professionals",
+      "components": ["chat-interface", "feature-grid", "pricing-table", "demo-section"],
+      "brand_personality": ["minimal", "futuristic", "approachable", "intelligent"]
+    },
+    {
+      "id": "sera-content-platform",
+      "name": "Sera Content Platform",
+      "type": "visual-style",
+      "version": "1.0.0",
+      "source": [
+        "Medium",
+        "Notion",
+        "Readwise"
+      ],
+      "keywords": [
+        "content",
+        "media",
+        "blog",
+        "reading",
+        "education"
+      ],
+      "recommended_for": [
+        "Content Platform",
+        "Blog",
+        "Media Site",
+        "Education Platform"
+      ],
+      "industry": "media",
+      "emotion": "informative",
+      "audience": "reader",
+      "trust_level": 8,
+      "technology_level": 6,
+      "luxury_level": 4,
+      "playfulness_level": 5,
+      "minimalism_level": 7,
+      "color_system": {
+        "primary": "#1A1A2E",
+        "background": "#FFFFFF",
+        "card_style": "solid with subtle shadow"
+      },
+      "typography": {
+        "hero_size": "clamp(32px, 4vw, 48px)",
+        "hero_weight": 700,
+        "body_size": "16px"
+      },
+      "motion_language": {
+        "easing": "ease-in-out",
+        "reveal_duration": "0.6s",
+        "hover_duration": "0.3s"
+      },
+      "compatible_products": [
+        "Content Platform",
+        "Blog",
+        "Media Site",
+        "Education Platform"
+      ],
+      "conversion_goal": "content engagement & subscription",
+      "target_user": "readers, learners, content consumers",
+      "components": ["article-card", "category-nav", "author-section", "related-content"],
+      "brand_personality": ["trustworthy", "informative", "clean", "professional"]
     }
   ]
 }

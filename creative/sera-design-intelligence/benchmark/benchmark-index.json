@@ -1,0 +1,97 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-08-21",
+  "description": "Sera Design Ranking — 设计基准评分系统",
+  "ranking": [
+    {
+      "id": "stripe",
+      "name": "Stripe",
+      "category": "fintech",
+      "scores": {
+        "visual_quality": 95,
+        "brand_strength": 98,
+        "conversion_power": 95,
+        "trust_level": 97,
+        "ux_quality": 96,
+        "technical_execution": 98
+      },
+      "total": 96.5,
+      "tags": ["payment", "saas", "developer"]
+    },
+    {
+      "id": "linear",
+      "name": "Linear",
+      "category": "saas",
+      "scores": {
+        "visual_quality": 94,
+        "brand_strength": 92,
+        "conversion_power": 88,
+        "trust_level": 85,
+        "ux_quality": 95,
+        "technical_execution": 94
+      },
+      "total": 91.3,
+      "tags": ["project-management", "developer-tool"]
+    },
+    {
+      "id": "vercel",
+      "name": "Vercel",
+      "category": "saas",
+      "scores": {
+        "visual_quality": 92,
+        "brand_strength": 90,
+        "conversion_power": 93,
+        "trust_level": 88,
+        "ux_quality": 91,
+        "technical_execution": 94
+      },
+      "total": 91.3,
+      "tags": ["developer", "deployment"]
+    },
+    {
+      "id": "notion",
+      "name": "Notion",
+      "category": "saas",
+      "scores": {
+        "visual_quality": 90,
+        "brand_strength": 93,
+        "conversion_power": 89,
+        "trust_level": 86,
+        "ux_quality": 92,
+        "technical_execution": 90
+      },
+      "total": 90.0,
+      "tags": ["productivity", "collaboration"]
+    },
+    {
+      "id": "kimi",
+      "name": "Kimi (月之暗面)",
+      "category": "ai-products",
+      "scores": {
+        "visual_quality": 88,
+        "brand_strength": 85,
+        "conversion_power": 82,
+        "trust_level": 80,
+        "ux_quality": 87,
+        "technical_execution": 86
+      },
+      "total": 84.7,
+      "tags": ["ai", "chat", "china"]
+    },
+    {
+      "id": "htx-otc",
+      "name": "HTX OTC Desk",
+      "category": "fintech",
+      "scores": {
+        "visual_quality": 85,
+        "brand_strength": 88,
+        "conversion_power": 90,
+        "trust_level": 92,
+        "ux_quality": 83,
+        "technical_execution": 85
+      },
+      "total": 87.2,
+      "tags": ["crypto", "trading", "finance"]
+    }
+  ]
+}

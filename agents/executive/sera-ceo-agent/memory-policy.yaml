@@ -1,0 +1,23 @@
+version: 1.2.0
+agent: sera-ceo-agent
+read:
+- domain: project-portfolio
+  source: portfolio/registry/
+  note: 所有项目组合状态
+- domain: agent-status
+  source: state/
+  note: 各 Agent 当前负载与状态
+- domain: business-decisions
+  source: portfolio/projects/*/PROJECT_DECISION.md
+  note: 历史决策记录
+write:
+- domain: project-decisions
+  target: portfolio/projects/*/PROJECT_DECISION.md
+  note: 新项目决策
+- domain: resource-allocations
+  target: state/resource-allocation.yaml
+  note: 资源分配记录
+- domain: strategic-plans
+  target: portfolio/analytics/
+  note: 战略规划
+principle: Every decision is a record. Write before you act.

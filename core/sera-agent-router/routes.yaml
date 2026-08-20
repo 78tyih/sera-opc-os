@@ -22,6 +22,52 @@ routes:
       - sera-compute-control
     finalize: []
 
+  # ============ CEO Agent：最高决策层 ============
+  - id: ceo-decision
+    intent: CEO 决策/项目评估
+    agent: sera-ceo-agent
+    keywords:
+      - 评估项目
+      - 值不值得做
+      - 商业机会
+      - 要不要做
+      - 项目决策
+      - ceo
+      - 战略决策
+    pipeline:
+      - sera-decision-framework
+      - sera-priority-engine
+    finalize:
+      - sera-knowledge-sync
+      - portfolio/registry/projects.json 更新
+
+  # ============ 完整产品发布流水线（CEO → Factory）============
+  - id: company-product-launch
+    intent: 完整产品发布
+    agent: multi
+    keywords:
+      - 我要做
+      - 发布产品
+      - 启动产品
+      - 新产品发布
+      - 完整发布
+    pipeline:
+      - sera-ceo-agent:sera-decision-framework
+      - product-agent:sera-project-profile
+      - product-agent:sera-product-analysis
+      - product-agent:sera-market-research
+      - product-agent:sera-user-persona
+      - product-agent:sera-positioning
+      - product-agent:sera-copywriting
+      - product-agent:sera-product-manual
+      - design-agent:sera-design-studio
+      - design-agent:sera-design-intelligence
+      - video-agent:sera-video-pipeline
+      - video-agent:sera-content-factory
+    finalize:
+      - sera-knowledge-sync
+      - sera-context-system
+
   # ============ 内容生产（video-agent）============
   - id: video-produce
     intent: 视频/素材生产

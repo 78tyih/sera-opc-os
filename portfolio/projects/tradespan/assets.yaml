@@ -1,0 +1,41 @@
+# TradeSpan — Asset Registry
+
+version: 1.0.0
+project: tradespan
+status: planning
+
+assets:
+  website:
+    status: planned
+    type: landing-page
+    description: 产品官网
+    repo: null
+    url: null
+
+  video:
+    status: planned
+    type: product-demo
+    description: 产品演示视频
+    repo: null
+    url: null
+
+  docs:
+    status: planned
+    type: product-manual
+    description: 产品手册
+    repo: null
+    url: null
+
+  brand:
+    status: planned
+    type: brand-system
+    description: 品牌系统
+    repo: null
+    url: null
+
+  code:
+    status: planned
+    type: application
+    description: TradeSpan 交易软件
+    repo: null
+    url: null

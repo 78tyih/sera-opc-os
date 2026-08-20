@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Design Input Schema",
+  "description": "Product Factory → Design Intelligence 的输入接口",
+  "type": "object",
+  "required": ["product_name", "industry", "audience", "goal"],
+  "properties": {
+    "product_name": { "type": "string", "description": "产品名称" },
+    "industry": { "type": "string", "enum": ["finance", "ai", "saas", "media", "dashboard", "ecommerce", "education"], "description": "所属行业" },
+    "audience": { "type": "string", "description": "目标用户描述" },
+    "goal": { "type": "string", "enum": ["sales", "signup", "engagement", "trust", "education"], "description": "业务目标" },
+    "brand_keywords": { "type": "array", "items": { "type": "string" }, "description": "品牌关键词" },
+    "competitors": { "type": "array", "items": { "type": "string" }, "description": "竞品列表" },
+    "preferred_style": { "type": "string", "description": "首选风格（可选）" },
+    "pages": { "type": "array", "items": { "type": "string" }, "description": "需要设计的页面列表" }
+  }
+}

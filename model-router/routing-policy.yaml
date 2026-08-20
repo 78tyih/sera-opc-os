@@ -1,0 +1,159 @@
+# Sera Agent OS — Model Routing Policy V1.2
+# AI Team Assignment — 按任务类型和 Agent 分配模型
+
+version: 1.2.0
+
+# ============ 任务类型路由 ============
+task_routes:
+  - task: strategy           # 产品战略 / 商业决策
+    model: Claude
+    platform: Claude Code
+    note: 战略思维、长上下文推理
+    priority: 1
+
+  - task: chinese_business   # 中文商业 / 营销文案
+    model: DeepSeek
+    platform: DeepSeek
+    note: 中文商业理解最佳
+    priority: 1
+
+  - task: coding             # 代码生成 / 重构 / 调试
+    model: Codex
+    platform: OpenAI Codex CLI
+    note: 代码优先，TypeScript/Python 生态
+    priority: 1
+
+  - task: vision             # 视觉分析 / 图片理解
+    model: GPT Vision
+    platform: GPT-4o
+    note: 多模态理解
+    priority: 1
+
+  - task: design             # 界面 / 海报 / 品牌 / 视觉
+    model: Claude
+    platform: Claude Code
+    note: 设计系统理解、UI 规范
+    priority: 1
+    fallback: Trae
+
+  - task: frontend           # 前端开发
+    model: Trae
+    platform: Trae IDE
+    note: 前端开发 + 可视化
+    priority: 1
+
+  - task: automation         # 本地执行 / 脚本 / 自动化
+    model: WorkBuddy
+    platform: WorkBuddy
+    note: 本机运行，工具齐全
+    priority: 1
+
+  - task: image              # 图片生成
+    model: Serawin
+    platform: ComfyUI (RTX 5080)
+    note: SDXL / Flux / 本地渲染
+    priority: 1
+
+  - task: video              # 视频生成 / 渲染
+    model: Serawin
+    platform: ComfyUI / HeyGen
+    note: 数字人 / 视频流水线
+    priority: 1
+    fallback: MiniMax
+
+  - task: video_short        # 短视频
+    model: MiniMax
+    platform: MiniMax API
+    note: 短视频生成
+    priority: 2
+
+  - task: research           # 深度研究 / 情报 / 分析
+    model: DeepSeek
+    platform: DeepSeek
+    note: 长上下文 + 深度推理
+    priority: 1
+
+  - task: quick              # 快速问答
+    model: WorkBuddy
+    platform: WorkBuddy
+    note: 低延迟
+    priority: 1
+
+  - task: mail               # 邮件 / 沟通
+    model: DeepSeek
+    platform: DeepSeek
+    note: 语言表达强
+    priority: 1
+
+# ============ Agent 级模型偏好 ============
+agent_preferences:
+  sera-ceo-agent:
+    strategy: Claude
+    chinese_business: DeepSeek
+    planning: GPT
+    analysis: DeepSeek
+
+  product-agent:
+    research: DeepSeek
+    analysis: DeepSeek
+    writing: DeepSeek
+    design: Trae
+
+  design-agent:
+    design: Claude
+    vision: GPT Vision
+    coding: Codex
+    fallback: Trae
+
+  video-agent:
+    video: Serawin
+    video_short: MiniMax
+    automation: WorkBuddy
+    design: Trae
+
+  propfirm-agent:
+    research: DeepSeek
+    coding: Codex
+    design: Trae
+    automation: WorkBuddy
+
+  otc-agent:
+    communication: DeepSeek
+    automation: WorkBuddy
+
+  trading-agent:
+    research: DeepSeek
+    coding: Codex
+
+# ============ 平台权重 ============
+platform_weights:
+  primary:
+    DeepSeek: 0.30      # 中文 + 研究
+    Claude: 0.25        # 战略 + 设计
+    Codex: 0.20         # 代码
+    WorkBuddy: 0.15     # 自动化
+    Trae: 0.10          # 前端
+
+  specialized:
+    Serawin: image/video
+    GPT Vision: vision
+    MiniMax: video_short
+    HeyGen: avatar
+
+# ============ 路由决策规则 ============
+rules:
+  - condition: "任务类型匹配 task_routes"
+    action: "使用对应模型"
+    override: "Agent 级偏好可覆盖"
+
+  - condition: "Agent 有 model_preference"
+    action: "使用 Agent 偏好"
+    override: "CEO Agent 可全局覆盖"
+
+  - condition: "多任务混合"
+    action: "按子任务拆分路由"
+    example: "调研+写代码 → DeepSeek + Codex"
+
+  - condition: "模型不可用"
+    action: "使用 fallback 链"
+    chain: "primary → fallback → WorkBuddy"

@@ -1,0 +1,34 @@
+# PropFirm TV — Asset Registry
+
+version: 1.0.0
+project: propfirm-tv
+status: active
+
+assets:
+  website:
+    status: active
+    type: website
+    description: PropFirm.TV 官网
+    repo: 78tyih/propfirm-tv
+    url: https://propfirm.tv
+
+  video:
+    status: active
+    type: video-content
+    description: YouTube 视频内容
+    repo: 78tyih/propfirm-tv-video-factory
+    url: null
+
+  pipeline:
+    status: active
+    type: pipeline
+    description: 视频生产流水线
+    repo: 78tyih/propfirm-tv-pipeline
+    url: null
+
+  brand:
+    status: active
+    type: brand-system
+    description: PropFirm.TV 品牌
+    repo: sera-agent-os/creative/sera-design-intelligence
+    url: null

@@ -1,0 +1,75 @@
+# Sera Style Router — 风格路由规则
+version: 1.0.0
+description: 根据产品属性自动匹配设计风格
+
+rules:
+  # 金融/交易类
+  - match:
+      industry: finance
+    weights:
+      sera-fintech-premium: 60
+      sera-saas-landing: 25
+      sera-ai-future: 15
+    description: "金融产品优先信任感，辅以科技感"
+
+  - match:
+      industry: finance
+      audience: retail
+    weights:
+      sera-fintech-premium: 40
+      sera-saas-landing: 35
+      sera-ai-future: 25
+    description: "零售金融降低 premium，增加亲和力"
+
+  - match:
+      industry: ai
+      audience: developer
+    weights:
+      sera-ai-future: 50
+      sera-saas-landing: 30
+      sera-fintech-premium: 20
+    description: "AI 开发者工具优先科技感，辅以专业信任"
+
+  - match:
+      industry: ai
+      audience: consumer
+    weights:
+      sera-ai-future: 45
+      sera-content-platform: 30
+      sera-saas-landing: 25
+    description: "AI 消费产品需要亲和力与内容感"
+
+  - match:
+      industry: saas
+      audience: enterprise
+    weights:
+      sera-fintech-premium: 45
+      sera-saas-landing: 35
+      sera-ai-future: 20
+    description: "企业 SaaS 需要专业感与信任感"
+
+  - match:
+      industry: saas
+      audience: startup
+    weights:
+      sera-saas-landing: 40
+      sera-ai-future: 35
+      sera-fintech-premium: 25
+    description: "初创 SaaS 需要科技感与活力"
+
+  - match:
+      industry: media
+      audience: general
+    weights:
+      sera-content-platform: 60
+      sera-saas-landing: 25
+      sera-ai-future: 15
+    description: "内容平台优先可读性与信息层级"
+
+  - match:
+      industry: dashboard
+    weights:
+      sera-operations-dashboard: 70
+      sera-fintech-premium: 20
+      sera-saas-landing: 10
+    description: "Dashboard 优先数据清晰度与效率"

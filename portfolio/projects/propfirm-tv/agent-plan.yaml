@@ -1,0 +1,33 @@
+# PropFirm TV — Agent Plan
+
+version: 1.0.0
+project: propfirm-tv
+status: active
+
+pipeline:
+  - agent: propfirm-agent
+    phase: 1
+    skills:
+    - sera-intelligence-monitor
+    - sera-browser-automation
+    - sera-content-factory
+    deliverables:
+    - intelligence-report.md
+    - competitor-analysis.md
+
+  - agent: video-agent
+    phase: 2
+    skills:
+    - sera-video-pipeline
+    - sera-content-factory
+    deliverables:
+    - video-script.md
+    - asset-request.md
+
+  - agent: design-agent
+    phase: 3
+    skills:
+    - sera-design-studio
+    deliverables:
+    - thumbnail.md
+    - channel-art.md

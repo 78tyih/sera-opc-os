@@ -1,0 +1,27 @@
+# HTX OTC — Asset Registry
+
+version: 1.0.0
+project: htx-otc
+status: active
+
+assets:
+  website:
+    status: active
+    type: landing-page
+    description: HTX OTC 落地页
+    repo: 78tyih/htx-otc-landing
+    url: null
+
+  progress-hub:
+    status: active
+    type: dashboard
+    description: HTX OTC 进度中心
+    repo: 78tyih/htx-otc-progress-hub
+    url: null
+
+  brand:
+    status: active
+    type: brand-reference
+    description: HTX 设计参考
+    repo: 78tyih/htx-design-refer
+    url: null

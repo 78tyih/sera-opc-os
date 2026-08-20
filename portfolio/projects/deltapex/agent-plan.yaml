@@ -1,0 +1,24 @@
+# Deltapex — Agent Plan
+
+version: 1.0.0
+project: deltapex
+status: active
+
+pipeline:
+  - agent: propfirm-agent
+    phase: 1
+    skills:
+    - sera-intelligence-monitor
+    - sera-content-factory
+    deliverables:
+    - competitor-analysis.md
+    - market-positioning.md
+
+  - agent: design-agent
+    phase: 2
+    skills:
+    - sera-design-studio
+    - sera-design-intelligence
+    deliverables:
+    - brand-upgrade.md
+    - ui-optimization.md

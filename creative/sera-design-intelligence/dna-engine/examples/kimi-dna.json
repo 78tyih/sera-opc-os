@@ -1,0 +1,50 @@
+{
+  "name": "Kimi (月之暗面)",
+  "industry": "AI products",
+  "emotion": "friendly-intelligence",
+  "brand_personality": ["minimal", "approachable", "future-forward", "clean"],
+  "color_system": {
+    "primary": "#8B5CF6",
+    "background": "#FFFFFF",
+    "accent": "#A78BFA",
+    "semantic": {}
+  },
+  "typography": {
+    "primary_font": "system-ui, -apple-system",
+    "heading_style": {
+      "size": "clamp(36px, 5vw, 56px)",
+      "weight": 700,
+      "letter_spacing": "-0.01em"
+    },
+    "body_style": {
+      "size": "16px",
+      "weight": 400,
+      "line_height": 1.7
+    }
+  },
+  "layout_language": {
+    "grid": "flex-based",
+    "spacing_unit": "16px",
+    "section_style": "centered with generous white space"
+  },
+  "component_patterns": [
+    "chat-style interface",
+    "feature card with icon",
+    "testimonial carousel"
+  ],
+  "motion_language": {
+    "easing": "ease-out",
+    "duration": "0.4s",
+    "hover_effect": "subtle lift + shadow"
+  },
+  "conversion_patterns": [
+    "free trial CTA",
+    "feature highlight with demo",
+    "social proof carousel"
+  ],
+  "recommended_usage": [
+    "AI Chat Product",
+    "Consumer AI App",
+    "SaaS Landing Page"
+  ]
+}

@@ -1,0 +1,33 @@
+# TradeSpan — Agent Plan
+
+version: 1.0.0
+project: tradespan
+status: planning
+
+pipeline:
+  - agent: product-agent
+    phase: 1
+    skills:
+    - sera-project-profile
+    - sera-product-analysis
+    - sera-market-research
+    - sera-positioning
+    deliverables:
+    - PROJECT_PROFILE.md
+    - POSITIONING.md
+
+  - agent: design-agent
+    phase: 2
+    skills:
+    - sera-design-studio
+    - sera-design-intelligence
+    deliverables:
+    - brand-guideline.md
+    - ui-design.md
+
+  - agent: video-agent
+    phase: 3
+    skills:
+    - sera-video-pipeline
+    deliverables:
+    - script.md

@@ -1,0 +1,149 @@
+# Sera Agent OS — Company Product Launch Workflow
+# CEO Agent → Product Factory 完整发布流水线
+
+name: company-product-launch
+version: 1.2.0
+description: 完整产品发布流水线 — 从 CEO 决策到产品发布
+
+triggers:
+  - "我要做 [产品名]"
+  - "启动新产品发布"
+  - "帮我推广 [产品名]"
+  - "创建 [产品名] 项目"
+
+steps:
+  # Phase 0: CEO 决策
+  - skill: sera-decision-framework
+    agent: sera-ceo-agent
+    inputs:
+      - 产品想法/商业机会
+    outputs:
+      - PROJECT_DECISION.md
+    gate: "决策 = GO，否则停止"
+
+  # Phase 1: 产品定义
+  - skill: sera-project-profile
+    agent: product-agent
+    inputs:
+      - PROJECT_DECISION.md
+    outputs:
+      - PROJECT_PROFILE.md
+
+  - skill: sera-product-analysis
+    agent: product-agent
+    inputs:
+      - PROJECT_PROFILE.md
+    outputs:
+      - product-analysis.md
+
+  - skill: sera-market-research
+    agent: product-agent
+    inputs:
+      - PROJECT_PROFILE.md
+      - product-analysis.md
+    outputs:
+      - market-research.md
+
+  - skill: sera-user-persona
+    agent: product-agent
+    inputs:
+      - product-analysis.md
+      - market-research.md
+    outputs:
+      - PERSONA.md
+
+  - skill: sera-positioning
+    agent: product-agent
+    inputs:
+      - product-analysis.md
+      - market-research.md
+      - PERSONA.md
+    outputs:
+      - POSITIONING.md
+
+  - skill: sera-copywriting
+    agent: product-agent
+    inputs:
+      - POSITIONING.md
+      - PERSONA.md
+    outputs:
+      - copywriting/hero-copy.md
+      - copywriting/sales-script.md
+
+  - skill: sera-product-manual
+    agent: product-agent
+    inputs:
+      - PROJECT_PROFILE.md
+      - product-analysis.md
+      - market-research.md
+      - PERSONA.md
+      - POSITIONING.md
+    outputs:
+      - PRODUCT_MANUAL.md
+
+  # Phase 2: 品牌设计
+  - skill: sera-design-studio
+    agent: design-agent
+    inputs:
+      - POSITIONING.md
+      - PERSONA.md
+    outputs:
+      - brand-guideline.md
+      - visual-system.md
+
+  - skill: sera-design-intelligence
+    agent: design-agent
+    inputs:
+      - brand-guideline.md
+    outputs:
+      - design-spec.md
+
+  # Phase 3: 官网落地页
+  - skill: sera-design-studio
+    agent: design-agent
+    inputs:
+      - brand-guideline.md
+      - copywriting/hero-copy.md
+    outputs:
+      - landing-page-design.md
+
+  # Phase 4: 视频内容
+  - skill: sera-video-pipeline
+    agent: video-agent
+    inputs:
+      - PRODUCT_MANUAL.md
+      - brand-guideline.md
+    outputs:
+      - video-script.md
+      - storyboard.md
+
+  - skill: sera-content-factory
+    agent: video-agent
+    inputs:
+      - video-script.md
+    outputs:
+      - asset-request.md
+
+  # Phase 5: 发布
+  - skill: sera-knowledge-sync
+    agent: core
+    inputs:
+      - 所有产物
+    outputs:
+      - 同步到 memory/
+
+  - skill: sera-context-system
+    agent: core
+    inputs:
+      - 所有产物
+    outputs:
+      - 更新 Context Hub
+
+finalize:
+  - portfolio/registry/projects.json 更新
+  - state/product/ 更新项目状态
+  - 通知用户发布完成
+
+on_error:
+  retry: true
+  fallback_agent: sera-ceo-agent

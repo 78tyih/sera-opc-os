@@ -1,0 +1,57 @@
+{
+  "name": "HTX OTC Desk",
+  "industry": "fintech",
+  "emotion": "trust",
+  "brand_personality": ["institutional", "professional", "secure", "premium"],
+  "color_system": {
+    "primary": "#0052FF",
+    "background": "#FFFFFF",
+    "dark_background": "#060708",
+    "accent": "#FF3B45",
+    "semantic": {
+      "success": "#00C853",
+      "warning": "#FFB300",
+      "error": "#FF3B45"
+    }
+  },
+  "typography": {
+    "primary_font": "Inter",
+    "heading_style": {
+      "size": "clamp(44px, 6vw, 64px)",
+      "weight": 800,
+      "letter_spacing": "-0.02em"
+    },
+    "body_style": {
+      "size": "15px",
+      "weight": 400,
+      "line_height": 1.6
+    }
+  },
+  "layout_language": {
+    "grid": "12-column",
+    "spacing_unit": "8px",
+    "section_style": "full-width with max-width constraint (1200px)"
+  },
+  "component_patterns": [
+    "glass-morphism card",
+    "trust-badge row",
+    "floating CTA",
+    "step-process indicator"
+  ],
+  "motion_language": {
+    "easing": "cubic-bezier(0.16, 1, 0.3, 1)",
+    "duration": "0.72s",
+    "hover_effect": "scale(1.02) + shadow elevation"
+  },
+  "conversion_patterns": [
+    "trust-first hero hierarchy",
+    "social proof below fold",
+    "sticky CTA on scroll",
+    "multi-step funnel with progress"
+  ],
+  "recommended_usage": [
+    "OTC Trading Platform",
+    "Premium Financial Service",
+    "High-Value B2B Landing"
+  ]
+}

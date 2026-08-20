@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Style DNA Schema",
+  "type": "object",
+  "required": ["name", "industry", "emotion", "brand_personality", "color_system", "typography"],
+  "properties": {
+    "name": { "type": "string", "description": "品牌/产品名称" },
+    "industry": { "type": "string", "description": "所属行业" },
+    "emotion": { "type": "string", "description": "核心情感关键词" },
+    "brand_personality": { "type": "array", "items": { "type": "string" }, "description": "品牌个性特质" },
+    "color_system": { 
+      "type": "object",
+      "properties": {
+        "primary": { "type": "string" },
+        "secondary": { "type": "string" },
+        "background": { "type": "string" },
+        "accent": { "type": "string" },
+        "semantic": { "type": "object" }
+      }
+    },
+    "typography": {
+      "type": "object",
+      "properties": {
+        "primary_font": { "type": "string" },
+        "heading_style": { "type": "object" },
+        "body_style": { "type": "object" }
+      }
+    },
+    "layout_language": {
+      "type": "object",
+      "properties": {
+        "grid": { "type": "string" },
+        "spacing_unit": { "type": "string" },
+        "section_style": { "type": "string" }
+      }
+    },
+    "component_patterns": { "type": "array", "items": { "type": "string" } },
+    "motion_language": {
+      "type": "object",
+      "properties": {
+        "easing": { "type": "string" },
+        "duration": { "type": "string" },
+        "hover_effect": { "type": "string" }
+      }
+    },
+    "conversion_patterns": { "type": "array", "items": { "type": "string" } },
+    "recommended_usage": { "type": "array", "items": { "type": "string" } }
+  }
+}

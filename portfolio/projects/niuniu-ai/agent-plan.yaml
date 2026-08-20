@@ -1,0 +1,37 @@
+# 牛牛 AI — Agent Plan
+
+version: 1.0.0
+project: niuniu-ai
+status: planning
+
+pipeline:
+  - agent: product-agent
+    phase: 1
+    skills:
+    - sera-project-profile
+    - sera-product-analysis
+    - sera-market-research
+    - sera-user-persona
+    - sera-positioning
+    deliverables:
+    - PROJECT_PROFILE.md
+    - PERSONA.md
+    - POSITIONING.md
+
+  - agent: design-agent
+    phase: 2
+    skills:
+    - sera-design-studio
+    - sera-design-intelligence
+    deliverables:
+    - brand-guideline.md
+    - visual-system.md
+
+  - agent: video-agent
+    phase: 3
+    skills:
+    - sera-video-pipeline
+    - sera-content-factory
+    deliverables:
+    - script.md
+    - storyboard.md

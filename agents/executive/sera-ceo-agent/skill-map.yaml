@@ -1,0 +1,22 @@
+version: 1.2.0
+agent: sera-ceo-agent
+primary: sera-decision-framework
+skills:
+- skill: sera-decision-framework
+  relation: primary
+- skill: sera-priority-engine
+  relation: primary
+- skill: sera-project-profile
+  relation: entry
+  note: 项目初始化入口，转发到 product-agent
+- skill: sera-market-research
+  relation: support
+- skill: sera-product-analysis
+  relation: support
+downstream:
+- agent: product-agent
+  trigger: on GO decision
+- agent: design-agent
+  trigger: on product-init complete
+- agent: video-agent
+  trigger: on design complete

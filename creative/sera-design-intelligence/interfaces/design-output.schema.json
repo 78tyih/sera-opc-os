@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Design Output Schema",
+  "description": "Design Intelligence → Product Factory 的输出接口",
+  "type": "object",
+  "required": ["brand_direction", "page_structure", "components", "visual_language", "asset_requirements"],
+  "properties": {
+    "brand_direction": {
+      "type": "object",
+      "properties": {
+        "style_id": { "type": "string" },
+        "emotion": { "type": "string" },
+        "trust_level": { "type": "integer" },
+        "technology_level": { "type": "integer" }
+      }
+    },
+    "page_structure": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "section": { "type": "string" },
+          "pattern": { "type": "string" },
+          "purpose": { "type": "string" }
+        }
+      }
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "type": { "type": "string" },
+          "source_pattern": { "type": "string" }
+        }
+      }
+    },
+    "visual_language": {
+      "type": "object",
+      "properties": {
+        "color_system": { "type": "object" },
+        "typography": { "type": "object" },
+        "motion": { "type": "object" }
+      }
+    },
+    "asset_requirements": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

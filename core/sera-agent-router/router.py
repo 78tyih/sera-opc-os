@@ -85,6 +85,10 @@ def _builtin_routes():
          "pipeline": ["sera-project-profile", "sera-product-analysis", "sera-market-research",
                       "sera-user-persona", "sera-positioning", "sera-copywriting", "sera-product-manual"],
          "finalize": ["sera-knowledge-sync", "sera-context-system"]},
+        {"id": "ceo-decision", "intent": "CEO 决策", "agent": "sera-ceo-agent",
+         "keywords": ["评估项目", "值不值得做", "商业机会", "要不要做", "项目决策", "ceo", "战略决策"],
+         "pipeline": ["sera-decision-framework", "sera-priority-engine"],
+         "finalize": ["sera-knowledge-sync"]},
         {"id": "fallback", "intent": "未匹配", "agent": "sera-agent-orchestrator",
          "keywords": [],
          "pipeline": ["sera-agent-orchestrator"],
@@ -224,6 +228,10 @@ TESTS = [
     ("把报告归档到 Obsidian", "knowledge-ops"),
     ("让 serawin 渲染", "compute"),
     ("今天天气怎么样", "fallback"),
+
+    # CEO Agent
+    ("评估这个项目值不值得做", "ceo-decision"),
+    ("帮我评估商业机会", "ceo-decision"),
 ]
 
 

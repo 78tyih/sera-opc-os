@@ -1,0 +1,41 @@
+# Deltapex — Asset Registry
+
+version: 1.0.0
+project: deltapex
+status: active
+
+assets:
+  website:
+    status: active
+    type: website
+    description: 德湃官网
+    repo: 78tyih/Deltapex-Trading-Group-
+    url: null
+
+  propfirm1:
+    status: active
+    type: landing-page
+    description: 德湃考试盘 v1
+    repo: 78tyih/DPxPropfirm1
+    url: null
+
+  propfirm:
+    status: active
+    type: landing-page
+    description: 德湃考试盘
+    repo: 78tyih/DPxPropfirm
+    url: null
+
+  survey:
+    status: active
+    type: survey
+    description: DP 满意度调研
+    repo: 78tyih/DP-
+    url: null
+
+  site:
+    status: active
+    type: site
+    description: Deltapex 站点
+    repo: 78tyih/deltapex-site
+    url: null

@@ -4,6 +4,22 @@
   "description": "Sera Agent OS — 所有 Agent 注册表",
   "agents": [
     {
+      "id": "sera-ceo-agent",
+      "name": "CEO Agent",
+      "type": "executive",
+      "status": "active",
+      "role": "最高决策层 — 商业评估、资源分配、优先级管理",
+      "skills": [
+        "sera-decision-framework",
+        "sera-priority-engine",
+        "sera-project-profile",
+        "sera-market-research",
+        "sera-product-analysis"
+      ],
+      "model_preference": "Claude / DeepSeek",
+      "source": "agents/executive/sera-ceo-agent/"
+    },
+    {
       "id": "product-agent",
       "name": "Product Agent",
       "type": "domain-expert",

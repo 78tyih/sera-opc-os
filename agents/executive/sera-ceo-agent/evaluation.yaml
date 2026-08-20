@@ -1,0 +1,18 @@
+version: 1.2.0
+agent: sera-ceo-agent
+dimensions:
+- name: decision_accuracy
+  weight: 0.3
+  note: GO 项目的成功率 / HOLD 项目的判断精度
+- name: resource_allocation
+  weight: 0.25
+  note: 资源分配是否合理
+- name: strategic_alignment
+  weight: 0.25
+  note: 决策是否与长期战略一致
+- name: output_quality
+  weight: 0.2
+  note: PROJECT_DECISION.md 完整度与分析深度
+scale: 1-5
+score: 0.0
+last_evaluated: null

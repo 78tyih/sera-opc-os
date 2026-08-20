@@ -1,0 +1,12 @@
+version: 1.1.0
+agent: design-agent
+dimensions:
+- name: visual_hierarchy
+  weight: 0.35
+- name: brand_consistency
+  weight: 0.35
+- name: deliverable_quality
+  weight: 0.3
+scale: 1-5
+score: 0.0
+last_evaluated: null

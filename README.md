@@ -6,6 +6,8 @@ Sera Agent OS 是一个跨 Agent 的个人 AI 操作系统。它把孤立的 AI 
 
 > Skill 不属于任何单一 AI 平台 —— **Skill 属于 Sera Agent OS。**
 
+> **当前版本：V1.1（工程化阶段）** · 架构升级评审见 [`architecture/sera-agent-os-v1.1-upgrade.md`](architecture/sera-agent-os-v1.1-upgrade.md)
+
 ---
 
 ## 架构（V1.0）
@@ -46,6 +48,42 @@ Agent = 多个 Skill 的组合，是用户真正直接调用的入口。
 | [`design-agent`](agents/design-agent/SKILL.md) | creative | design-studio + figma-review | 品牌 / UI / 海报 / 网站 | ✅ active |
 
 调用关系：**Agent → Skill → Adapter → Tool**（分层调用，不混在一起）
+
+## V1.1 新增能力
+
+### 🧩 Agent Contract（Agent 标准）
+每个 Agent 目录包含 5 个文件，构成完整 Agent Contract：
+
+```
+agents/<agent>/
+├── agent.yaml          # 身份/目标/Skill 组合/模型偏好
+├── system.md           # 系统提示词（角色/行为/红线）
+├── memory-policy.yaml  # Memory 读写策略（读什么/写什么）
+├── skill-map.yaml      # Skill 映射（Agent → Skill 调用关系）
+└── evaluation.yaml     # 该 Agent 的评估维度
+```
+
+### 🧭 Planner（Router 三层升级）
+Router 从规则匹配升级为三层决策：
+
+```
+Intent Router（意图识别）
+    ↓
+Agent Planner（Agent 选择）
+    ↓
+Execution Planner（执行步骤规划）
+```
+
+### 📊 Evaluation（Agent 评估）
+`evaluation/agent-score.yaml` 记录各 Agent 评估维度与得分，回答「哪个 Agent / 哪个模型做得好」。
+
+### 🎛️ Model Router（模型路由）
+`runtime/model-router.yaml` 按任务类型路由模型：
+research→DeepSeek / coding→Codex / design→Trae / automation→WorkBuddy / image→Serawin
+
+### 🧠 Memory / State 分离
+- **Memory**（`memory/`）：长期——知道什么（偏好/知识/历史），分 long-term / knowledge / preference
+- **State**（`state/`）：短期——正在发生什么（项目/任务/Agent 状态），分 projects / tasks / agent-status
 
 ## Skill Registry
 
@@ -160,28 +198,33 @@ cp -r core/sera-context-system ~/.workbuddy/skills/sera-context-system
 sera-agent-skills/
 ├── README.md
 ├── architecture/
-│   └── sera-agent-os-v1.md          # 架构 V1.0 文档
+│   ├── sera-agent-os-v1.md           # 架构 V1.0 文档
+│   └── sera-agent-os-v1.1-upgrade.md # V1.1 架构升级评审
 ├── core/                             # 系统层
 │   ├── sera-agent-orchestrator/
+│   ├── sera-agent-router/            # Router 三层规划（router.py + routes.yaml + workflows/）
+│   ├── sera-agent-registry/          # Agent 注册表
 │   ├── sera-memory-system/
 │   ├── sera-state-manager/
 │   ├── sera-skill-registry/
 │   ├── sera-context-system/
 │   ├── sera-knowledge-sync/
 │   └── sera-compute-control/
-├── agents/                           # Agent 层（个人 AI 团队）
-│   ├── propfirm-agent/
+├── agents/                           # Agent 层（每人 6 文件 Agent Contract）
+│   ├── propfirm-agent/               #   agent.yaml system.md memory-policy.yaml skill-map.yaml evaluation.yaml
 │   ├── otc-agent/
 │   ├── trading-agent/
 │   ├── video-agent/
 │   └── design-agent/
 ├── business/                         # 商业情报
 │   ├── sera-intelligence-monitor/
-│   └── sera-content-factory/
+│   ├── sera-content-factory/
+│   └── trading-analysis/
 ├── creative/                         # 内容创作
 │   ├── sera-video-pipeline/
 │   ├── sera-asset-manager/
-│   └── sera-design-studio/
+│   ├── sera-design-studio/
+│   └── figma-review/
 ├── adapters/                         # 平台适配（Skill 级）
 │   ├── sera-lark-suite/
 │   ├── sera-wecom-suite/
@@ -196,6 +239,21 @@ sera-agent-skills/
 │   ├── trae.md
 │   ├── claude-code.md
 │   └── cursor.md
+├── evaluation/                       # Agent 评估体系（V1.1）
+│   ├── README.md
+│   └── agent-score.yaml
+├── runtime/                          # 运行时配置（V1.1）
+│   └── model-router.yaml             # 模型路由（DeepSeek/Codex/Trae/WorkBuddy/Serawin）
+├── memory/                           # 长期记忆（V1.1）
+│   ├── README.md
+│   ├── long-term/
+│   ├── knowledge/
+│   └── preference/
+├── state/                            # 工作状态（V1.1）
+│   ├── README.md
+│   ├── projects/
+│   ├── tasks/
+│   └── agent-status/
 ├── install.sh                        # 一键安装脚本
 ├── templates/                        # 模板
 │   ├── SKILL.template.md
@@ -212,8 +270,9 @@ sera-agent-skills/
 - [x] **Phase 2.5**：Agent 层建立（5 个核心 Agent：propfirm/otc/trading/video/design）+ sera-state-manager
 - [x] **Phase 3**：补齐领域专家 Skill（figma-review / trading-analysis / sera-crm-adapter），5 个 Agent 全部 active
 - [x] **Phase 4**：实现 Agent Router（sera-agent-router：router.py 规则引擎 + routes.yaml，自然语言→编排链，12/12 自测通过）
-- [x] **Phase 5**：多 Agent 平台接入（platforms/ 五平台文档 + install.sh 一键安装）—— **v2.0 就绪**
+- [x] **Phase 5**：多 Agent 平台接入（platforms/ 五平台文档 + install.sh 一键安装）
+- [x] **V1.1**：Agent Contract 标准化 + Router 三层升级（Planner）+ sera-agent-registry + Evaluation + Model Router + Memory/State 分离
 
 ---
 
-*Sera Agent OS V1.0 · 2026-08-21 · 由 WorkBuddy 构建*
+*Sera Agent OS V1.1 · 2026-08-21 · 由 WorkBuddy 构建*

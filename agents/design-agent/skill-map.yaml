@@ -1,0 +1,9 @@
+version: 1.1.0
+agent: design-agent
+primary: sera-design-studio
+skills:
+- skill: sera-design-studio
+  relation: primary
+- skill: figma-review
+  relation: support
+shared_with: allowed — declare ownership in each skill's owner field

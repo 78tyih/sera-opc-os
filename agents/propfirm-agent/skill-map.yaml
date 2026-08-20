@@ -1,0 +1,15 @@
+version: 1.1.0
+agent: propfirm-agent
+primary: sera-intelligence-monitor
+skills:
+- skill: sera-intelligence-monitor
+  relation: primary
+- skill: sera-content-factory
+  relation: support
+- skill: sera-browser-automation
+  relation: support
+- skill: sera-design-studio
+  relation: support
+- skill: sera-asset-manager
+  relation: support
+shared_with: allowed — declare ownership in each skill's owner field

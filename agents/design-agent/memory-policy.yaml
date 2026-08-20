@@ -1,0 +1,22 @@
+version: 1.1.0
+agent: design-agent
+read:
+- domain: brand
+  source: sera-memory-system
+  note: read brand context
+- domain: design_tokens
+  source: sera-memory-system
+  note: read design_tokens context
+- domain: style
+  source: sera-memory-system
+  note: read style context
+write:
+- domain: design_decisions
+  target: sera-knowledge-sync
+  note: archive design_decisions
+- domain: review_results
+  target: sera-knowledge-sync
+  note: archive review_results
+state_updates:
+- 'sera-state-manager: update project stage/next_actions after each task'
+principle: Agents forget. Systems remember. Write verified facts only.

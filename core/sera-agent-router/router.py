@@ -4,10 +4,17 @@
 Sera Agent Router — 规则引擎（纯 stdlib，零依赖）
 输入：自然语言请求 → 输出：Agent/Skill 编排链 JSON
 
+V1.1 三层规划：
+  Layer 1  Intent Router     意图识别（规则匹配）
+  Layer 2  Agent Planner     Agent 选择（单 Agent 或 multi 编排）
+  Layer 3  Execution Planner 分步执行计划（EXECUTION_STEPS 模板）
+
 用法：
-  python3 router.py "做一条 PropFirm.TV 视频"
-  python3 router.py --list                # 列出所有路由
-  python3 router.py --test                # 运行内置自测用例
+  python3 router.py "做一条 PropFirm.TV 视频"   # 单层路由（兼容）
+  python3 router.py --plan "帮我做 TradeSpan 产品发布页"  # 三层规划
+  python3 router.py --list                      # 列出所有路由
+  python3 router.py --test                      # 单层自测
+  python3 router.py --plan-test                 # 三层自测
   echo "帮我复盘这周交易" | python3 router.py -
 
 路由规则：routes.yaml（同目录），关键词任一命中即匹配，优先级从上到下。
@@ -124,6 +131,80 @@ def route(text, routes=None):
     return {"matched": False, "route": {}, "pipeline": [], "finalize": [], "query": text}
 
 
+# ============ V1.1: 三层规划（Intent → Agent Planner → Execution Planner） ============
+
+# 执行步骤模板：为多 Agent 复合任务生成分步执行计划
+# pipeline 中 "agent:skill" 形式 → 归属指定 Agent 的 Skill
+EXECUTION_STEPS = {
+    "page-product-launch": [
+        {"step": 1, "task": "Research",        "skill": "propfirm-agent:sera-content-factory", "desc": "产品事实/素材收集"},
+        {"step": 2, "task": "Brand",           "skill": "design-agent:sera-design-studio",      "desc": "品牌/视觉规范"},
+        {"step": 3, "task": "Landing Page",    "skill": "design-agent:sera-design-studio",      "desc": "页面设计实现"},
+        {"step": 4, "task": "Video",           "skill": "video-agent:sera-video-pipeline",      "desc": "页面内嵌内容"},
+        {"step": 5, "task": "Publish",         "skill": "figma-review",                         "desc": "审查 + 发布"},
+    ],
+    "video-produce": [
+        {"step": 1, "task": "Content",         "skill": "sera-content-factory",   "desc": "官网素材/事实"},
+        {"step": 2, "task": "Compose",         "skill": "sera-video-pipeline",    "desc": "图卡/字幕/BGM 合成"},
+        {"step": 3, "task": "Render",          "skill": "sera-compute-control",   "desc": "远程渲染（可选）"},
+        {"step": 4, "task": "Archive",         "skill": "sera-asset-manager",     "desc": "入库 Eagle"},
+    ],
+    "trading-research": [
+        {"step": 1, "task": "Analyze",         "skill": "trading-analysis",       "desc": "复盘/统计"},
+        {"step": 2, "task": "Research",        "skill": "sera-finance-suite",     "desc": "行情/数据辅助"},
+        {"step": 3, "task": "Report",          "skill": "sera-knowledge-sync",    "desc": "报告归档"},
+    ],
+    "otc-bd": [
+        {"step": 1, "task": "Profile",         "skill": "sera-crm-adapter",       "desc": "客户画像"},
+        {"step": 2, "task": "Outreach",        "skill": "sera-mail-hub",          "desc": "沟通/回复"},
+        {"step": 3, "task": "Record",          "skill": "sera-knowledge-sync",    "desc": "归档"},
+    ],
+}
+
+
+def intent_router(text, routes=None):
+    """Layer 1 — Intent Router：识别意图（规则匹配，与 route() 同源）。"""
+    res = route(text, routes)
+    return {"intent": res["route"].get("intent", "未匹配"),
+            "route_id": res["route"].get("id", "fallback"),
+            "matched": res["matched"]}
+
+
+def agent_planner(text, routes=None):
+    """Layer 2 — Agent Planner：选择主 Agent（或 multi 编排）。"""
+    res = route(text, routes)
+    return {"agent": res["route"].get("agent", "sera-agent-orchestrator"),
+            "pipeline": res.get("pipeline", []),
+            "finalize": res.get("finalize", [])}
+
+
+def execution_planner(text, routes=None):
+    """Layer 3 — Execution Planner：生成分步执行计划。
+
+    复合任务（有 EXECUTION_STEPS 模板）→ 结构化分步计划；
+    单 Agent 任务 → 按 pipeline 顺序列出。
+    """
+    res = route(text, routes)
+    rid = res["route"].get("id", "fallback")
+    steps = EXECUTION_STEPS.get(rid)
+    if steps:
+        return {"plan": steps, "route_id": rid, "finalize": res.get("finalize", [])}
+    # 单 Agent：把 pipeline 转成 step 列表
+    steps = [{"step": i + 1, "task": s.split(":")[-1], "skill": s, "desc": ""}
+             for i, s in enumerate(res.get("pipeline", []))]
+    return {"plan": steps, "route_id": rid, "finalize": res.get("finalize", [])}
+
+
+def plan(text, routes=None):
+    """V1.1 三层规划入口：返回完整三层结果。"""
+    return {
+        "query": text,
+        "layer1_intent": intent_router(text, routes),
+        "layer2_agent": agent_planner(text, routes),
+        "layer3_execution": execution_planner(text, routes),
+    }
+
+
 # 内置自测用例
 TESTS = [
     ("做一条 PropFirm.TV 视频", "video-produce"),
@@ -159,6 +240,25 @@ def main():
             if rid == expected:
                 ok += 1
             print(f"  {mark} [{rid:24s}] {query}")
+        print(f"\n通过 {ok}/{len(TESTS)}")
+        return
+    if args[0] == "--plan":
+        # V1.1 三层规划
+        query = " ".join(args[1:]) or sys.stdin.read().strip()
+        print(json.dumps(plan(query), ensure_ascii=False, indent=2))
+        return
+    if args[0] == "--plan-test":
+        # 三层规划自测：复合任务应生成分步计划
+        ok = 0
+        for query, expected in TESTS:
+            p = plan(query)
+            l1 = p["layer1_intent"]["route_id"]
+            steps = p["layer3_execution"].get("plan", [])
+            valid = l1 == expected and len(steps) >= 1
+            mark = "✓" if valid else "✗"
+            if valid:
+                ok += 1
+            print(f"  {mark} [{l1:24s}] {query} → {len(steps)} steps")
         print(f"\n通过 {ok}/{len(TESTS)}")
         return
     # 普通输入

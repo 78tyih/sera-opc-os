@@ -1,0 +1,22 @@
+version: 1.1.0
+agent: propfirm-agent
+read:
+- domain: propfirm
+  source: sera-memory-system
+  note: read propfirm context
+- domain: competitor
+  source: sera-memory-system
+  note: read competitor context
+- domain: product
+  source: sera-memory-system
+  note: read product context
+write:
+- domain: reports
+  target: sera-knowledge-sync
+  note: archive reports
+- domain: decisions
+  target: sera-knowledge-sync
+  note: archive decisions
+state_updates:
+- 'sera-state-manager: update project stage/next_actions after each task'
+principle: Agents forget. Systems remember. Write verified facts only.

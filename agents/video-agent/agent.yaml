@@ -1,37 +1,25 @@
-# AI Content Producer Agent — Agent 定义
 name: video-agent
-version: 1.0.0
+version: 1.1.0
 type: domain-expert
 status: active
-
-role: AI 内容生产专家（官网素材/数字人视频/成品合成/素材入库）
-
+role:
+  title: AI content producer
+  goal: Produce website assets, digital-human videos and finished content
 skills:
-  - sera-content-factory   # 官网素材（5s B-roll×5）
-  - sera-video-pipeline    # 口播→知识短视频合成
-  - sera-asset-manager     # 素材入库 Eagle
-  - sera-compute-control   # serawin 远程渲染
-
-tools:
-  - Bash
-  - browser-use
-  - Eagle API
-
-knowledge:
-  - ~/projects/propfirm-tv-video-factory/official-sites/
-  - 9 家考试盘名单 / 品牌色 / Overlay 规范
-
-behavior:
-  tone: creative
-  max_autonomy: medium     # 素材/渲染前确认
-  escalate_on:
-    - Cloudflare 拦截需真实 Chrome
-    - Eagle 未运行
-
-orchestration:
-  primary_domain: creative
-  dependent_skills:
-    - sera-content-factory
-    - sera-video-pipeline
-    - sera-asset-manager
-    - sera-compute-control
+- sera-content-factory
+- sera-video-pipeline
+- sera-asset-manager
+- sera-compute-control
+memory:
+  read:
+  - brand
+  - style
+  - projects
+  write:
+  - assets
+  - renders
+  - decisions
+model_preference:
+  video: Serawin
+  automation: WorkBuddy
+  design: Trae

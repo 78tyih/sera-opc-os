@@ -1,0 +1,25 @@
+version: 1.1.0
+agent: video-agent
+read:
+- domain: brand
+  source: sera-memory-system
+  note: read brand context
+- domain: style
+  source: sera-memory-system
+  note: read style context
+- domain: projects
+  source: sera-memory-system
+  note: read projects context
+write:
+- domain: assets
+  target: sera-knowledge-sync
+  note: archive assets
+- domain: renders
+  target: sera-knowledge-sync
+  note: archive renders
+- domain: decisions
+  target: sera-knowledge-sync
+  note: archive decisions
+state_updates:
+- 'sera-state-manager: update project stage/next_actions after each task'
+principle: Agents forget. Systems remember. Write verified facts only.

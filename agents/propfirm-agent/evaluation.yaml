@@ -1,0 +1,12 @@
+version: 1.1.0
+agent: propfirm-agent
+dimensions:
+- name: research_accuracy
+  weight: 0.4
+- name: competitive_insight
+  weight: 0.3
+- name: output_completeness
+  weight: 0.3
+scale: 1-5
+score: 0.0
+last_evaluated: null

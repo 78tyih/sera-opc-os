@@ -1,0 +1,25 @@
+version: 1.1.0
+agent: trading-agent
+read:
+- domain: trades
+  source: sera-memory-system
+  note: read trades context
+- domain: strategies
+  source: sera-memory-system
+  note: read strategies context
+- domain: market
+  source: sera-memory-system
+  note: read market context
+write:
+- domain: research
+  target: sera-knowledge-sync
+  note: archive research
+- domain: backtests
+  target: sera-knowledge-sync
+  note: archive backtests
+- domain: decisions
+  target: sera-knowledge-sync
+  note: archive decisions
+state_updates:
+- 'sera-state-manager: update project stage/next_actions after each task'
+principle: Agents forget. Systems remember. Write verified facts only.

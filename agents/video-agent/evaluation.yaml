@@ -1,0 +1,14 @@
+version: 1.1.0
+agent: video-agent
+dimensions:
+- name: script_quality
+  weight: 0.25
+- name: visual_consistency
+  weight: 0.25
+- name: rendering_success
+  weight: 0.25
+- name: user_approval
+  weight: 0.25
+scale: 1-5
+score: 0.0
+last_evaluated: null

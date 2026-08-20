@@ -1,0 +1,15 @@
+version: 1.1.0
+agent: otc-agent
+primary: sera-crm-adapter
+skills:
+- skill: sera-crm-adapter
+  relation: primary
+- skill: sera-mail-hub
+  relation: support
+- skill: sera-memory-system
+  relation: support
+- skill: sera-context-system
+  relation: support
+- skill: sera-knowledge-sync
+  relation: support
+shared_with: allowed — declare ownership in each skill's owner field

@@ -1,0 +1,13 @@
+version: 1.1.0
+agent: trading-agent
+primary: trading-analysis
+skills:
+- skill: trading-analysis
+  relation: primary
+- skill: sera-finance-suite
+  relation: support
+- skill: sera-knowledge-reader
+  relation: support
+- skill: sera-knowledge-sync
+  relation: support
+shared_with: allowed — declare ownership in each skill's owner field

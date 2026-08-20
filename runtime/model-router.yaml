@@ -1,0 +1,51 @@
+# Sera Agent OS — Model Router（模型路由）
+# 按任务类型路由到最佳模型/平台
+# 原则：Research→DeepSeek（深度检索）、Coding→Codex（代码）、Design→Trae（视觉）、
+#       Automation→WorkBuddy（本地执行）、Image/Video→Serawin（本地算力）
+
+version: 1.1.0
+
+routes:
+  - task: research          # 深度研究/情报/分析
+    model: DeepSeek
+    note: 长上下文 + 深度推理
+
+  - task: coding            # 代码生成/重构/调试
+    model: Codex
+    note: OpenAI Codex CLI，代码优先
+
+  - task: design            # UI/海报/品牌/视觉
+    model: Trae
+    note: 视觉设计 IDE
+
+  - task: frontend          # 前端开发
+    model: Trae
+    note: AI IDE 前端友好
+
+  - task: automation        # 本地执行/脚本/自动化
+    model: WorkBuddy
+    note: 本机运行，工具齐全
+
+  - task: image             # 图片生成
+    model: Serawin
+    note: Windows ComfyUI (RTX 5080)
+
+  - task: video             # 视频生成/渲染
+    model: Serawin
+    note: ComfyUI / 数字人流水线
+
+  - task: mail              # 邮件/沟通
+    model: DeepSeek
+    note: 语言表达强
+
+  - task: quick             # 快速问答
+    model: WorkBuddy
+    note: 低延迟
+
+# Agent 级模型偏好（覆盖 routes 默认值，来源 agents/*/agent.yaml 的 model_preference）
+agent_preferences:
+  propfirm-agent: {research: DeepSeek, coding: Codex, design: Trae, automation: WorkBuddy}
+  otc-agent:      {communication: DeepSeek, automation: WorkBuddy}
+  trading-agent:  {research: DeepSeek, coding: Codex}
+  video-agent:    {video: Serawin, automation: WorkBuddy, design: Trae}
+  design-agent:   {design: Trae, coding: Codex}

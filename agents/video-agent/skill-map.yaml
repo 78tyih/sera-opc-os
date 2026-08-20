@@ -1,0 +1,13 @@
+version: 1.1.0
+agent: video-agent
+primary: sera-content-factory
+skills:
+- skill: sera-content-factory
+  relation: primary
+- skill: sera-video-pipeline
+  relation: support
+- skill: sera-asset-manager
+  relation: support
+- skill: sera-compute-control
+  relation: support
+shared_with: allowed — declare ownership in each skill's owner field

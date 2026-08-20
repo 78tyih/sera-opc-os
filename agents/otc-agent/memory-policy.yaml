@@ -1,0 +1,25 @@
+version: 1.1.0
+agent: otc-agent
+read:
+- domain: customer
+  source: sera-memory-system
+  note: read customer context
+- domain: quotes
+  source: sera-memory-system
+  note: read quotes context
+- domain: risk
+  source: sera-memory-system
+  note: read risk context
+write:
+- domain: customer_followup
+  target: sera-knowledge-sync
+  note: archive customer_followup
+- domain: deals
+  target: sera-knowledge-sync
+  note: archive deals
+- domain: risk_flags
+  target: sera-knowledge-sync
+  note: archive risk_flags
+state_updates:
+- 'sera-state-manager: update project stage/next_actions after each task'
+principle: Agents forget. Systems remember. Write verified facts only.

@@ -37,10 +37,11 @@ Sera Agent OS 的 Skill 注册表：管理所有能力（core / business / creat
 4. 更新：新增/修改 Skill 时按 templates/SKILL.template.md 标准
 ```
 
-## 当前注册表（V1.2，23 个超级 Skill + 5 Agent + Router）
+## 当前注册表（V1.1，24 个超级 Skill + 5 Agent Contract + Router/Planner）
 ### core/
 - `sera-agent-orchestrator` — 任务路由/执行规划（引擎=router）
-- `sera-agent-router` — **Agent Router 规则引擎**（自然语言→编排链，router.py + routes.yaml）
+- `sera-agent-router` — **Agent Router 三层规划**（Intent→Agent→Execution，router.py，12/12 自测通过）
+- `sera-agent-registry` — **Agent 注册表**（Agent Contract 登记/查询）
 - `sera-memory-system` — 共享记忆层（Context Hub + Obsidian + Project State）
 - `sera-state-manager` — 工作状态管理（当前阶段/阻塞/下一步）
 - `sera-skill-registry` — 本注册表

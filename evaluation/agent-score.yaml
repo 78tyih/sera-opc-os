@@ -1,0 +1,39 @@
+# Sera Agent OS — Agent 评分汇总
+# 用法：任务完成后按 agents/<name>/evaluation.yaml 维度打分（1-5），加权后更新这里
+# 对比不同模型：同一 task 用不同 model 跑，记录 model 列
+
+version: 1.1.0
+scale: 1-5
+
+agents:
+  propfirm-agent:
+    last_score: null
+    last_evaluated: null
+    history: []          # [{date, task, score, model}]
+
+  otc-agent:
+    last_score: null
+    last_evaluated: null
+    history: []
+
+  trading-agent:
+    last_score: null
+    last_evaluated: null
+    history: []
+
+  video-agent:
+    last_score: null
+    last_evaluated: null
+    history: []
+
+  design-agent:
+    last_score: null
+    last_evaluated: null
+    history: []
+
+# 模型对比记录（可选）
+model_comparison:
+  - task: null
+    agent: null
+    models: {}            # {model: score}
+    note: null

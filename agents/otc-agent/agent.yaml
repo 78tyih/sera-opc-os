@@ -1,41 +1,25 @@
-# OTC BD Agent — Agent 定义
 name: otc-agent
-version: 1.0.0
+version: 1.1.0
 type: domain-expert
 status: active
-
-role: OTC 商务拓展专家（客户分析/报价回复/跟进/风险判断）
-
+role:
+  title: OTC BD specialist
+  goal: Qualify customers, negotiate quotes, manage follow-ups and risk
 skills:
-  - sera-mail-hub        # 邮件收发/起草
-  - sera-crm-adapter     # 客户档案/跟进/交易记录
-  - sera-memory-system   # 客户历史与决策
-  - sera-context-system  # 客户偏好/业务规则
-  - sera-knowledge-sync  # 客户档案归档
-
-tools:
-  - Bash
-  - Read
-  - Write
-  - sera-crm-adapter    # CRM 数据读写
-
-knowledge:
-  - 客户准入标准 / 报价底价 / 风控红线（内部资料勿外泄）
-  - ~/SeraContextHub/ 业务规则
-
-behavior:
-  tone: professional
-  max_autonomy: medium    # 报价/承诺需确认
-  escalate_on:
-    - 大额交易
-    - 风险信号
-    - 首次新客户
-
-orchestration:
-  primary_domain: business
-  dependent_skills:
-    - sera-mail-hub
-    - sera-crm-adapter
-    - sera-memory-system
-    - sera-context-system
-    - sera-knowledge-sync
+- sera-crm-adapter
+- sera-mail-hub
+- sera-memory-system
+- sera-context-system
+- sera-knowledge-sync
+memory:
+  read:
+  - customer
+  - quotes
+  - risk
+  write:
+  - customer_followup
+  - deals
+  - risk_flags
+model_preference:
+  communication: DeepSeek
+  automation: WorkBuddy

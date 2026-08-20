@@ -1,0 +1,69 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-08-21",
+  "description": "Sera Agent OS — 设计风格注册表",
+  "styles": [
+    {
+      "id": "htx-otc",
+      "name": "HTX OTC Style",
+      "type": "brand",
+      "source_repo": "78tyih/htx-design-refer",
+      "mapped_path": "creative/sera-design-intelligence/case-studies/htx-otc-v1/",
+      "capabilities": [
+        "OTC landing page",
+        "Financial brand identity",
+        "Dark theme UI",
+        "Progress hub dashboard"
+      ],
+      "palette": {
+        "primary": "#0066FF",
+        "gradient": "#0066FF → #2692FF",
+        "gold": "#C9A84C",
+        "dark": "#0B0F19",
+        "light": "#F5F6F8"
+      },
+      "typography": "Inter, system-ui",
+      "mood": "professional, trust, finance"
+    },
+    {
+      "id": "kimi-design",
+      "name": "Kimi Design Style",
+      "type": "editorial",
+      "source_repo": "78tyih/kimi-design-refer",
+      "mapped_path": "creative/sera-design-intelligence/references/kimi/",
+      "capabilities": [
+        "Editorial layout",
+        "Poster design",
+        "Brand identity",
+        "Landing page"
+      ],
+      "palette": {
+        "primary": "#1A1A2E",
+        "accent": "#E94560",
+        "light": "#F5F5F5"
+      },
+      "typography": "system-ui",
+      "mood": "editorial, modern, clean"
+    },
+    {
+      "id": "sera-ai-saas",
+      "name": "Sera AI SaaS Style",
+      "type": "saas",
+      "source": "creative/sera-design-intelligence/",
+      "capabilities": [
+        "AI SaaS dashboard",
+        "Agent control center",
+        "Workflow visualization",
+        "Dark mode admin UI"
+      ],
+      "palette": {
+        "background": "#0B0F19",
+        "primary": "#3B82F6",
+        "accent": "#8B5CF6",
+        "text": "#F7F9FC"
+      },
+      "typography": "Inter, system-ui",
+      "mood": "futuristic, clean, professional"
+    }
+  ]
+}

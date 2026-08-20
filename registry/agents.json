@@ -1,0 +1,108 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-08-21",
+  "description": "Sera Agent OS — 所有 Agent 注册表",
+  "agents": [
+    {
+      "id": "product-agent",
+      "name": "Product Agent",
+      "type": "domain-expert",
+      "status": "active",
+      "role": "产品发布专家 — 从模糊想法到结构化发布资产",
+      "skills": [
+        "sera-project-profile",
+        "sera-product-analysis",
+        "sera-market-research",
+        "sera-user-persona",
+        "sera-positioning",
+        "sera-copywriting",
+        "sera-product-manual"
+      ],
+      "model_preference": "DeepSeek",
+      "source": "agents/product-agent/"
+    },
+    {
+      "id": "design-agent",
+      "name": "Design Agent",
+      "type": "domain-expert",
+      "status": "active",
+      "role": "设计专家 — 品牌、视觉、UI",
+      "skills": [
+        "sera-design-studio",
+        "sera-design-intelligence",
+        "sera-asset-manager",
+        "figma-review"
+      ],
+      "model_preference": "Trae",
+      "source": "agents/design-agent/"
+    },
+    {
+      "id": "video-agent",
+      "name": "Video Agent",
+      "type": "domain-expert",
+      "status": "active",
+      "role": "视频内容专家 — 脚本、故事板、素材",
+      "skills": [
+        "sera-video-pipeline",
+        "sera-content-factory"
+      ],
+      "model_preference": "Codex",
+      "source": "agents/video-agent/"
+    },
+    {
+      "id": "propfirm-agent",
+      "name": "PropFirm Agent",
+      "type": "domain-expert",
+      "status": "active",
+      "role": "PropFirm 行业专家 — 情报、竞品、内容",
+      "skills": [
+        "sera-intelligence-monitor",
+        "sera-content-factory",
+        "sera-browser-automation"
+      ],
+      "model_preference": "DeepSeek",
+      "source": "agents/propfirm-agent/"
+    },
+    {
+      "id": "otc-agent",
+      "name": "OTC Agent",
+      "type": "domain-expert",
+      "status": "active",
+      "role": "OTC 商务专家 — 客户、报价、跟进",
+      "skills": [
+        "sera-crm-adapter",
+        "sera-mail-hub"
+      ],
+      "model_preference": "DeepSeek",
+      "source": "agents/otc-agent/"
+    },
+    {
+      "id": "trading-agent",
+      "name": "Trading Agent",
+      "type": "domain-expert",
+      "status": "active",
+      "role": "交易研究专家 — 复盘、策略、分析",
+      "skills": [
+        "trading-analysis"
+      ],
+      "model_preference": "DeepSeek",
+      "source": "agents/trading-agent/"
+    },
+    {
+      "id": "design-department",
+      "name": "Design Department",
+      "type": "department",
+      "status": "active",
+      "role": "设计部门 — 6 个子 Agent 组合",
+      "sub_agents": [
+        "design-research-agent",
+        "design-extraction-agent",
+        "design-generator-agent",
+        "design-system-agent",
+        "design-review-agent",
+        "asset-manager-agent"
+      ],
+      "source": "agents/design-department/"
+    }
+  ]
+}

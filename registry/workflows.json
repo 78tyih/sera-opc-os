@@ -1,0 +1,52 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-08-21",
+  "description": "Sera Agent OS — 工作流注册表",
+  "workflows": [
+    {
+      "id": "product-init",
+      "name": "Product Init Workflow",
+      "description": "产品初始化工作流 — 从模糊想法到结构化项目文档",
+      "trigger": "产品发布/项目初始化",
+      "steps": 7,
+      "source": "core/sera-agent-router/workflows/product-init.yaml",
+      "agent": "product-agent"
+    },
+    {
+      "id": "product-analysis",
+      "name": "Product Analysis Workflow",
+      "description": "快速产品分析 — 理解与研究",
+      "trigger": "产品分析/市场研究",
+      "steps": 2,
+      "source": "core/sera-agent-router/workflows/product-analysis.yaml",
+      "agent": "product-agent"
+    },
+    {
+      "id": "product-factory-pipeline",
+      "name": "Product Factory Pipeline",
+      "description": "完整产品发布流水线 — 产品+设计+视频+审查",
+      "trigger": "产品发布页/官网/落地页",
+      "steps": 8,
+      "source": "core/sera-agent-router/routes.yaml",
+      "agent": "multi"
+    },
+    {
+      "id": "page-product-launch",
+      "name": "Page Product Launch",
+      "description": "产品发布页 — 素材+设计+视频+审查",
+      "trigger": "发布页/产品页/网站",
+      "steps": 4,
+      "source": "core/sera-agent-router/workflows/product-launch-page.yaml",
+      "agent": "multi"
+    },
+    {
+      "id": "propfirm-video",
+      "name": "PropFirm Video Workflow",
+      "description": "PropFirm 视频生产工作流",
+      "trigger": "视频/短视频/口播",
+      "steps": 4,
+      "source": "core/sera-agent-router/workflows/propfirm-video.yaml",
+      "agent": "video-agent"
+    }
+  ]
+}

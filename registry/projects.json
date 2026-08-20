@@ -1,0 +1,135 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-08-21",
+  "description": "Sera Agent OS — 所有项目注册表",
+  "projects": [
+    {
+      "id": "htx-otc",
+      "name": "HTX OTC",
+      "category": "business",
+      "status": "active",
+      "description": "火币 OTC 场外交易 — 落地页与进度中心",
+      "repos": [
+        "78tyih/htx-otc-landing",
+        "78tyih/htx-otc-progress-hub"
+      ],
+      "mapped_path": "projects/htx-otc/",
+      "agent": "otc-agent"
+    },
+    {
+      "id": "propfirm-tv",
+      "name": "PropFirm.TV",
+      "category": "content",
+      "status": "active",
+      "description": "PropFirm 考试盘视频内容平台",
+      "repos": [
+        "78tyih/propfirm-tv",
+        "78tyih/propfirm-tv-video-factory",
+        "78tyih/propfirm-tv-pipeline"
+      ],
+      "mapped_path": "projects/propfirm-tv/",
+      "agent": "propfirm-agent"
+    },
+    {
+      "id": "poff-trading",
+      "name": "泡芙交易 Poff Trading",
+      "category": "business",
+      "status": "active",
+      "description": "期货考试盘折扣、工具与社区平台",
+      "repos": ["78tyih/poff-trading"],
+      "mapped_path": "projects/poff-trading/",
+      "agent": "propfirm-agent"
+    },
+    {
+      "id": "deltapex",
+      "name": "Deltapex / 德湃",
+      "category": "business",
+      "status": "active",
+      "description": "德湃考试盘 — 官网、品牌、满意度调研",
+      "repos": [
+        "78tyih/deltapex-site",
+        "78tyih/DPxPropfirm1",
+        "78tyih/DPxPropfirm",
+        "78tyih/DP-",
+        "78tyih/Deltapex-Trading-Group-"
+      ],
+      "mapped_path": "projects/deltapex/",
+      "agent": "propfirm-agent"
+    },
+    {
+      "id": "traderbti",
+      "name": "Trader BTI",
+      "category": "business",
+      "status": "active",
+      "description": "Trader BTI 交易平台",
+      "repos": ["78tyih/traderbti"],
+      "mapped_path": "projects/traderbti/",
+      "agent": "trading-agent"
+    },
+    {
+      "id": "trader-dna",
+      "name": "Trader DNA",
+      "category": "business",
+      "status": "active",
+      "description": "交易性格画像测评 — 私域引流工具",
+      "repos": ["78tyih/Trader-DNA"],
+      "mapped_path": "projects/trader-dna/",
+      "agent": "trading-agent"
+    },
+    {
+      "id": "ququ",
+      "name": "蛐蛐 QuQu",
+      "category": "tool",
+      "status": "active",
+      "description": "中文语音输入工具 — 浮窗波形、AI 提示词提炼",
+      "repos": ["78tyih/ququ"],
+      "mapped_path": "projects/ququ/"
+    },
+    {
+      "id": "knowledgestar",
+      "name": "KnowledgeStar Galaxy",
+      "category": "tool",
+      "status": "active",
+      "description": "Obsidian 笔记知识星系可视化",
+      "repos": ["78tyih/knowledgestar-galaxy"],
+      "mapped_path": "projects/knowledgestar/"
+    },
+    {
+      "id": "clone-website",
+      "name": "Clone Website",
+      "category": "tool",
+      "status": "active",
+      "description": "网站克隆工具",
+      "repos": ["78tyih/clone-website"],
+      "mapped_path": "projects/clone-website/"
+    },
+    {
+      "id": "sera-agent-console",
+      "name": "Sera Agent Console",
+      "category": "infrastructure",
+      "status": "active",
+      "description": "Sera Agent OS 控制中心 WebUI",
+      "repos": [],
+      "mapped_path": "projects/sera-agent-console/",
+      "agent": "core"
+    },
+    {
+      "id": "niuniu-ai",
+      "name": "牛牛 AI",
+      "category": "product",
+      "status": "planned",
+      "description": "AI 教育平台（待启动）",
+      "repos": [],
+      "mapped_path": "projects/niuniu-ai/"
+    },
+    {
+      "id": "tradespan",
+      "name": "TradeSpan",
+      "category": "product",
+      "status": "planned",
+      "description": "MT4/MT5 交易软件（待启动）",
+      "repos": [],
+      "mapped_path": "projects/tradespan/"
+    }
+  ]
+}

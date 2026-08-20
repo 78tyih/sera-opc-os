@@ -1,0 +1,223 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-08-21",
+  "description": "Sera Agent OS — 所有 Skill 注册表",
+  "skills": [
+    {
+      "id": "sera-project-profile",
+      "name": "Project Profile",
+      "category": "product",
+      "status": "active",
+      "purpose": "项目初始化 — 模糊想法→结构化项目文档",
+      "source": "product/sera-project-profile/",
+      "owner_agent": "product-agent"
+    },
+    {
+      "id": "sera-product-analysis",
+      "name": "Product Analysis",
+      "category": "product",
+      "status": "active",
+      "purpose": "产品理解与分析",
+      "source": "product/sera-product-analysis/",
+      "owner_agent": "product-agent"
+    },
+    {
+      "id": "sera-market-research",
+      "name": "Market Research",
+      "category": "product",
+      "status": "active",
+      "purpose": "市场研究与竞品分析",
+      "source": "product/sera-market-research/",
+      "owner_agent": "product-agent"
+    },
+    {
+      "id": "sera-user-persona",
+      "name": "User Persona",
+      "category": "product",
+      "status": "active",
+      "purpose": "用户画像创建",
+      "source": "product/sera-user-persona/",
+      "owner_agent": "product-agent"
+    },
+    {
+      "id": "sera-positioning",
+      "name": "Positioning",
+      "category": "product",
+      "status": "active",
+      "purpose": "产品定位与差异化策略",
+      "source": "product/sera-positioning/",
+      "owner_agent": "product-agent"
+    },
+    {
+      "id": "sera-copywriting",
+      "name": "Copywriting",
+      "category": "product",
+      "status": "active",
+      "purpose": "专业文案撰写",
+      "source": "product/sera-copywriting/",
+      "owner_agent": "product-agent"
+    },
+    {
+      "id": "sera-product-manual",
+      "name": "Product Manual",
+      "category": "product",
+      "status": "active",
+      "purpose": "产品手册生成",
+      "source": "product/sera-product-manual/",
+      "owner_agent": "product-agent"
+    },
+    {
+      "id": "sera-intelligence-monitor",
+      "name": "Intelligence Monitor",
+      "category": "business",
+      "status": "active",
+      "purpose": "PropFirm 商业情报收集与推送",
+      "source": "business/sera-intelligence-monitor/",
+      "owner_agent": "propfirm-agent"
+    },
+    {
+      "id": "sera-content-factory",
+      "name": "Content Factory",
+      "category": "business",
+      "status": "active",
+      "purpose": "官网资产工厂 — 抓取→事实→素材",
+      "source": "business/sera-content-factory/",
+      "owner_agent": "propfirm-agent"
+    },
+    {
+      "id": "trading-analysis",
+      "name": "Trading Analysis",
+      "category": "business",
+      "status": "active",
+      "purpose": "交易复盘、策略分析、订单流解读",
+      "source": "business/trading-analysis/",
+      "owner_agent": "trading-agent"
+    },
+    {
+      "id": "sera-design-intelligence",
+      "name": "Design Intelligence",
+      "category": "creative",
+      "status": "active",
+      "purpose": "设计智能 — 风格库、案例库、参考库",
+      "source": "creative/sera-design-intelligence/",
+      "owner_agent": "design-agent"
+    },
+    {
+      "id": "sera-design-studio",
+      "name": "Design Studio",
+      "category": "creative",
+      "status": "active",
+      "purpose": "设计工作室 — 品牌、视觉、UI 生成",
+      "source": "creative/sera-design-studio/",
+      "owner_agent": "design-agent"
+    },
+    {
+      "id": "sera-video-pipeline",
+      "name": "Video Pipeline",
+      "category": "creative",
+      "status": "active",
+      "purpose": "视频生产流水线",
+      "source": "creative/sera-video-pipeline/",
+      "owner_agent": "video-agent"
+    },
+    {
+      "id": "sera-asset-manager",
+      "name": "Asset Manager",
+      "category": "creative",
+      "status": "active",
+      "purpose": "素材管理 — 搜索、整理、归档",
+      "source": "creative/sera-asset-manager/",
+      "owner_agent": "design-agent"
+    },
+    {
+      "id": "figma-review",
+      "name": "Figma Review",
+      "category": "creative",
+      "status": "active",
+      "purpose": "Figma 设计审查",
+      "source": "creative/figma-review/",
+      "owner_agent": "design-agent"
+    },
+    {
+      "id": "sera-browser-automation",
+      "name": "Browser Automation",
+      "category": "adapter",
+      "status": "active",
+      "purpose": "浏览器自动化",
+      "source": "adapters/sera-browser-automation/",
+      "owner_agent": "propfirm-agent"
+    },
+    {
+      "id": "sera-crm-adapter",
+      "name": "CRM Adapter",
+      "category": "adapter",
+      "status": "active",
+      "purpose": "CRM 适配器",
+      "source": "adapters/sera-crm-adapter/",
+      "owner_agent": "otc-agent"
+    },
+    {
+      "id": "sera-lark-suite",
+      "name": "Lark Suite",
+      "category": "adapter",
+      "status": "active",
+      "purpose": "飞书套件适配器",
+      "source": "adapters/sera-lark-suite/",
+      "owner_agent": "core"
+    },
+    {
+      "id": "sera-macos-ui",
+      "name": "macOS UI",
+      "category": "adapter",
+      "status": "active",
+      "purpose": "macOS 界面自动化",
+      "source": "adapters/sera-macos-ui/",
+      "owner_agent": "core"
+    },
+    {
+      "id": "sera-mail-hub",
+      "name": "Mail Hub",
+      "category": "adapter",
+      "status": "active",
+      "purpose": "邮件中心适配器",
+      "source": "adapters/sera-mail-hub/",
+      "owner_agent": "otc-agent"
+    },
+    {
+      "id": "sera-wecom-suite",
+      "name": "WeCom Suite",
+      "category": "adapter",
+      "status": "active",
+      "purpose": "企业微信套件适配器",
+      "source": "adapters/sera-wecom-suite/",
+      "owner_agent": "core"
+    },
+    {
+      "id": "kimi-style",
+      "name": "Kimi Design Style",
+      "category": "design-skill",
+      "status": "active",
+      "source_repo": "78tyih/kimi-design-refer",
+      "capability": ["poster", "landing page", "brand design", "editorial layout"],
+      "owner_agent": "design-agent"
+    },
+    {
+      "id": "htx-style",
+      "name": "HTX Design Style",
+      "category": "design-skill",
+      "status": "active",
+      "source_repo": "78tyih/htx-design-refer",
+      "capability": ["OTC brand", "landing page", "financial UI", "dark theme"],
+      "owner_agent": "design-agent"
+    },
+    {
+      "id": "svg-sketch",
+      "name": "SVG Sketch Workbench",
+      "category": "design-skill",
+      "status": "active",
+      "source_repo": "78tyih/svg-sketch-workbench",
+      "capability": ["SVG prototyping", "UI sketch", "terminal-first design"],
+      "owner_agent": "design-agent"
+    }
+  ]
+}

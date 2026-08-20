@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0",
+  "feedback": [
+    {
+      "id": "fb-001",
+      "date": "2026-08-10",
+      "product": "HTX OTC Desk",
+      "source": "机构客户 A",
+      "feedback": "页面很专业，但想知道更多关于资金安全的信息",
+      "category": "trust",
+      "action": "在 Hero 区域增加安全认证徽章",
+      "resolved": true
+    },
+    {
+      "id": "fb-002",
+      "date": "2026-08-12",
+      "product": "HTX OTC Progress Hub",
+      "source": "运营团队",
+      "feedback": "进度状态不够直观，需要点开才能看到详情",
+      "category": "ux",
+      "action": "优化进度指示器，增加状态标签",
+      "resolved": true
+    },
+    {
+      "id": "fb-003",
+      "date": "2026-08-18",
+      "product": "HTX OTC Desk",
+      "source": "潜在客户 B",
+      "feedback": "对比 Stripe 的话，你们的 CTA 不够明显",
+      "category": "visual",
+      "action": "CTA 颜色对比度优化，增加按钮大小",
+      "resolved": false
+    }
+  ]
+}

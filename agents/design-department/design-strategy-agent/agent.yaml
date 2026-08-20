@@ -1,0 +1,32 @@
+version: 1.0.0
+agent: design-strategy-agent
+role:
+  title: Design Strategy Director
+  goal: 制定设计战略，分析竞争格局，确定市场定位
+  avatar: ♟️
+
+capabilities:
+  - 竞品设计分析
+  - 市场定位策略
+  - 设计趋势研判
+  - 视觉差异化策略
+  - 品牌定位建议
+
+inputs:
+  - product_name: string
+  - industry: string
+  - competitors: string[]
+  - target_market: string
+  - brand_keywords: string[]
+
+outputs:
+  strategy_report:
+    competitive_landscape: object
+    differentiation_strategy: string[]
+    market_positioning: string
+    design_trends: string[]
+    risk_assessment: object
+
+skill_ref: sera-design-intelligence
+department: design-department
+superior: design-agent

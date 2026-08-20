@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0",
+  "rules": [
+    {
+      "id": "rule-001",
+      "rule": "金融产品首屏必须包含可见 CTA，CTA 应在 Hero 区域内而非折叠线以下",
+      "source": "experiment: exp-001",
+      "product": "HTX OTC Desk",
+      "confidence": "high",
+      "created": "2026-08-15",
+      "applied_to": ["HTX OTC Desk Landing"]
+    },
+    {
+      "id": "rule-002",
+      "rule": "Dashboard 进度指示器应使用语义颜色区分状态（进行中=蓝色，完成=绿色，失败=红色）",
+      "source": "experiment: exp-002",
+      "product": "HTX OTC Progress Hub",
+      "confidence": "high",
+      "created": "2026-08-16",
+      "applied_to": ["HTX OTC Progress Hub"]
+    },
+    {
+      "id": "rule-003",
+      "rule": "金融产品 Hero 区域应包含信任信号（安全认证、监管信息），优先级高于功能展示",
+      "source": "design-review: iteration-003",
+      "product": "HTX OTC Desk",
+      "confidence": "medium",
+      "created": "2026-08-20",
+      "applied_to": []
+    }
+  ]
+}

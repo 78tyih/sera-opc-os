@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0",
+  "records": [
+    {
+      "id": "rec-001",
+      "product": "HTX OTC Desk",
+      "page": "landing-page",
+      "metric": "conversion_rate",
+      "baseline": 3.2,
+      "current": 4.8,
+      "change": 50.0,
+      "timestamp": "2026-08-15T10:30:00"
+    },
+    {
+      "id": "rec-002",
+      "product": "HTX OTC Desk",
+      "page": "landing-page",
+      "metric": "cta_click_rate",
+      "baseline": 12.5,
+      "current": 18.3,
+      "change": 46.4,
+      "timestamp": "2026-08-15T10:30:00"
+    },
+    {
+      "id": "rec-003",
+      "product": "HTX OTC Desk",
+      "page": "progress-hub",
+      "metric": "task_completion_time",
+      "baseline": 45,
+      "current": 38,
+      "change": -15.6,
+      "timestamp": "2026-08-10T14:00:00"
+    }
+  ]
+}

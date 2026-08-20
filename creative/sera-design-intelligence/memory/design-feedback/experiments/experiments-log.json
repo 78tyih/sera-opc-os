@@ -1,0 +1,40 @@
+{
+  "version": "1.0.0",
+  "experiments": [
+    {
+      "id": "exp-001",
+      "name": "HTX OTC Hero CTA Position",
+      "product": "HTX OTC Desk",
+      "created": "2026-08-01",
+      "status": "concluded",
+      "hypothesis": "将 CTA 从页面底部移至首屏可提升转化率",
+      "variants": {
+        "A": {"description": "CTA 在 Hero 区域下方（当前）", "results": {"conversion_rate": 3.2, "click_through": 12.5}},
+        "B": {"description": "CTA 在 Hero 区域右侧固定", "results": {"conversion_rate": 4.8, "click_through": 18.3}}
+      },
+      "metrics": ["conversion_rate", "click_through"],
+      "winner": "B",
+      "concluded": "2026-08-15",
+      "learnings": "金融产品用户需要明确的行动引导，CTA 可见性直接影响转化率",
+      "observations": [
+        {"timestamp": "2026-08-05", "note": "B 方案点击率显著提升，但需关注跳出率"},
+        {"timestamp": "2026-08-10", "note": "B 方案转化率稳定在 4.5% 以上，验证假设"}
+      ],
+      "new_rule": "金融产品首屏必须包含可见 CTA"
+    },
+    {
+      "id": "exp-002",
+      "name": "Trust Badge Placement",
+      "product": "HTX OTC Desk",
+      "created": "2026-08-10",
+      "status": "running",
+      "hypothesis": "在 Hero 区域展示安全认证徽章可提升信任感",
+      "variants": {
+        "A": {"description": "信任徽章在 Feature 板块之后", "results": {}},
+        "B": {"description": "信任徽章在 Hero 区域副标题下方", "results": {}}
+      },
+      "metrics": ["trust_score", "conversion_rate", "time_on_page"],
+      "observations": []
+    }
+  ]
+}

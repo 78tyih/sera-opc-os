@@ -1,0 +1,62 @@
+[
+  {
+    "id": "bloomberg-terminal",
+    "name": "Bloomberg Terminal",
+    "category": "trading",
+    "scores": {
+      "visual_quality": 70,
+      "brand_strength": 95,
+      "conversion_power": 85,
+      "trust_level": 98,
+      "ux_quality": 65,
+      "technical_execution": 95
+    },
+    "total": 84.7,
+    "tags": ["trading", "terminal", "institutional", "professional"]
+  },
+  {
+    "id": "tradingview",
+    "name": "TradingView",
+    "category": "trading",
+    "scores": {
+      "visual_quality": 82,
+      "brand_strength": 80,
+      "conversion_power": 85,
+      "trust_level": 75,
+      "ux_quality": 88,
+      "technical_execution": 85
+    },
+    "total": 82.5,
+    "tags": ["trading", "charting", "social", "retail"]
+  },
+  {
+    "id": "coinbase",
+    "name": "Coinbase",
+    "category": "trading",
+    "scores": {
+      "visual_quality": 85,
+      "brand_strength": 88,
+      "conversion_power": 90,
+      "trust_level": 85,
+      "ux_quality": 87,
+      "technical_execution": 85
+    },
+    "total": 86.7,
+    "tags": ["crypto", "exchange", "retail", "regulated"]
+  },
+  {
+    "id": "topstep",
+    "name": "Topstep",
+    "category": "trading",
+    "scores": {
+      "visual_quality": 78,
+      "brand_strength": 82,
+      "conversion_power": 92,
+      "trust_level": 80,
+      "ux_quality": 80,
+      "technical_execution": 78
+    },
+    "total": 81.7,
+    "tags": ["propfirm", "trading", "evaluation", "funded"]
+  }
+]

@@ -1,0 +1,47 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-08-21",
+  "description": "Sera Design Pattern Library — 可复用的 UI 模式库",
+  "categories": [
+    {
+      "id": "hero",
+      "name": "Hero Section",
+      "patterns": ["trust-hero", "product-hero", "ai-hero", "content-hero"]
+    },
+    {
+      "id": "navigation",
+      "name": "Navigation",
+      "patterns": ["centered-nav", "sidebar-nav", "floating-nav", "mega-menu"]
+    },
+    {
+      "id": "feature",
+      "name": "Feature Display",
+      "patterns": ["grid-cards", "alternating-rows", "icon-list", "interactive-demo"]
+    },
+    {
+      "id": "trust",
+      "name": "Trust Signals",
+      "patterns": ["logo-wall", "testimonial-carousel", "stats-bar", "certification-badges"]
+    },
+    {
+      "id": "pricing",
+      "name": "Pricing",
+      "patterns": ["tiered-cards", "comparison-table", "usage-based", "custom-quote"]
+    },
+    {
+      "id": "cta",
+      "name": "Call to Action",
+      "patterns": ["sticky-cta", "floating-cta", "inline-cta", "modal-cta"]
+    },
+    {
+      "id": "footer",
+      "name": "Footer",
+      "patterns": ["sitemap-footer", "minimal-footer", "cta-footer", "brand-footer"]
+    },
+    {
+      "id": "dashboard",
+      "name": "Dashboard",
+      "patterns": ["kpi-grid", "data-table", "activity-feed", "status-pipeline"]
+    }
+  ]
+}

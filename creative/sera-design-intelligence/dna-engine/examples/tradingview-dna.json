@@ -1,0 +1,57 @@
+{
+  "name": "TradingView",
+  "industry": "trading",
+  "emotion": "professional-accessible",
+  "brand_personality": ["data-rich", "community-driven", "professional", "accessible"],
+  "color_system": {
+    "primary": "#2962FF",
+    "background": "#131722",
+    "dark_background": "#0A0D14",
+    "accent": "#00BFA5",
+    "semantic": {
+      "bullish": "#00BFA5",
+      "bearish": "#FF3B45",
+      "neutral": "#787B86"
+    }
+  },
+  "typography": {
+    "primary_font": "-apple-system, BlinkMacSystemFont, sans-serif",
+    "heading_style": {
+      "size": "clamp(28px, 3vw, 40px)",
+      "weight": 600
+    },
+    "body_style": {
+      "size": "14px",
+      "weight": 400,
+      "line_height": 1.5
+    }
+  },
+  "layout_language": {
+    "grid": "flexible multi-panel",
+    "spacing_unit": "4px",
+    "section_style": "dark themed, high information density"
+  },
+  "component_patterns": [
+    "multi-panel chart layout",
+    "floating toolbar",
+    "collapsible sidebar",
+    "data-table with sorting"
+  ],
+  "motion_language": {
+    "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+    "duration": "0.2s",
+    "hover_effect": "highlight + subtle scale"
+  },
+  "conversion_patterns": [
+    "freemium upgrade path",
+    "feature-limited preview",
+    "social proof through community",
+    "educational content as lead gen"
+  ],
+  "recommended_usage": [
+    "Trading Platform",
+    "Charting Application",
+    "Data Visualization Tool",
+    "Financial Analysis Software"
+  ]
+}

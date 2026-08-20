@@ -1,4 +1,4 @@
-version: 1.0.0
+version: 2.0.0
 agent: design-director-agent
 role:
   title: Design Director
@@ -8,6 +8,9 @@ role:
 capabilities:
   - 产品需求分析
   - 设计方向决策
+  - 设计策略决策
+  - 产品-风格匹配
+  - 多风格组合优化
   - 风格匹配
   - 竞品设计分析
   - 设计策略制定
@@ -22,10 +25,22 @@ inputs:
 outputs:
   design_direction:
     primary_style: string
+    style_combination:
+      - style_id: string
+        weight: number
+        rationale: string
     references: string[]
     emotion: string
+    trust_level: integer
+    technology_level: integer
+    luxury_level: integer
     key_principles: string[]
     recommended_components: string[]
+    decision_rationale:
+      market_analysis: string
+      competitive_context: string
+      risk_assessment: string
+      confidence_score: integer
 
 skill_ref: sera-design-intelligence
 department: design-department

@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Design Direction Schema",
+  "description": "设计方向决策 Schema — Design Director Agent 的输出标准格式",
+  "type": "object",
+  "required": ["product", "design_direction", "style_combination", "decision_rationale"],
+  "properties": {
+    "product": {
+      "type": "object",
+      "properties": {
+        "name": {"type": "string"},
+        "industry": {"type": "string"},
+        "audience": {"type": "string"},
+        "goal": {"type": "string"},
+        "stage": {"type": "string", "enum": ["startup", "growth", "mature"]}
+      }
+    },
+    "design_direction": {
+      "type": "object",
+      "properties": {
+        "primary_style": {"type": "string"},
+        "emotion": {"type": "string"},
+        "trust_level": {"type": "integer", "minimum": 1, "maximum": 10},
+        "technology_level": {"type": "integer", "minimum": 1, "maximum": 10},
+        "luxury_level": {"type": "integer", "minimum": 1, "maximum": 10},
+        "key_principles": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "style_combination": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "style_id": {"type": "string"},
+          "weight": {"type": "number", "minimum": 0, "maximum": 1},
+          "rationale": {"type": "string"}
+        }
+      }
+    },
+    "decision_rationale": {
+      "type": "object",
+      "properties": {
+        "market_analysis": {"type": "string"},
+        "competitive_context": {"type": "string"},
+        "risk_assessment": {"type": "string"},
+        "confidence_score": {"type": "integer", "minimum": 1, "maximum": 10}
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string"},
+          "relevance": {"type": "string"},
+          "extractable_patterns": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "name": "Coinbase",
+  "industry": "fintech",
+  "emotion": "trustworthy-simple",
+  "brand_personality": ["regulated", "accessible", "clean", "consumer-friendly"],
+  "color_system": {
+    "primary": "#0052FF",
+    "background": "#FFFFFF",
+    "accent": "#00D395",
+    "semantic": {
+      "success": "#00D395",
+      "warning": "#FFB800",
+      "error": "#FF3B45"
+    }
+  },
+  "typography": {
+    "primary_font": "Coinbase Sans, system-ui",
+    "heading_style": {
+      "size": "clamp(40px, 5vw, 56px)",
+      "weight": 700,
+      "letter_spacing": "-0.02em"
+    },
+    "body_style": {
+      "size": "16px",
+      "weight": 400,
+      "line_height": 1.6
+    }
+  },
+  "layout_language": {
+    "grid": "12-column",
+    "spacing_unit": "8px",
+    "section_style": "centered with generous white space"
+  },
+  "component_patterns": [
+    "trust-badge row",
+    "simple feature card",
+    "one-click CTA",
+    "progressive disclosure form"
+  ],
+  "motion_language": {
+    "easing": "ease-out",
+    "duration": "0.3s",
+    "hover_effect": "subtle shadow + color shift"
+  },
+  "conversion_patterns": [
+    "low-friction signup",
+    "trust signals above fold",
+    "progressive KYC flow",
+    "educational content before conversion"
+  ],
+  "recommended_usage": [
+    "Crypto Exchange",
+    "Consumer Finance",
+    "Regulated Financial Service"
+  ]
+}

@@ -2,12 +2,13 @@
 name: otc-agent
 version: 1.0.0
 type: domain-expert
-status: draft
+status: active
 
 role: OTC 商务拓展专家（客户分析/报价回复/跟进/风险判断）
 
 skills:
   - sera-mail-hub        # 邮件收发/起草
+  - sera-crm-adapter     # 客户档案/跟进/交易记录
   - sera-memory-system   # 客户历史与决策
   - sera-context-system  # 客户偏好/业务规则
   - sera-knowledge-sync  # 客户档案归档
@@ -16,7 +17,7 @@ tools:
   - Bash
   - Read
   - Write
-  # CRM adapter 待接入
+  - sera-crm-adapter    # CRM 数据读写
 
 knowledge:
   - 客户准入标准 / 报价底价 / 风控红线（内部资料勿外泄）
@@ -34,6 +35,7 @@ orchestration:
   primary_domain: business
   dependent_skills:
     - sera-mail-hub
+    - sera-crm-adapter
     - sera-memory-system
     - sera-context-system
     - sera-knowledge-sync

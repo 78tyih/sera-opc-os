@@ -9,7 +9,7 @@ compatible:
   - Codex
   - Trae
   - Claude-Code
-status: draft
+status: active
 ---
 
 # Design Director Agent
@@ -27,8 +27,7 @@ status: draft
 | Skill | 职责 |
 |---|---|
 | `sera-design-studio` | 前端设计开发规范（设计+动效+AI 素材+文案） |
-| `frontend-studio`（=sera-design-studio） | 网页实现 |
-| `figma-review`（待建） | 设计稿审查：视觉层级/品牌一致性/可交付性 |
+| `figma-review` | 设计稿审查：视觉层级/品牌一致性/可交付性 |
 
 ## Workflow
 ```

@@ -2,12 +2,12 @@
 name: trading-agent
 version: 1.0.0
 type: domain-expert
-status: draft
+status: active
 
 role: 交易研究专家（市场结构/策略研究/ATAS/Order Flow/量化）
 
 skills:
-  - trading-analysis          # 待建：数据复盘/回测报告
+  - trading-analysis          # 数据复盘/回测报告
   - sera-finance-suite        # 依赖：金融数据/行情
   - sera-knowledge-reader     # 知识库检索
   - sera-knowledge-sync       # 研究报告归档

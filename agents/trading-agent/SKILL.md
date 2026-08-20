@@ -9,7 +9,7 @@ compatible:
   - Codex
   - Trae
   - Claude-Code
-status: draft
+status: active
 ---
 
 # Trading Research Agent
@@ -26,7 +26,7 @@ status: draft
 ## 组合 Skills
 | Skill | 职责 |
 |---|---|
-| `trading-analysis`（待建） | 交易数据复盘 / 胜率盈亏比分析 / 回测报告 |
+| `trading-analysis` | 交易数据复盘 / 胜率盈亏比分析 / 回测报告 |
 | `sera-finance-suite`（依赖） | 金融数据检索 / 行情 / 模型 |
 | `sera-knowledge-reader` | 知识库 / 研究报告检索 |
 | `sera-knowledge-sync` | 研究报告归档 |

@@ -2,13 +2,13 @@
 name: design-agent
 version: 1.0.0
 type: domain-expert
-status: draft
+status: active
 
 role: 设计总监（品牌/UI/海报/网站的统一设计决策）
 
 skills:
   - sera-design-studio   # 前端设计开发规范
-  - figma-review         # 待建：设计稿审查
+  - figma-review         # 设计稿审查
 
 tools:
   - Bash

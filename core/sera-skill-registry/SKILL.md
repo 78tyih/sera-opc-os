@@ -37,10 +37,11 @@ Sera Agent OS 的 Skill 注册表：管理所有能力（core / business / creat
 4. 更新：新增/修改 Skill 时按 templates/SKILL.template.md 标准
 ```
 
-## 当前注册表（V1.0，20 个超级 Skill）
+## 当前注册表（V1.1，22 个超级 Skill）
 ### core/
 - `sera-agent-orchestrator` — 任务路由/执行规划
 - `sera-memory-system` — 共享记忆层（Context Hub + Obsidian + Project State）
+- `sera-state-manager` — 工作状态管理（当前阶段/阻塞/下一步）
 - `sera-skill-registry` — 本注册表
 - `sera-context-system` — 多 Agent 共享上下文（原 context-hub）
 - `sera-knowledge-sync` — Obsidian 知识归档（原 obsidian-sync）
@@ -49,11 +50,13 @@ Sera Agent OS 的 Skill 注册表：管理所有能力（core / business / creat
 ### business/
 - `sera-intelligence-monitor` — PropFirm 商业情报（原 propfirm-feed）
 - `sera-content-factory` — 官网素材工厂（原 propfirm-official-site-assets）
+- `trading-analysis` — 交易复盘/胜率盈亏比/策略回测/订单流解读
 
 ### creative/
 - `sera-video-pipeline` — 数字人视频流水线（原 heygen-knowledge-shortvideo）
 - `sera-asset-manager` — 素材资产管理（原 propfirm-eagle-import）
 - `sera-design-studio` — 前端设计开发规范（原 frontend-dev）
+- `figma-review` — 设计稿审查（视觉层级/品牌一致性/可交付性）
 
 ### adapters/
 - `sera-lark-suite` — 飞书/Lark（原 lark-unified）
@@ -61,6 +64,10 @@ Sera Agent OS 的 Skill 注册表：管理所有能力（core / business / creat
 - `sera-mail-hub` — 邮件（原 gmail）
 - `sera-browser-automation` — 浏览器（原 browser-use）
 - `sera-macos-ui` — macOS UI（原 peekaboo）
+- `sera-crm-adapter` — CRM 适配层（客户档案/跟进/交易记录）
+
+### agents/（5 个核心 Agent，全部 active）
+- `propfirm-agent` / `otc-agent` / `trading-agent` / `video-agent` / `design-agent`
 
 ## Dependencies
 - `templates/SKILL.template.md`（标准格式模板）

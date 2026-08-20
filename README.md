@@ -37,13 +37,13 @@ Sera Agent OS 是一个跨 Agent 的个人 AI 操作系统。它把孤立的 AI 
 
 Agent = 多个 Skill 的组合，是用户真正直接调用的入口。
 
-| Agent | 类别 | 组合 Skills | 负责 |
-|---|---|---|---|
-| [`propfirm-agent`](agents/propfirm-agent/SKILL.md) | business | intelligence-monitor + content-factory + browser-automation + design-studio | 竞品分析 / 网站拆解 / 产品手册 / 营销素材 |
-| [`otc-agent`](agents/otc-agent/SKILL.md) | business | mail-hub + memory-system + context-system + knowledge-sync | 客户分析 / 报价回复 / 跟进 / 风险判断 |
-| [`trading-agent`](agents/trading-agent/SKILL.md) | business | trading-analysis + finance-suite + knowledge-reader | ATAS / Order Flow / 市场研究 |
-| [`video-agent`](agents/video-agent/SKILL.md) | creative | content-factory + video-pipeline + asset-manager + compute-control | 官网素材 → 数字人视频 → 合成 → 入库（最成熟） |
-| [`design-agent`](agents/design-agent/SKILL.md) | creative | design-studio + figma-review | 品牌 / UI / 海报 / 网站 |
+| Agent | 类别 | 组合 Skills | 负责 | 状态 |
+|---|---|---|---|---|
+| [`propfirm-agent`](agents/propfirm-agent/SKILL.md) | business | intelligence-monitor + content-factory + browser-automation + design-studio | 竞品分析 / 网站拆解 / 产品手册 / 营销素材 | ✅ active |
+| [`otc-agent`](agents/otc-agent/SKILL.md) | business | mail-hub + crm-adapter + memory-system + context-system + knowledge-sync | 客户分析 / 报价回复 / 跟进 / 风险判断 | ✅ active |
+| [`trading-agent`](agents/trading-agent/SKILL.md) | business | trading-analysis + finance-suite + knowledge-reader | ATAS / Order Flow / 市场研究 | ✅ active |
+| [`video-agent`](agents/video-agent/SKILL.md) | creative | content-factory + video-pipeline + asset-manager + compute-control | 官网素材 → 数字人视频 → 合成 → 入库（最成熟） | ✅ active |
+| [`design-agent`](agents/design-agent/SKILL.md) | creative | design-studio + figma-review | 品牌 / UI / 海报 / 网站 | ✅ active |
 
 调用关系：**Agent → Skill → Adapter → Tool**（分层调用，不混在一起）
 
@@ -67,6 +67,7 @@ Agent = 多个 Skill 的组合，是用户真正直接调用的入口。
 |---|---|---|
 | [`sera-intelligence-monitor`](business/sera-intelligence-monitor/SKILL.md) | propfirm-feed | PropFirm 商业情报（采集→过滤→门禁→推送企微） |
 | [`sera-content-factory`](business/sera-content-factory/SKILL.md) | propfirm-official-site-assets | 官网素材工厂（capture→事实→5s B-roll×5→Eagle） |
+| [`trading-analysis`](business/trading-analysis/SKILL.md) | 新建 | 交易复盘 / 胜率盈亏比 / 策略回测 / 订单流解读 |
 
 ### 🎬 creative/ — 内容创作层
 
@@ -75,6 +76,7 @@ Agent = 多个 Skill 的组合，是用户真正直接调用的入口。
 | [`sera-video-pipeline`](creative/sera-video-pipeline/SKILL.md) | heygen-knowledge-shortvideo | 数字人口播→知识短视频合成（图卡+字幕+BGM） |
 | [`sera-asset-manager`](creative/sera-asset-manager/SKILL.md) | propfirm-eagle-import | 素材资产管理（Eagle 自动导入/打标） |
 | [`sera-design-studio`](creative/sera-design-studio/SKILL.md) | frontend-dev | 前端设计开发规范（设计+动效+AI 素材+文案） |
+| [`figma-review`](creative/figma-review/SKILL.md) | 新建 | 设计稿审查（视觉层级/品牌一致性/可交付性） |
 
 ### 🔌 adapters/ — 平台适配层
 
@@ -85,6 +87,7 @@ Agent = 多个 Skill 的组合，是用户真正直接调用的入口。
 | [`sera-mail-hub`](adapters/sera-mail-hub/SKILL.md) | gmail | 邮件（Gmail API） |
 | [`sera-browser-automation`](adapters/sera-browser-automation/SKILL.md) | browser-use | 浏览器自动化 |
 | [`sera-macos-ui`](adapters/sera-macos-ui/SKILL.md) | peekaboo | macOS UI 自动化 |
+| [`sera-crm-adapter`](adapters/sera-crm-adapter/SKILL.md) | 新建 | CRM 适配层（客户档案/跟进/交易记录） |
 
 ### 📋 模板
 
@@ -187,7 +190,7 @@ sera-agent-skills/
 
 - [x] **Phase 1**：仓库落地（README + 架构文档 + 13 Skill 归位 + 系统层骨架 + 模板）
 - [x] **Phase 2.5**：Agent 层建立（5 个核心 Agent：propfirm/otc/trading/video/design）+ sera-state-manager
-- [ ] **Phase 3**：补齐领域专家 Skill（figma-review / trading-analysis / CRM adapter）
+- [x] **Phase 3**：补齐领域专家 Skill（figma-review / trading-analysis / sera-crm-adapter），5 个 Agent 全部 active
 - [ ] **Phase 4**：实现 Agent Router（输入自然语言 → 自动编排多 Agent 协作）
 - [ ] **Phase 5**：连接 Codex / Trae / WorkBuddy / Claude 到同一 Skill Registry
 

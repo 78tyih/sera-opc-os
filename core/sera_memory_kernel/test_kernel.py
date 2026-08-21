@@ -292,16 +292,27 @@ def test_staging_gate():
 # ---------------------------------------------------------------------------
 
 def test_search():
-    """seed 后 search("信任") 命中 ≥1 条 (验证 FTS 触发器在同步 / LIKE 回退)."""
+    """seed 后 search("TradeSpan") 走 FTS 链路验证触发器同步，search("信任") 验证 LIKE 兜底."""
     conn = _mem_conn()
     _seed_tradespan(conn)
 
-    results = search(conn, "信任", limit=10)
-    assert len(results) >= 1, (
-        f"Search('信任') returned {len(results)} results. "
-        "Neither FTS5 nor LIKE fallback found matches."
+    # FTS 验证
+    results_fts = search(conn, "TradeSpan", limit=10)
+    assert len(results_fts) >= 1, (
+        f"FTS search('TradeSpan') returned {len(results_fts)} results. "
+        "FTS trigger sync may be broken."
     )
-    print(f"[PASS] T5: 搜索可用 — search('信任') 命中 {len(results)} 条")
+    assert not results_fts[0].get("degraded", True), "FTS should be used for 'TradeSpan'"
+
+    # LIKE 兜底验证
+    results_like = search(conn, "信任", limit=10)
+    assert len(results_like) >= 1, (
+        f"LIKE search('信任') returned {len(results_like)} results. "
+        "LIKE fallback may be broken."
+    )
+    assert results_like[0].get("degraded", False), "LIKE should be used for '信任'"
+
+    print(f"[PASS] T5: 搜索可用 — FTS 命中 {len(results_fts)} 条, LIKE 命中 {len(results_like)} 条")
 
 
 # ---------------------------------------------------------------------------
@@ -360,8 +371,8 @@ def test_events_append_only():
             stripped = line.strip()
             if stripped.startswith("#") or stripped.startswith('"""'):
                 continue
-            # Check if it's in a CHECK constraint, enum definition, or DDL — allowed
-            if any(kw in stripped for kw in ("CHECK", "IN (", "valid_statuses", "valid_data_states")):
+            # Check if it's in a CHECK constraint, enum definition, set literal, or DDL — allowed
+            if any(kw in stripped for kw in ("CHECK", "IN (", "{\"", "valid_statuses", "valid_data_states")):
                 continue
             deprecated_lines.append((i + 1, stripped))
 

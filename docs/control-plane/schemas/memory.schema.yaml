@@ -1,0 +1,35 @@
+# Memory Architecture Schema v1.0
+memory:
+  type: object
+  required: [id, type, level, content, retention]
+  properties:
+    id: { type: string, pattern: "^MEM-\\d{3}$" }
+    type:
+      type: string
+      enum: [working, episodic, semantic, procedural]
+    level:
+      type: string
+      enum: [company, project, agent]
+    context:
+      type: object
+      properties:
+        agent_id: { type: string, nullable: true }
+        project_id: { type: string, nullable: true }
+        mission_id: { type: string, nullable: true }
+    content:
+      type: object
+      required: [title, body, importance]
+      properties:
+        title: { type: string }
+        body: { type: string }
+        tags: { type: array, items: { type: string } }
+        importance: { type: integer, minimum: 1, maximum: 5 }
+    retention:
+      type: object
+      required: [last_accessed, access_count]
+      properties:
+        ttl: { type: string, nullable: true }
+        last_accessed: { type: string, format: date-time }
+        access_count: { type: integer }
+    created_at: { type: string, format: date-time }
+    updated_at: { type: string, format: date-time }

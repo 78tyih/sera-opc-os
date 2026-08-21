@@ -1,0 +1,37 @@
+# Model Router Schema v1.0
+model_router:
+  type: object
+  required: [models, routing_rules]
+  properties:
+    models:
+      type: array
+      items:
+        type: object
+        required: [id, provider, capabilities, cost_per_1k_input, cost_per_1k_output, status]
+        properties:
+          id: { type: string }
+          provider: { type: string, enum: [anthropic, openai, deepseek, google] }
+          capabilities:
+            type: array
+            items: { type: string, enum: [reasoning, coding, analysis, long_context, general, creative, quick, cost_efficient] }
+          cost_per_1k_input: { type: number }
+          cost_per_1k_output: { type: number }
+          max_tokens: { type: integer }
+          priority: { type: integer }
+          status: { type: string, enum: [active, inactive, deprecated] }
+    routing_rules:
+      type: array
+      items:
+        type: object
+        required: [task_type, model]
+        properties:
+          task_type: { type: string }
+          model: { type: string }
+          fallback: { type: string, nullable: true }
+          reason: { type: string }
+    cost_optimization:
+      type: object
+      properties:
+        strategy: { type: string, enum: [quality_first, cost_first, balanced, hybrid] }
+        monthly_budget: { type: number }
+        alert_threshold: { type: number, minimum: 0, maximum: 1 }

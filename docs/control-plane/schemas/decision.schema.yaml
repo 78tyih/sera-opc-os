@@ -1,0 +1,42 @@
+# Decision System Schema v1.0
+decision:
+  type: object
+  required: [id, title, type, level, maker, selected_option, rationale, status]
+  properties:
+    id: { type: string, pattern: "^DEC-\\d{8}-\\d{3}$" }
+    title: { type: string }
+    type: { type: string, enum: [strategic, tactical, operational] }
+    level: { type: string, enum: [D1, D2, D3, D4] }
+    maker: { type: string }
+    context:
+      type: object
+      properties:
+        mission_id: { type: string, nullable: true }
+        project_id: { type: string, nullable: true }
+        trigger: { type: string }
+    options:
+      type: array
+      items:
+        type: object
+        required: [id, description]
+        properties:
+          id: { type: string }
+          description: { type: string }
+          pros: { type: array, items: { type: string } }
+          cons: { type: array, items: { type: string } }
+          predicted_impact: { type: string }
+          selected: { type: boolean }
+    selected_option: { type: string }
+    rationale: { type: string }
+    impact:
+      type: object
+      properties:
+        expected_outcome: { type: string }
+        actual_outcome: { type: string, nullable: true }
+        review_date: { type: string, format: date-time, nullable: true }
+    status:
+      type: string
+      enum: [proposed, approved, rejected, implemented, reviewed]
+    created_at: { type: string, format: date-time }
+    decided_at: { type: string, format: date-time, nullable: true }
+    reviewed_at: { type: string, format: date-time, nullable: true }

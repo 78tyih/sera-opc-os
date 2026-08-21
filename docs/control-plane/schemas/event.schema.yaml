@@ -1,0 +1,46 @@
+# Event Bus Schema v1.0
+event:
+  type: object
+  required: [id, type, source, payload, timestamp]
+  properties:
+    id: { type: string, format: uuid }
+    type:
+      type: string
+      enum:
+        - task.created
+        - task.assigned
+        - task.completed
+        - task.blocked
+        - decision.made
+        - decision.needs_review
+        - knowledge.created
+        - knowledge.updated
+        - knowledge.deprecated
+        - system.alert
+        - system.error
+        - system.health_check
+        - agent.online
+        - agent.offline
+        - agent.error
+        - agent.evaluation
+        - revenue.milestone
+        - lead.new
+        - deal.won
+        - deal.lost
+    source: { type: string }
+    target: { type: string, nullable: true }
+    priority: { type: integer, minimum: 1, maximum: 5 }
+    payload:
+      type: object
+      required: [data, schema_version]
+      properties:
+        data: { type: object }
+        schema_version: { type: string }
+    context:
+      type: object
+      properties:
+        mission_id: { type: string, nullable: true }
+        project_id: { type: string, nullable: true }
+        trace_id: { type: string }
+    timestamp: { type: string, format: date-time }
+    ttl: { type: integer, minimum: 60 }

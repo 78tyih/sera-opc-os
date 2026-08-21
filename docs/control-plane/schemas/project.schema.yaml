@@ -1,0 +1,57 @@
+# Project Management System Schema v1.0
+project:
+  type: object
+  required: [id, name, owner, phase, status, tasks]
+  properties:
+    id: { type: string, pattern: "^PRJ-\\d{3}$" }
+    name: { type: string }
+    owner: { type: string }
+    okr_ids: { type: array, items: { type: string } }
+    phase:
+      type: string
+      enum: [discovery, definition, execution, launch, post_launch]
+    status:
+      type: string
+      enum: [draft, active, paused, completed, cancelled]
+    milestones:
+      type: array
+      items:
+        type: object
+        required: [id, name, due_date, status]
+        properties:
+          id: { type: string }
+          name: { type: string }
+          due_date: { type: string, format: date-time }
+          status: { type: string, enum: [pending, in_progress, completed] }
+          deliverables: { type: array, items: { type: string } }
+    tasks:
+      type: array
+      items:
+        type: object
+        required: [id, title, assignee, priority, status]
+        properties:
+          id: { type: string, pattern: "^TSK-\\d{3}$" }
+          title: { type: string }
+          description: { type: string }
+          assignee: { type: string }
+          priority: { type: integer, minimum: 1, maximum: 5 }
+          status:
+            type: string
+            enum: [backlog, todo, in_progress, review, done, blocked]
+          dependencies: { type: array, items: { type: string } }
+          estimated_hours: { type: number }
+          actual_hours: { type: number }
+          tags: { type: array, items: { type: string } }
+    timeline:
+      type: object
+      properties:
+        start_date: { type: string, format: date-time }
+        target_date: { type: string, format: date-time }
+        completed_date: { type: string, format: date-time, nullable: true }
+    resources:
+      type: object
+      properties:
+        agents: { type: array, items: { type: string } }
+        budget: { type: number, nullable: true }
+    created_at: { type: string, format: date-time }
+    updated_at: { type: string, format: date-time }

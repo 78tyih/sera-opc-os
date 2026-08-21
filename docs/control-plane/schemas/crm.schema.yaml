@@ -1,0 +1,53 @@
+# CRM System Schema v1.0
+crm:
+  type: object
+  required: [lead, interactions]
+  properties:
+    lead:
+      type: object
+      required: [id, source, status, contact]
+      properties:
+        id: { type: string }
+        source: { type: string, enum: [website, referral, social, email, event, direct] }
+        status:
+          type: string
+          enum: [new, contacted, qualified, proposal, negotiation, won, lost]
+        score: { type: integer, minimum: 0, maximum: 100 }
+        company: { type: string }
+        contact:
+          type: object
+          required: [name, email]
+          properties:
+            name: { type: string }
+            email: { type: string, format: email }
+            phone: { type: string, nullable: true }
+            title: { type: string, nullable: true }
+    interactions:
+      type: array
+      items:
+        type: object
+        required: [type, date, summary]
+        properties:
+          type: { type: string, enum: [email, call, meeting, demo, follow_up] }
+          date: { type: string, format: date-time }
+          summary: { type: string }
+          agent_id: { type: string }
+          next_action: { type: string, nullable: true }
+          next_date: { type: string, format: date-time, nullable: true }
+    deal:
+      type: object
+      properties:
+        value: { type: number }
+        probability: { type: number, minimum: 0, maximum: 1 }
+        expected_close: { type: string, format: date-time }
+        stage: { type: string, enum: [discovery, demo, proposal, negotiation, closing] }
+    customer:
+      type: object
+      properties:
+        status: { type: string, enum: [active, at_risk, churned] }
+        ltv: { type: number }
+        first_purchase: { type: string, format: date-time }
+        last_purchase: { type: string, format: date-time }
+        nps_score: { type: integer, nullable: true }
+    created_at: { type: string, format: date-time }
+    updated_at: { type: string, format: date-time }

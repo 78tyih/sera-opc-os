@@ -1,16 +1,79 @@
-# Sera Agent OS
+# Sera OPC OS
 
-**Build once, execute everywhere.**
+**World-Class AI Company Operating System**
 
-Sera Agent OS 是一个跨 Agent 的个人 AI 操作系统。它把孤立的 AI 工具（WorkBuddy / Codex / Trae / Claude Code / Cursor）统一为一个人工智能系统。
+> 一个由人类 CEO 驱动、AI 员工执行、持续学习进化的 AI 原生公司操作系统。
 
-> Skill 不属于任何单一 AI 平台 —— **Skill 属于 Sera Agent OS。**
-
-> **当前版本：V1.1（工程化阶段）** · 架构升级评审见 [`architecture/sera-agent-os-v1.1-upgrade.md`](architecture/sera-agent-os-v1.1-upgrade.md)
+| Field | Value |
+|-------|-------|
+| Version | 2.0 |
+| Status | Foundation Architecture |
+| Owner | Sarah CEO |
+| Legacy | [`sera-agent-os`](https://github.com/78tyih/sera-agent-os) |
 
 ---
 
-## 架构（V1.0）
+## 六层架构
+
+```
+Layer 0:  Constitution    公司宪法
+Layer 1:  Organization OS 组织系统
+Layer 2:  Factory OS      生产系统
+Layer 3:  Employee OS     员工系统
+Layer 4:  Learning OS     进化系统
+Layer 5:  Autonomous      自治公司
+```
+
+## 仓库结构
+
+```
+sera-opc-os/
+├── constitution/       # 公司宪法
+├── vision/             # 战略愿景
+├── strategy/           # 战略规划
+├── organization/       # 组织系统
+├── executive/          # 高管智能体
+├── departments/        # 部门定义
+├── agents/             # AI 员工
+├── skills/             # 技能目录
+├── workflows/          # 工作流
+├── factories/          # 生产工厂
+├── revenue/            # 商业变现
+├── core/               # 核心引擎
+├── runtime/            # 运行时
+├── router/             # 调度大脑
+├── models/             # 模型管理
+├── adapters/           # 外部适配器
+├── memory/             # 公司记忆
+├── evaluation/         # 智能体评估
+├── evolution/          # 进化系统
+├── portfolio/          # 项目资产
+├── platforms/          # 平台文档
+├── docs/               # 文档
+└── registry/           # 注册表
+```
+
+## 蓝图文档
+
+| # | 文档 | 说明 |
+|---|------|------|
+| 1 | [Blueprint](docs/blueprints/01-Blueprint.md) | 公司级设计规范，顶层愿景 |
+| 2 | [Repo Spec](docs/blueprints/02-Repo-Spec.md) | GitHub 工程规范，DeepSeek 直接执行 |
+| 3 | [Factory Blueprint](docs/blueprints/03-Factory-Blueprint.md) | 生产系统设计，5 大工厂定义 |
+| 4 | [Employee Blueprint](docs/blueprints/04-Employee-Blueprint.md) | 首批 50 名员工完整目录 |
+
+---
+
+## 核心原则
+
+1. **结果 > 任务** — 所有 Agent 必须回答：这个任务如何创造业务价值？
+2. **系统 > 个人** — 每次成功必须沉淀为 Skill / Workflow / Template / Memory
+3. **Agent 是员工，不是工具** — 每个 Agent 必须有完整 Contract
+4. **世界级 Benchmark** — 每个部门对标行业最佳实践
+
+---
+
+## 架构（V1.0 · 保留参考）
 
 ```
                     Sera Agent OS

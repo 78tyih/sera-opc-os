@@ -1,0 +1,33 @@
+# Knowledge Management System Schema v1.0
+knowledge:
+  type: object
+  required: [id, title, type, domain, content, status]
+  properties:
+    id: { type: string, pattern: "^KNO-\\d{3}$" }
+    title: { type: string }
+    type:
+      type: string
+      enum: [concept, process, reference, lesson, pattern, template]
+    domain:
+      type: string
+      enum: [strategy, product, engineering, design, marketing, sales, operations, ai]
+    tags: { type: array, items: { type: string } }
+    references: { type: array, items: { type: string } }
+    content:
+      type: object
+      required: [summary, body]
+      properties:
+        summary: { type: string }
+        body: { type: string }
+        attachments: { type: array, items: { type: string } }
+    metadata:
+      type: object
+      properties:
+        author: { type: string }
+        confidence: { type: number, minimum: 0, maximum: 1 }
+        version: { type: integer }
+        status:
+          type: string
+          enum: [draft, reviewed, published, deprecated]
+    created_at: { type: string, format: date-time }
+    updated_at: { type: string, format: date-time }

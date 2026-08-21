@@ -1,0 +1,51 @@
+# Company Map
+
+```yaml
+company:
+  name: Sera AI Company
+  version: 2.0
+
+ceo:
+  name: Sarah
+  reports_to: Human CEO
+
+executive_council:
+  - role: CSO
+    name: Chief Strategy Officer
+    benchmark: McKinsey
+  - role: CPO
+    name: Chief Product Officer
+    benchmark: Apple
+  - role: CTO
+    name: Chief Technology Officer
+    benchmark: Google
+  - role: CAIO
+    name: Chief AI Officer
+    benchmark: OpenAI
+  - role: COO
+    name: Chief Operating Officer
+    benchmark: Toyota
+  - role: CMO
+    name: Chief Marketing Officer
+    benchmark: Tesla
+  - role: CRO
+    name: Chief Revenue Officer
+    benchmark: Salesforce
+
+departments:
+  - strategy
+  - product
+  - engineering
+  - design
+  - marketing
+  - sales
+  - operations
+  - ai_research
+
+factories:
+  - product-factory
+  - marketing-factory
+  - sales-factory
+  - software-factory
+  - media-factory
+```

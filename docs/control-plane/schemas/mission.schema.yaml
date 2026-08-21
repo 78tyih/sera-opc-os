@@ -1,0 +1,53 @@
+# Mission System Schema v1.0
+mission:
+  type: object
+  required: [id, source, raw_input, intent, priority, status]
+  properties:
+    id:
+      type: string
+      pattern: "^MIS-\\d{8}-\\d{3}$"
+    source:
+      type: string
+      enum: [human, ceo-agent, system]
+    input_type:
+      type: string
+      enum: [text, voice, image, reference]
+    raw_input:
+      type: string
+    intent:
+      type: object
+      required: [primary, confidence]
+      properties:
+        primary:
+          type: string
+          enum: [launch, research, improve, sell, build, analyze, create]
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+        alternatives:
+          type: array
+          items: { type: string }
+    priority:
+      type: object
+      required: [level, reason]
+      properties:
+        level: { type: integer, minimum: 1, maximum: 5 }
+        reason: { type: string }
+    timeline:
+      type: object
+      properties:
+        urgency: { type: string, enum: [immediate, today, this_week, this_month, this_quarter] }
+        deadline: { type: string, format: date-time, nullable: true }
+        estimated_effort: { type: string }
+    context:
+      type: object
+      properties:
+        project: { type: string, nullable: true }
+        okr: { type: string, nullable: true }
+        references: { type: array, items: { type: string } }
+    status:
+      type: string
+      enum: [pending, planned, executing, completed, blocked, cancelled]
+    created_at: { type: string, format: date-time }
+    updated_at: { type: string, format: date-time }

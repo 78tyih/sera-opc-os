@@ -1,0 +1,38 @@
+# Evaluation System Schema v1.0
+evaluation:
+  type: object
+  required: [id, target_type, target_id, period, scores, total_score]
+  properties:
+    id: { type: string, pattern: "^EVAL-\\d{8}-\\d{3}$" }
+    target_type: { type: string, enum: [agent, project, factory, system] }
+    target_id: { type: string }
+    period: { type: string, enum: [daily, weekly, monthly, quarterly] }
+    scores:
+      type: object
+      properties:
+        quality:
+          type: object
+          required: [score]
+          properties:
+            score: { type: number, minimum: 0, maximum: 100 }
+            metrics:
+              type: array
+              items:
+                type: object
+                properties:
+                  name: { type: string }
+                  value: { type: number }
+                  target: { type: number }
+                  weight: { type: number }
+        speed:
+          $ref: "#/properties/scores/properties/quality"
+        cost:
+          $ref: "#/properties/scores/properties/quality"
+        business_impact:
+          $ref: "#/properties/scores/properties/quality"
+        learning:
+          $ref: "#/properties/scores/properties/quality"
+    total_score: { type: number, minimum: 0, maximum: 100 }
+    grade: { type: string, enum: [S, A, B, C, D, F] }
+    recommendations: { type: array, items: { type: string } }
+    created_at: { type: string, format: date-time }

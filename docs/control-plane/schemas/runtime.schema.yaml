@@ -1,0 +1,57 @@
+# Runtime Architecture Schema v1.0
+runtime:
+  type: object
+  required: [scheduler, resources, state, health]
+  properties:
+    scheduler:
+      type: object
+      required: [mode, max_concurrent, retry_policy]
+      properties:
+        mode: { type: string, enum: [sequential, parallel, priority, round_robin] }
+        max_concurrent: { type: integer, minimum: 1 }
+        queue_capacity: { type: integer }
+        retry_policy:
+          type: object
+          required: [max_retries, backoff_seconds]
+          properties:
+            max_retries: { type: integer, minimum: 0, maximum: 10 }
+            backoff_seconds: { type: integer, minimum: 1 }
+            exponential_backoff: { type: boolean }
+    resources:
+      type: object
+      properties:
+        tokens:
+          type: object
+          properties:
+            daily_limit: { type: integer }
+            warning_threshold: { type: number, minimum: 0, maximum: 1 }
+            current_usage: { type: integer }
+        api_calls:
+          type: object
+          properties:
+            rate_limit: { type: integer }
+            current_rate: { type: integer }
+    state:
+      type: object
+      required: [persistence, cleanup_policy]
+      properties:
+        persistence: { type: string, enum: [file, memory, hybrid] }
+        snapshot_interval: { type: integer }
+        cleanup_policy:
+          type: object
+          properties:
+            completed_ttl: { type: integer }
+            failed_ttl: { type: integer }
+    health:
+      type: object
+      required: [check_interval, thresholds]
+      properties:
+        check_interval: { type: integer }
+        alert_channels:
+          type: array
+          items: { type: object, properties: { type: { type: string } } }
+        thresholds:
+          type: object
+          properties:
+            error_rate: { type: number, minimum: 0, maximum: 1 }
+            latency_p99: { type: integer }

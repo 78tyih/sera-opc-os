@@ -1,0 +1,45 @@
+# Experience Engine Schema v1.0
+experience:
+  type: object
+  required: [id, type, source, execution, created_at]
+  properties:
+    id:
+      type: string
+      pattern: "^EXP-\\d{8}-\\d{3}$"
+    type:
+      type: string
+      enum: [task_execution, decision, interaction, quality]
+    source:
+      type: string
+    task_context:
+      type: object
+      properties:
+        mission_id: { type: string, nullable: true }
+        project_id: { type: string, nullable: true }
+        task_id: { type: string, nullable: true }
+        workflow_id: { type: string, nullable: true }
+    execution:
+      type: object
+      required: [agent_id, model_used]
+      properties:
+        agent_id: { type: string }
+        model_used: { type: string }
+        input_summary: { type: string }
+        output_summary: { type: string }
+        tokens_used:
+          type: object
+          properties:
+            input: { type: integer }
+            output: { type: integer }
+        execution_time_ms: { type: integer }
+        retry_count: { type: integer }
+        error_count: { type: integer }
+    quality:
+      type: object
+      properties:
+        self_score: { type: number, minimum: 0, maximum: 100 }
+        human_score: { type: number, nullable: true }
+        auto_score: { type: number, nullable: true }
+        pass_qa: { type: boolean }
+    tags: { type: array, items: { type: string } }
+    created_at: { type: string, format: date-time }

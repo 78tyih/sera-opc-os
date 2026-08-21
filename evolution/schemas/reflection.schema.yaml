@@ -1,0 +1,71 @@
+# Reflection System Schema v1.0
+reflection:
+  type: object
+  required: [id, cycle, period, findings, status]
+  properties:
+    id:
+      type: string
+      pattern: "^REF-\\d{8}-\\d{3}$"
+    cycle:
+      type: string
+      enum: [daily, weekly, monthly, quarterly]
+    initiated_by:
+      type: string
+      enum: [system, caio-agent, human]
+    period:
+      type: object
+      required: [start, end]
+      properties:
+        start: { type: string, format: date-time }
+        end: { type: string, format: date-time }
+    inputs:
+      type: object
+      properties:
+        experiences_count: { type: integer }
+        experiences_range: { type: string }
+        key_metrics:
+          type: array
+          items:
+            type: object
+            properties:
+              name: { type: string }
+              value: { type: number }
+              change: { type: number }
+    findings:
+      type: object
+      properties:
+        positives:
+          type: array
+          items:
+            type: object
+            properties:
+              what: { type: string }
+              why: { type: string }
+              should_repeat: { type: boolean }
+        negatives:
+          type: array
+          items:
+            type: object
+            properties:
+              what: { type: string }
+              root_cause: { type: string }
+              severity: { type: integer, minimum: 1, maximum: 5 }
+              action_items: { type: array, items: { type: string } }
+    decisions:
+      type: array
+      items:
+        type: object
+        properties:
+          action: { type: string }
+          owner: { type: string }
+          priority: { type: integer }
+          deadline: { type: string, format: date-time }
+    output:
+      type: object
+      properties:
+        reflection_summary: { type: string }
+        action_items_count: { type: integer }
+    status:
+      type: string
+      enum: [pending, in_progress, completed]
+    created_at: { type: string, format: date-time }

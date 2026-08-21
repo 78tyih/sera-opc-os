@@ -1,0 +1,120 @@
+# Learning OS → Agent Integration
+
+## 接口定义
+
+```yaml
+agent_learning_interface:
+  reportExperience:
+    description: "任务完成后报告执行经验"
+    trigger: task_completed
+    method: POST
+    input: experience.schema.yaml
+    output: status: accepted
+    required: true
+    error_handling: "写入失败则重试 3 次，放入死信队列"
+
+  acceptTraining:
+    description: "接收训练包并执行"
+    trigger: training_assigned
+    method: POST
+    input: agent-training.schema.yaml
+    output: training_result
+    required: true
+    timeout: "根据训练包大小，默认 30min"
+
+  reportLearningOutcome:
+    description: "报告训练/改进后的效果"
+    trigger: training_completed | evolution_applied
+    method: POST
+    input: evaluation.schema.yaml
+    output: status: accepted
+    required: true
+
+  participateReflection:
+    description: "提供反思输入"
+    trigger: reflection_cycle
+    method: POST
+    input: reflection.schema.yaml
+    output: reflection_input
+    required: false
+    participation_rate: "期望 > 80%"
+
+  suggestImprovement:
+    description: "主动提出改进建议"
+    trigger: manual | pattern_detected
+    method: POST
+    input: innovation.schema.yaml
+    output: suggestion_id
+    required: false
+    reward: "采纳后 Agent 评估加分"
+
+  receiveFeedback:
+    description: "接收评估反馈"
+    trigger: evaluation_completed
+    method: POST
+    input: evaluation_results
+    output: acknowledgment
+    required: true
+```
+
+## 事件订阅
+
+```yaml
+agent_event_subscriptions:
+  experience:
+    - task.completed: "触发 reportExperience"
+    - task.failed: "触发 reportExperience (含失败详情)"
+
+  training:
+    - training.assigned: "触发 acceptTraining"
+    - training.cancelled: "取消训练"
+    - skill.updated: "检查是否需要重新训练"
+
+  reflection:
+    - reflection.cycle.started: "准备参与反思"
+    - reflection.cycle.completed: "查看反思结果"
+
+  evolution:
+    - skill.evolution.deployed: "检查自身 Skill 是否受影响"
+    - workflow.updated: "更新自身工作流引用"
+
+  evaluation:
+    - evaluation.completed: "触发 reportLearningOutcome"
+    - evaluation.below_threshold: "触发 corrective training"
+```
+
+## Agent 学习数据流
+
+```
+┌──────────────┐     ┌──────────────────┐     ┌──────────────┐
+│   Agent       │     │   Learning OS    │     │    Memory    │
+│   (执行者)     │     │   (进化引擎)      │     │   (记忆)      │
+└──────┬───────┘     └────────┬─────────┘     └──────┬───────┘
+       │                      │                      │
+       │ 任务完成              │                      │
+       │─────────────────────▶│                      │
+       │ reportExperience()   │                      │
+       │                      │ 写入经验              │
+       │                      │─────────────────────▶│
+       │                      │                      │
+       │                      │ 反思周期              │
+       │                      │ 读取经验              │
+       │                      │◀─────────────────────│
+       │                      │                      │
+       │                      │ 分析 → 识别改进点      │
+       │                      │                      │
+       │ acceptTraining()     │                      │
+       │◀─────────────────────│                      │
+       │                      │                      │
+       │ 执行训练              │                      │
+       │                      │                      │
+       │ reportLearningOutcome()                     │
+       │─────────────────────▶│                      │
+       │                      │ 写入训练记录           │
+       │                      │─────────────────────▶│
+       │                      │                      │
+       │ 评估完成              │                      │
+       │ receiveFeedback()    │                      │
+       │◀─────────────────────│                      │
+       │                      │                      │
+```

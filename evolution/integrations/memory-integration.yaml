@@ -1,0 +1,147 @@
+# Learning OS → Memory Integration
+
+## 写入映射
+
+```yaml
+memory_writes:
+  experience_engine:
+    target: working-memory
+    ttl: 24h
+    data: raw_experiences
+    trigger: task_completed
+
+  experience_engine:
+    target: episodic-memory
+    ttl: 90d
+    data: completed_experiences
+    trigger: task_completed + archived
+
+  reflection_system:
+    target: episodic-memory
+    ttl: 90d
+    data: reflection_reports
+    trigger: reflection_cycle_completed
+
+  reflection_system:
+    target: semantic-memory
+    ttl: permanent
+    data: distilled_insights
+    trigger: monthly_reflection
+
+  knowledge_distillation:
+    target: semantic-memory
+    ttl: permanent
+    data: distilled_patterns
+    trigger: distillation_completed
+
+  knowledge_distillation:
+    target: procedural-memory
+    ttl: permanent
+    data: improved_workflows
+    trigger: pattern_verified
+
+  failure_analysis:
+    target: failure-memory
+    ttl: permanent
+    data: failure_records
+    trigger: analysis_completed
+
+  failure_analysis:
+    target: semantic-memory
+    ttl: permanent
+    data: failure_patterns
+    trigger: pattern_identified
+
+  skill_evolution:
+    target: procedural-memory
+    ttl: permanent
+    data: evolved_skills
+    trigger: evolution_deployed
+
+  agent_training:
+    target: agent-memory
+    ttl: permanent
+    data: training_records
+    trigger: training_completed
+
+  benchmark_intelligence:
+    target: semantic-memory
+    ttl: permanent
+    data: benchmark_history
+    trigger: benchmark_completed
+
+  innovation_engine:
+    target: semantic-memory
+    ttl: permanent
+    data: innovation_records
+    trigger: experiment_completed
+
+  innovation_engine:
+    target: decision-memory
+    ttl: permanent
+    data: adoption_decisions
+    trigger: decision_made
+```
+
+## 读取映射
+
+```yaml
+memory_reads:
+  reflection_system:
+    sources:
+      - working-memory: recent_experiences
+      - episodic-memory: period_experiences
+      - failure-memory: active_failures
+
+  knowledge_distillation:
+    sources:
+      - episodic-memory: similar_patterns
+      - semantic-memory: existing_knowledge
+      - failure-memory: related_failures
+
+  skill_evolution:
+    sources:
+      - procedural-memory: current_skill
+      - semantic-memory: best_practices
+      - agent-memory: performance_history
+
+  agent_training:
+    sources:
+      - agent-memory: current_capabilities
+      - semantic-memory: training_materials
+      - procedural-memory: skill_definitions
+
+  innovation_engine:
+    sources:
+      - semantic-memory: industry_patterns
+      - decision-memory: past_decisions
+      - episodic-memory: experiment_results
+```
+
+## 清理策略
+
+```yaml
+cleanup_policy:
+  working-memory:
+    learning_data:
+      ttl: 24h
+      cleanup: auto_delete
+
+  episodic-memory:
+    learning_data:
+      ttl: 90d
+      cleanup: archive_before_delete
+      distillation_check: "检查是否已提炼为 semantic 知识"
+
+  failure-memory:
+    learning_data:
+      ttl: permanent
+      cleanup: never
+      compaction: "每季度合并相似模式"
+
+  semantic-memory:
+    learning_data:
+      ttl: permanent
+      cleanup: never
+      versioning: "保留版本历史"
+```

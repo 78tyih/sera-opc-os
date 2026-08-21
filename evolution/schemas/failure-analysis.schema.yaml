@@ -1,0 +1,73 @@
+# Failure Analysis System Schema v1.0
+failure_analysis:
+  type: object
+  required: [id, title, severity, incident, analysis, actions, status]
+  properties:
+    id:
+      type: string
+      pattern: "^FAL-\\d{8}-\\d{3}$"
+    title: { type: string }
+    severity: { type: integer, minimum: 1, maximum: 5 }
+    source: { type: string }
+    incident:
+      type: object
+      required: [what_happened, impact]
+      properties:
+        what_happened: { type: string }
+        impact: { type: string }
+        affected: { type: array, items: { type: string } }
+        timeline:
+          type: array
+          items:
+            type: object
+            properties:
+              time: { type: string }
+              event: { type: string }
+    analysis:
+      type: object
+      required: [five_whys, root_cause]
+      properties:
+        five_whys:
+          type: array
+          minItems: 3
+          maxItems: 7
+          items:
+            type: object
+            properties:
+              level: { type: integer }
+              question: { type: string }
+              answer: { type: string }
+        root_cause: { type: string }
+        contributing_factors: { type: array, items: { type: string } }
+    actions:
+      type: object
+      properties:
+        mitigation:
+          type: array
+          items:
+            type: object
+            properties:
+              description: { type: string }
+              owner: { type: string }
+              deadline: { type: string, format: date-time }
+              completed: { type: boolean }
+        prevention:
+          type: array
+          items:
+            type: object
+            properties:
+              description: { type: string }
+              owner: { type: string }
+              deadline: { type: string, format: date-time }
+              completed: { type: boolean }
+    knowledge_output:
+      type: object
+      properties:
+        memory_id: { type: string }
+        pattern_id: { type: string }
+        workflow_update: { type: string, nullable: true }
+    status:
+      type: string
+      enum: [analyzing, actions_pending, completed, verified]
+    created_at: { type: string, format: date-time }
+    completed_at: { type: string, format: date-time, nullable: true }

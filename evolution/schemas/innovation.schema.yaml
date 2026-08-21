@@ -1,0 +1,53 @@
+# Innovation Engine Schema v1.0
+innovation:
+  type: object
+  required: [id, title, source, hypothesis, status]
+  properties:
+    id:
+      type: string
+      pattern: "^INN-\\d{8}-\\d{3}$"
+    title: { type: string }
+    source:
+      type: string
+      enum: [pattern_mining, cross_domain, opportunity, experiment]
+    hypothesis:
+      type: object
+      required: [statement, expected_impact]
+      properties:
+        statement: { type: string }
+        expected_impact: { type: string }
+        risk_level: { type: string, enum: [low, medium, high] }
+        effort_estimate: { type: string }
+    experiment:
+      type: object
+      properties:
+        design:
+          type: object
+          properties:
+            approach: { type: string }
+            success_criteria: { type: string }
+            duration: { type: string }
+            resources_needed: { type: array, items: { type: string } }
+        execution:
+          type: object
+          properties:
+            status:
+              type: string
+              enum: [proposed, approved, running, completed, failed]
+            result: { type: string, nullable: true }
+            evidence: { type: string, nullable: true }
+    adoption:
+      type: object
+      properties:
+        recommendation: { type: string, enum: [adopt, adapt, reject] }
+        if_adopted:
+          type: object
+          properties:
+            system_impact: { type: string }
+            migration_plan: { type: string }
+            rollback_plan: { type: string }
+    status:
+      type: string
+      enum: [proposed, in_review, approved, rejected, implemented]
+    created_at: { type: string, format: date-time }
+    decided_at: { type: string, format: date-time, nullable: true }

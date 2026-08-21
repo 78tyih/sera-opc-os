@@ -1,0 +1,72 @@
+# Skill Evolution System Schema v1.0
+skill_evolution:
+  type: object
+  required: [id, skill_id, version, trigger, analysis, evolution, status]
+  properties:
+    id:
+      type: string
+      pattern: "^SEV-\\d{8}-\\d{3}$"
+    skill_id: { type: string }
+    version: { type: integer }
+    trigger:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [performance_degradation, new_pattern, manual, scheduled]
+        metric: { type: string }
+        threshold: { type: number }
+        actual: { type: number }
+    analysis:
+      type: object
+      properties:
+        current_version: { type: integer }
+        effectiveness_score: { type: number }
+        issues_found:
+          type: array
+          items:
+            type: object
+            properties:
+              description: { type: string }
+              frequency: { type: integer }
+              impact: { type: string }
+        improvements:
+          type: array
+          items:
+            type: object
+            properties:
+              description: { type: string }
+              expected_impact: { type: string }
+              risk: { type: string }
+    evolution:
+      type: object
+      properties:
+        changes:
+          type: array
+          items:
+            type: object
+            properties:
+              field: { type: string }
+              old_value: { type: string }
+              new_value: { type: string }
+              rationale: { type: string }
+        ab_test:
+          type: object
+          properties:
+            enabled: { type: boolean }
+            control_version: { type: integer }
+            treatment_version: { type: integer }
+            sample_size: { type: integer }
+            duration_hours: { type: integer }
+    result:
+      type: object
+      properties:
+        improved: { type: boolean }
+        performance_delta: { type: number }
+        deployed: { type: boolean }
+        deployed_at: { type: string, format: date-time, nullable: true }
+    status:
+      type: string
+      enum: [analyzing, testing, deploying, deployed, rolled_back]
+    created_at: { type: string, format: date-time }
+    completed_at: { type: string, format: date-time, nullable: true }

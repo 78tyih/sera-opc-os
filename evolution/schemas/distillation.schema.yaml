@@ -1,0 +1,53 @@
+# Knowledge Distillation System Schema v1.0
+distillation:
+  type: object
+  required: [id, source_experiences, source_type, extraction, output]
+  properties:
+    id:
+      type: string
+      pattern: "^DIS-\\d{8}-\\d{3}$"
+    source_experiences:
+      type: array
+      items: { type: string }
+    source_type:
+      type: string
+      enum: [success, failure, anomaly, pattern]
+    extraction:
+      type: object
+      required: [pattern, abstraction, validation]
+      properties:
+        pattern:
+          type: object
+          properties:
+            description: { type: string }
+            confidence: { type: number, minimum: 0, maximum: 1 }
+            evidence_count: { type: integer }
+            counterexamples: { type: integer }
+        abstraction:
+          type: object
+          properties:
+            domain: { type: string }
+            preconditions: { type: array, items: { type: string } }
+            rule: { type: string }
+            parameters:
+              type: array
+              items:
+                type: object
+                properties:
+                  name: { type: string }
+                  type: { type: string }
+                  default: { type: string }
+        validation:
+          type: object
+          properties:
+            conflicts: { type: array, items: { type: string } }
+            verified: { type: boolean }
+            verified_by: { type: string, nullable: true }
+    output:
+      type: object
+      properties:
+        knowledge_type: { type: string, enum: [concept, process, pattern, rule] }
+        knowledge_id: { type: string }
+        memory_id: { type: string }
+        skill_update: { type: string, nullable: true }
+    created_at: { type: string, format: date-time }

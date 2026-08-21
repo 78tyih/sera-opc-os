@@ -1,0 +1,76 @@
+# Agent Training System Schema v1.0
+agent_training:
+  type: object
+  required: [id, agent_id, training_type, trigger, assessment, training_plan, status]
+  properties:
+    id:
+      type: string
+      pattern: "^TRN-\\d{8}-\\d{3}$"
+    agent_id: { type: string }
+    training_type:
+      type: string
+      enum: [corrective, skill_gap, onboarding, scheduled]
+    trigger:
+      type: object
+      properties:
+        reason: { type: string }
+        evidence: { type: array, items: { type: string } }
+    assessment:
+      type: object
+      properties:
+        current_capabilities:
+          type: array
+          items:
+            type: object
+            properties:
+              skill: { type: string }
+              proficiency: { type: number, minimum: 0, maximum: 1 }
+        gaps:
+          type: array
+          items:
+            type: object
+            properties:
+              skill: { type: string }
+              target_proficiency: { type: number }
+              gap: { type: number }
+    training_plan:
+      type: object
+      properties:
+        modules:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: string }
+              name: { type: string }
+              type:
+                type: string
+                enum: [prompt_update, memory_update, skill_update, workflow_update]
+              content: { type: string }
+              duration_estimate: { type: string }
+        test:
+          type: array
+          items:
+            type: object
+            properties:
+              scenario: { type: string }
+              expected_output: { type: string }
+              pass_criteria: { type: string }
+    execution:
+      type: object
+      properties:
+        started_at: { type: string, format: date-time, nullable: true }
+        completed_at: { type: string, format: date-time, nullable: true }
+        modules_completed: { type: integer }
+        modules_total: { type: integer }
+    evaluation:
+      type: object
+      properties:
+        pre_training_score: { type: number }
+        post_training_score: { type: number }
+        improvement: { type: number }
+        passed: { type: boolean }
+    status:
+      type: string
+      enum: [pending, in_progress, completed, failed]
+    created_at: { type: string, format: date-time }

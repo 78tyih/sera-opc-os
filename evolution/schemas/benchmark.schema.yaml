@@ -1,0 +1,57 @@
+# Benchmark Intelligence System Schema v1.0
+benchmark:
+  type: object
+  required: [id, name, type, suite, summary]
+  properties:
+    id:
+      type: string
+      pattern: "^BENCH-\\d{8}-\\d{3}$"
+    name: { type: string }
+    type:
+      type: string
+      enum: [weekly, monthly, quarterly, per_release]
+    suite:
+      type: object
+      properties:
+        tests:
+          type: array
+          items:
+            type: object
+            required: [id, name, category, baseline, current]
+            properties:
+              id: { type: string }
+              name: { type: string }
+              category:
+                type: string
+                enum: [quality, speed, cost, business]
+              description: { type: string }
+              methodology: { type: string }
+              baseline:
+                type: object
+                properties:
+                  value: { type: number }
+                  source: { type: string }
+                  date: { type: string, format: date-time }
+              current:
+                type: object
+                properties:
+                  value: { type: number }
+                  change_vs_baseline: { type: number }
+                  change_vs_previous: { type: number }
+              target:
+                type: object
+                properties:
+                  value: { type: number }
+                  deadline: { type: string, format: date-time }
+              status:
+                type: string
+                enum: [improving, stable, declining, critical]
+    summary:
+      type: object
+      properties:
+        overall_score: { type: number }
+        improved_count: { type: integer }
+        declined_count: { type: integer }
+        critical_count: { type: integer }
+    recommendations: { type: array, items: { type: string } }
+    created_at: { type: string, format: date-time }

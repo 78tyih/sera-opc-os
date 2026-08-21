@@ -1,11 +1,11 @@
-# Sera Context Runtime & Learning OS V1
+# Sera Context Runtime & Learning OS V1.1
 
 ## AI 公司认知循环系统
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
-| Status | Engineering Design |
+| Version | 1.1 |
+| Status | Engineering Design（V1.1：吸收对抗式审查，补 authority / Root Cause 分析 / Governor 主路径 / Kernel V0） |
 | Owner | Sera CTO |
 | Layer | Runtime（横切 Memory / Organization / Workflow / Execution） |
 | Dependencies | SMOP V1, Memory Engine V1, Organization OS V1, Workflow OS V1 |
@@ -56,9 +56,9 @@ Sera OPCOS 不是一个「AI 公司知识库」，而是一个「AI 公司认知
 
 | 问题 | 现状 | 本层方案 |
 |------|------|---------|
-| Agent 如何拿到正确上下文 | 静态 Context Package，一次性编译 | Context Builder（初始包）+ Agent Runtime Loop（按需检索） |
+| Agent 如何拿到正确上下文 | 静态 Context Package，一次性编译 | Context Governor（中心化主路径 P0，强制注入）+ Agent Loop（辅助 P1，按需检索） |
 | 上下文如何不爆炸 | 无预算控制 | Token Budget 硬上限 + Context Ranking 排序截断 |
-| 经验如何持续进化 | 手动调用 `/memory/learn`，无验证 | Learning Engine：`confidence × 3 次独立关联 × supersedes` |
+| 经验如何持续进化 | 手动调用 `/memory/learn`，无验证 | Learning Engine：`Root Cause 分析 → confidence × 3 次独立关联 × authority 裁决` |
 
 ---
 
@@ -152,6 +152,7 @@ Organization   →  全公司（永久，跨项目）
   "name": "TradeSpan",
   "data_state": "structured",
   "scope": "organization",
+  "authority": "founder",
   "importance": 0.9,
   "confidence": 1.0,
   "...": "其余 SMOP V1 字段不变"
@@ -177,14 +178,28 @@ Organization   →  全公司（永久，跨项目）
 | `project` | 项目归档时归档 | Project 决策、资产 |
 | `organization` | 永久 | Rule、组织级 Decision |
 
+### `authority` 枚举（V1.1 新增）
+
+权威等级解决「Rule / Decision 冲突时谁赢」的问题，优先级从高到低：
+
+| 值 | 含义 | 优先级 | 冲突裁决 |
+|----|------|--------|---------|
+| `founder` | Founder 本人手写（taste / 价值观 / 战略） | 最高 | 无条件覆盖下级 |
+| `organization` | 组织级沉淀（经验证升 Rule） | 高 | 覆盖 project / agent |
+| `project` | 项目级决策 / 经验 | 中 | 覆盖 agent |
+| `agent` | 单 Agent 推断 | 低 | 仅作参考 |
+
+**Rule 冲突不再依赖 `supersedes` 的先后顺序，而是先比较 `authority`：高权威直接胜出；同级才用 `supersedes` 记录替代关系。**
+
 ## 2.3 与既有 type 枚举的关系
 
-**`data_state` + `scope` 不取代 `type`，三者正交：**
+**`data_state` + `scope` + `authority` 不取代 `type`，四者正交：**
 
 ```
-type        = 它是什么（Person / Project / Decision / Experience / Rule ...）
-data_state  = 它有多成熟（raw / processed / structured / learned / rule）
-scope       = 它在多大范围生效（session / task / project / organization）
+type      = 它是什么（Person / Project / Decision / Experience / Rule ...）
+data_state = 它有多成熟（raw / processed / structured / learned / rule）
+scope     = 它在多大范围生效（session / task / project / organization）
+authority = 谁的判断更权威（founder / organization / project / agent）
 ```
 
 一个对象可以同时是 `Experience × learned × project`，或 `Decision × structured × organization`。这消除了旧设计中"用 type 去猜生命周期"的歧义。
@@ -204,11 +219,17 @@ scope       = 它在多大范围生效（session / task / project / organization
 
 # 三、Context Runtime
 
-## 3.1 Context Builder（中心化初始包）
+## 3.1 Context Governor（中心化主路径，P0）
+
+### 定位
+
+Context Governor 是 Agent 接入时的**强制第一动作**，是 Sera 提供的**唯一主路径**。它必须**主动、强制**把 Founder 判断（`authority=founder` 的 Rule）、历史失败（`root_cause` 明确的 Experience）、生效规则注入 Context，否则「Agent 不知道你的历史」这个核心痛点无法解决。
+
+Agent 运行时按需检索（第四章）只是**辅助路径（P1）**，不能替代 Governor 的强制注入。
 
 ### 定义
 
-Context Builder 是 Agent 接入时的第一个动作。输入任务与角色，输出一个受预算约束的 Context Package。
+输入任务与角色，输出一个受预算约束的 Context Package。
 
 ```
 输入:
@@ -388,16 +409,16 @@ budget_allocation:
 
 # 四、Agent Runtime Loop（Letta 式）
 
-## 4.1 双模式架构
+## 4.1 双模式架构（主次明确）
 
-Sera 的 Context 不是"中心化一次性编译"或"Agent 完全自取"二选一，而是**双模式**：
+Sera 的 Context 是**双模式，但主次严格**：`Context Governor`（中心化，P0，强制注入）是**主路径**；`Agent Runtime Loop`（运行时按需检索，P1）是**辅助**。**不能依赖 Agent 主动意识到自己缺什么**——多数 Agent（Codex/Cursor 等）会直接执行，不回溯历史失败。因此 Governor 的强制注入是闭环成立的底线。
 
 ```
-任务开始 ──→ Context Builder ──→ 初始 Context Package（中心化）
+任务开始 ──→ Context Governor（P0 强制注入）──→ 初始 Context Package（中心化）
                                        │
                                        ▼ 注入 System Prompt
 ===========================================================
-            Agent Runtime Loop（运行时，自我管理记忆）
+            Agent Runtime Loop（P1 辅助，按需检索）
 ===========================================================
    Plan ──→ Retrieve ──→ Act ──→ Observe ──→ Reflect ──→ Learn
      │         │                             │           │
@@ -438,7 +459,7 @@ SMOP 作为 MCP Server `sera-memory` 暴露以下工具，供运行时 Loop 按�
 
 ```python
 def agent_run(task, agent):
-    # Phase 0: 中心化初始包
+    # Phase 0: Context Governor 中心化强制注入（P0 主路径）
     ctx = build_context(task.id, agent.id, budget_for(task.complexity))
     prompt = render_system_prompt(ctx)
 
@@ -474,58 +495,86 @@ def agent_run(task, agent):
 ## 5.1 学习闭环
 
 ```
-Experience（一次任务的成败）
+Experience（一次任务的成败，含 root_cause / failure_mode）
         │
         ▼
-Pattern Detection（跨任务模式识别）
+Root Cause Analysis（因果归因：区分「具体缺陷」与「普遍规律」）
         │
         ▼
-Rule Extraction（提炼成可复用原则）
+Pattern Detection（仅从 root_cause 层级聚类，禁止从表面 failure_mode 聚类）
         │
         ▼
-Validation（验证，见 5.4）
+Rule Extraction（提炼为 Hypothesis，status=draft + confidence 初始值）
         │
         ▼
-Organization Memory（升级为 Rule，写入规则层）
+Validation（验证，见 5.4：3 次独立关联是必要非充分条件）
         │
         ▼
-Better Context（下次 Context Builder 自动纳入）
+Organization Memory（authority=organization 的 Rule 固化）
+        │
+        ▼
+Better Context（下次 Context Governor 自动纳入）
 ```
 
-## 5.2 Pattern Detection
+## 5.2 Root Cause Analysis + Pattern Detection（因果层，V1.1 新增）
+
+**关键决策：Pattern 只能从 `root_cause` 提炼，禁止从 `failure_mode` 提炼。**
+
+反例（必须避免）：
+
+```
+三次「AI 视频失败」
+  failure_mode = "视频不可信"（表面现象）
+  root_cause    = "MiniMax H3 模型输出质量不足"（真实原因）
+
+错误归纳：AI 视频 → 不可信（把具体模型缺陷上推成普遍规律）
+正确归纳：MiniMax H3 → 不适合此场景（锚定到具体根因）
+```
 
 ```python
+def analyze_root_cause(experience):
+    # 强制区分「根因」与「现象」，二者必须同时存在
+    prompt = """
+    对这条失败经验做因果归因：
+    1. failure_mode（现象，what went wrong）
+    2. root_cause（根因，why，必须是可验证的具体原因，
+       拒绝"XX 整体不可信"这类泛化表达）
+    """
+    result = llm(prompt, context=experience)
+    experience.failure_mode = result.failure_mode
+    experience.root_cause   = result.root_cause  # SMOP V1 已有，本层强制利用
+    return experience
+
+
 def detect_patterns():
-    # 从近 N 天的 Experience 中找共性
     experiences = memory.query({
         "type": "Experience",
         "data_state": "learned",
         "since": "30 days ago"
     })
-
-    # 聚类：相同 failure_mode / root_cause / lesson
-    clusters = cluster_by_embedding(experiences)
+    # 仅对 root_cause 聚类（不做 failure_mode 聚类）
+    clusters = cluster_by_embedding([e.root_cause for e in experiences])
     return [c for c in clusters if len(c.members) >= 2]
 ```
 
-## 5.3 Rule Extraction
+## 5.3 Rule Extraction（产出 Hypothesis，不直接产 Rule）
 
 ```python
 def extract_rule(cluster):
-    # 只有被反复验证的模式才值得升 Rule
-    if len(cluster.members) < 3:
-        return None   # 不够格，仍停留为 Experience
-
+    # 提炼为「假设」，而不是直接升 Rule
     return Rule(
-        content      = cluster.common_lesson,
-        scope        = infer_scope(cluster),   # project / organization
+        content       = cluster.common_root_cause_lesson,
+        scope         = infer_scope(cluster),   # project / organization
+        status        = "draft",                 # Hypothesis 用 status 表达，不新增类型
+        confidence    = 0.5,
+        authority     = "organization",
         source_experiences = [e.id for e in cluster.members]
-    )
+    )   # 等待 5.4 验证通过后才 status: draft → active
 ```
 
 ## 5.4 Validation（复用 SMOP 已有机制，不新造）
 
-**关键决策：Validation 不发明新字段，直接复用 SMOP V1 已定义的三个机制。**
+**关键决策：Validation 尽量复用 SMOP V1 已有机制（confidence / supersedes / status），仅新增一个 `authority` 字段用于权威裁决。**
 
 ### 机制 1：`confidence` 决定初始可信度
 
@@ -537,25 +586,30 @@ def extract_rule(cluster):
 | 0.5 | LLM 推断 | 否 |
 | ≤0.3 | 未验证 | 否 |
 
-### 机制 2：`3 次独立关联` 是升 Rule 的门槛
+### 机制 2：`3 次独立关联` 是**必要非充分**条件（V1.1 修正）
 
 ```
-一条 lesson 升级为 Rule 必须满足：
-  - 被 ≥3 个「相互独立的 task/context」命中；
-  - 且命中来源的 confidence ≥ 0.7；
-  - 且不存在 active 状态的矛盾 Rule。
+一条 lesson 升级为 Rule 必须同时满足：
+  1. 因果一致：所有命中的 Experience 具有「同一 root_cause」，
+     而非仅 failure_mode 表面相同；
+  2. 被 ≥3 个「相互独立的 task/context」命中；
+  3. 命中来源的 confidence ≥ 0.7；
+  4. 不存在 authority 更高或同级的矛盾 Rule。
 
-满足 → data_state: "learned" → "rule"
-不满足 → 保持 "learned"，继续累计
+满足全部 → status: draft → active，data_state: learned → rule
+任一不满足 → 保持 learned（或 draft），继续累计
 ```
 
-### 机制 3：`supersedes` 处理冲突与废止
+**「3 次」只是门槛之一，不是充分理由。** 只有「重复 + 同根因 + 无更高权威矛盾」三者同时成立，才允许固化。
+
+### 机制 3：`authority` 优先于 `supersedes`（V1.1 修正）
 
 ```
-新 Rule 与旧 Rule 冲突时：
-  - 新 Rule 建立关系 supersedes → 旧 Rule
-  - 旧 Rule status: "active" → "deprecated"/"replaced"
-  - Context Builder 查询时自动忽略被 supersedes 的 Rule
+Rule 冲突时，先比较 authority，再考虑 supersedes：
+
+1. authority 不同 → 高权威直接胜出（founder > organization > project > agent）
+2. authority 相同 → 新 Rule 建立 supersedes → 旧 Rule，旧 Rule status → deprecated/replaced
+3. Context Governor 查询时自动忽略被 supersedes 或低权威的 Rule
 
 旧 Rule 过时（无新经验关联）：
   - 30 天无 access → status 降级为 "deprecated"
@@ -575,63 +629,81 @@ def extract_rule(cluster):
                            │ 结构化入库
                            ▼
                     ┌──────────────┐
-                    │  structured  │  Experience Object
+                    │  structured  │  Experience Object（含 root_cause）
                     └──────┬───────┘
-                           │ Reflect 提炼 lesson
+                           │ Root Cause Analysis 提炼 lesson
                            ▼
                     ┌──────────────┐
                     │  learned     │  经验教训（data_state=learned）
                     └──────┬───────┘
-                           │ 3 次独立关联 + confidence≥0.7
+                           │ 同 root_cause 聚类 → 提炼 Hypothesis
                            ▼
                     ┌──────────────┐
-                    │  rule        │  组织原则（data_state=rule）
+                    │  draft       │  Rule 假设（status=draft, confidence=0.5）
+                    └──────┬───────┘
+                           │ 3 次独立关联 + 同根因 + confidence≥0.7 + authority 无矛盾
+                           ▼
+                    ┌──────────────┐
+                    │  active      │  组织原则（data_state=rule, status=active）
                     └──────────────┘
 ```
 
 ---
 
-# 六、Golden Path MVP
+# 六、Golden Path MVP — Sera Memory Kernel V0
 
 ## 6.1 目标
 
-用最小实现证明闭环，而不是做全功能系统。
+用**最小可验证闭环**证明价值，不做全功能系统，更不做 MCP / Agent Loop（它们是协议与执行，不是核心价值）。
 
 ```
-一个 Agent 接入 → 拿到正确 Context → 完成任务 → 经验沉淀 → 另一个 Agent 能复用
+你给任务 → Agent 拿到历史（含 Founder 判断 + 失败根因）→ 完成任务
+        → 写经验 → 第二次任务命中该经验
 ```
 
-## 6.2 纳入范围（Phase 1 必须）
+## 6.2 纳入范围（Kernel V0 必须）
 
 | 组件 | 说明 | 技术选型 |
 |------|------|---------|
-| Memory Store | entities + relations + memories 三表 | **SQLite**（零配置，不用 Postgres） |
-| SMOP Object | 二维矩阵字段落地 | JSON 列 + 索引 |
-| Context Builder | 静态初始包 + ranking + budget | 纯函数模块 |
-| Agent Runtime Loop | 最小 Plan→Act→Learn 循环 | Python 脚本 |
-| Learning API | `memory.learn` + 3 次验证升级 | confidence 计数 |
-| MCP Server | `sera-memory` 暴露 6 个工具 | MCP SDK |
+| Memory Store | objects + relations + events 三表 | **SQLite**（零配置，不用 Postgres） |
+| SMOP Object | 二维矩阵 + authority 字段落地 | JSON 列 + 索引 |
+| Context Governor | build_context（ranking + budget + 强制注入 Founder Rule） | 纯函数模块 |
+| Learn API | learn（root_cause 归因 + 3 次验证升 Rule） | 纯函数模块 |
+| Seed 数据 | 用 Obsidian 现成的 TradeSpan 内容导入 | 手动/脚本 import |
 
-## 6.3 排除范围（Phase 1 不做）
+## 6.3 明确排除（Kernel V0 不做）
 
 | 组件 | 理由 | 推迟到 |
 |------|------|-------|
-| LanceDB 向量 | 语义搜索非闭环必需 | Phase 2 |
+| MCP Server | 连接协议，非核心价值，闭环不依赖它 | Phase 2 |
+| Agent Runtime Loop | 执行循环，非闭环必需 | Phase 2 |
+| LanceDB 向量 | 语义搜索非闭环必需 | Phase 3 |
 | 图遍历引擎（Neo4j/pgRouting） | relations 表 + 递归 CTE 足够 | Phase 3 |
-| 多源 Extractor | 手动导入可验证闭环 | Phase 4 |
+| 多源 Extractor | Obsidian 手动导入可验证闭环 | Phase 4 |
 | Cron Memory Builder | 日结是优化非必需 | Phase 4 |
 | PostgreSQL | 违反零配置原则 | 分布式阶段 |
 
-## 6.4 最小 API 端点
+## 6.4 最小 API 端点（只这两个是闭环核心）
 
 ```
-POST /context/build          # build_context(task_id, agent_id, budget)
-POST /context/rank           # 纯排名（调试用）
-GET  /object/{id}            # 对象查询
-POST /object/store           # 对象写入
-POST /learn                  # 经验提交 + 触发验证
-POST /search                 # SQLite FTS5 关键词检索（MVP 替代向量）
-GET  /stats                  # entities/relations/rules 计数
+POST /context/build          # build_context(task_id) → Context Package（Kernel 核心）
+POST /learn                  # learn(result) → root_cause 归因 + 触发验证（Kernel 核心）
+
+# 辅助（支撑上面两个，可简化为函数而非 HTTP 端点）
+object_get / object_store / search（FTS5 关键词，MVP 替代向量）/ stats
+```
+
+## 6.5 验收标准（真实案例，非假数据）
+
+以 **TradeSpan** 为唯一验收场景，数据来自你 Obsidian 现成的项目内容：
+
+```
+1. 用 Obsidian 里 TradeSpan 的决策/失败经验 seed SQLite
+2. 任务 A："重做 TradeSpan 官网" → build_context 注入 dark-ui 决策 + trust-first 规则
+3. 任务 A 完成后 learn(成功/失败，含 root_cause)
+4. 任务 B："做 TradeSpan 宣传视频" → build_context 命中任务 A 沉淀的失败根因
+
+验收通过 = 第 4 步的 Context Package 里，出现了第 3 步写入的 root_cause。
 ```
 
 ---
@@ -652,7 +724,7 @@ GET  /stats                  # entities/relations/rules 计数
 ## 7.2 本层使用的 SMOP 端点
 
 ```
-Context Builder  → GET /object/{id}, POST /search
+Context Governor → GET /object/{id}, POST /search
 Agent Runtime    → POST /search, GET /object/{id}, POST /learn, POST /decision
 Learning Engine  → POST /learn（触发验证）, POST /object/store（写 Rule）
 ```
@@ -681,29 +753,38 @@ Learning Engine  → POST /learn（触发验证）, POST /object/store（写 Rul
 
 # 八、实现路线图
 
-## Phase 1: Golden Path（MVP）
+## Phase 1: Memory Kernel V0（最小闭环）
 
 ```
-目标：闭环可跑
-├── SQLite 三表 + data_state/scope 字段
-├── Context Builder（ranking + budget）
-├── 最小 Agent Loop（Plan→Act→Learn）
-├── memory.learn + 3 次验证升 Rule
-├── MCP server（6 工具）
-└── 验收：Agent A 任务 → 经验 → Agent B Context 中包含该经验
+目标：闭环可跑，不做 MCP / Agent Loop
+├── SQLite 三表（objects/relations/events）+ data_state/scope/authority
+├── Context Governor（build_context：ranking + budget + 强制注入 Founder Rule）
+├── Learn API（root_cause 归因 + 3 次验证升 Rule）
+├── TradeSpan 真实数据 seed（来自 Obsidian）
+└── 验收：任务 A 写入的失败根因，出现在任务 B 的 Context Package 中
 ```
 
-## Phase 2: Semantic Retrieval
+## Phase 2: MCP & Agent Loop
+
+```
+目标：接入真实 Agent 执行
+├── MCP server（sera-memory 6 工具）
+├── Agent Runtime Loop（Plan→Act→Learn，P1 辅助）
+├── Context Governor 与 Loop 打通
+└── 验收：Codex 通过 MCP 调 build_context，任务后自动 learn
+```
+
+## Phase 3: Semantic Retrieval
 
 ```
 目标：模糊查询
 ├── LanceDB 向量集成
 ├── Hybrid Search（RRF fusion）
-├── Context Builder 接入语义候选
-└── 验收：自然语言问"视频失败经验"能命中
+├── Context Governor 接入语义候选
+└── 验收：自然语言问"视频失败根因"能命中
 ```
 
-## Phase 3: Graph Traversal
+## Phase 4: Graph Traversal
 
 ```
 目标：关系推理
@@ -712,7 +793,7 @@ Learning Engine  → POST /learn（触发验证）, POST /object/store（写 Rul
 └── 验收：查 Project 能沿 depends_on/created_by 走 ≥3 层
 ```
 
-## Phase 4: Autonomous Learning
+## Phase 5: Autonomous Learning
 
 ```
 目标：自动进化
@@ -736,6 +817,10 @@ Learning Engine  → POST /learn（触发验证）, POST /object/store（写 Rul
 | rank_score | 记忆排序综合分 |
 | Token Budget | 单个 Context Package 的 token 硬上限 |
 | Learning Engine | Experience→Rule 的验证与升级系统 |
+| Context Governor | 强制注入上下文的中心化主路径（P0），Agent Loop 之前 |
+| authority | 权威等级（founder > organization > project > agent），用于冲突裁决 |
+| Root Cause Analysis | 因果归因：区分「具体根因」与「表面现象」，Pattern 只从根因提炼 |
+| Hypothesis | Rule 的假设态（status=draft + confidence 0.5），验证后才 active |
 
 # 附录 B: 与 SMOP V1 的差异清单
 
@@ -743,13 +828,15 @@ Learning Engine  → POST /learn（触发验证）, POST /object/store（写 Rul
 |------|---------|------|
 | 基类新增 `data_state` | 无 | ✅ |
 | 基类新增 `scope` | 无 | ✅ |
+| 基类新增 `authority` | 无 | ✅（V1.1） |
 | ID 命名 | 点分（正确）| 明确废弃下划线格式 |
 | Context Package | 静态 | + budget / truncated / stale_markers |
-| Context 生成 | 仅 Builder | Builder + Runtime Loop 双模式 |
-| 学习 | 手动 learn | 强制 Learn + 3 次验证升 Rule |
+| Context 生成 | 仅 Builder | Context Governor（主）+ Agent Loop（辅） |
+| 学习 | 手动 learn | 强制 Learn + Root Cause 分析 + 3 次验证（必要非充分） |
+| Rule 冲突裁决 | supersedes 先后 | authority 优先，同级才 supersedes（V1.1） |
 
 ---
 
-*Document Version: 1.0*
-*Last Updated: 2026-08-21*
+*Document Version: 1.1*
+*Last Updated: 2026-08-21（V1.1 修订：authority / Root Cause 分析 / Governor 主路径 / Kernel V0）*
 *Next: Sera Context Runtime & Learning OS Implementation Guide V1（代码实现）*

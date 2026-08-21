@@ -1,3 +1,5 @@
+/* API payloads mirror editable registry JSON and intentionally remain open-shaped. */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const API_BASE = ""
 
 async function fetchJSON<T>(path: string): Promise<T> {

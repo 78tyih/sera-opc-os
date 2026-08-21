@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import {
   ReactFlow,
   Background,
@@ -103,7 +103,7 @@ function WorkflowCanvas({ workflow }: { workflow: typeof workflowsData.workflows
   })), [workflow.edges])
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+  const [edges, , onEdgesChange] = useEdgesState(initialEdges)
 
   const onLayout = useCallback(() => {
     const spacing = { x: 280, y: 160 }
@@ -146,9 +146,16 @@ function WorkflowCanvas({ workflow }: { workflow: typeof workflowsData.workflows
       return node
     })
     setNodes(newNodes)
-  }, [nodes, workflow])
+  }, [nodes, setNodes, workflow])
 
-  setTimeout(onLayout, 100)
+  // Auto-layout once after mount. Calling setTimeout during render re-scheduled
+  // a layout on every render, snapping nodes back while the user dragged them.
+  useEffect(() => {
+    const id = setTimeout(onLayout, 100)
+    return () => clearTimeout(id)
+  // Runs once on mount with the initial graph; onLayout identity changes with nodes.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="h-[500px] rounded-xl border overflow-hidden" style={{ borderColor: "var(--border)" }}>

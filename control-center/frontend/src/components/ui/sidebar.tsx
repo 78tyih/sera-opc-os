@@ -1,141 +1,36 @@
 "use client"
-
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { cn } from "@/lib/utils"
+import { Activity, Bot, BrainCircuit, Building2, Command, DatabaseZap, GitBranch, Languages, Moon, Network, Orbit, Sun, Terminal, Workflow } from "lucide-react"
 import { useLang } from "@/lib/language-provider"
-import {
-  LayoutDashboard,
-  FolderKanban,
-  Bot,
-  Workflow,
-  Building2,
-  ChevronRight,
-  Sun,
-  Moon,
-  Languages,
-  GitBranch,
-  Terminal,
-} from "lucide-react"
-import { useState } from "react"
 import { useTheme } from "@/lib/theme-provider"
 
-const navItems = [
-  { href: "/dashboard", label: "nav.dashboard", icon: LayoutDashboard },
-  { href: "/canvas", label: "nav.canvas", icon: GitBranch },
-  { href: "/projects", label: "nav.projects", icon: FolderKanban },
-  { href: "/agents", label: "nav.agents", icon: Bot },
-  { href: "/workflows", label: "nav.workflows", icon: Workflow },
-  { href: "/department", label: "nav.department", icon: Building2 },
-  { href: "/console", label: "nav.console", icon: Terminal },
+const nav = [
+  { href: "/dashboard", label: "nav.command", meta: "01", icon: Command },
+  { href: "/memory", label: "nav.memory", meta: "02", icon: DatabaseZap },
+  { href: "/context", label: "nav.context", meta: "03", icon: BrainCircuit },
+  { href: "/department", label: "nav.organization", meta: "04", icon: Building2 },
+  { href: "/learning", label: "nav.learning", meta: "05", icon: Orbit },
+  // K3 review: /agents and /workflows still exist; keep them reachable from nav.
+  { href: "/agents", label: "nav.agents", meta: "06", icon: Bot },
+  { href: "/workflows", label: "nav.workflows", meta: "07", icon: Workflow },
+  // K3 merge reconciliation: keep e892d6b's kernel console + workflow canvas reachable.
+  { href: "/console", label: "nav.console", meta: "08", icon: Terminal },
+  { href: "/canvas", label: "nav.canvas", meta: "09", icon: GitBranch },
 ]
-
 export function Sidebar() {
   const pathname = usePathname()
-  const { theme, toggle } = useTheme()
   const { lang, setLang, t } = useLang()
-  const [collapsed, setCollapsed] = useState(false)
-
-  return (
-    <aside
-      className="fixed left-0 top-0 h-screen border-r flex flex-col transition-all duration-300 z-50"
-      style={{
-        width: collapsed ? 60 : 220,
-        background: "var(--bg-surface)",
-        borderColor: "var(--border)",
-      }}
-    >
-      {/* Logo */}
-      <div className="flex items-center gap-3 px-4 border-b shrink-0" style={{ height: 64, borderColor: "var(--border)" }}>
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: "var(--brand-gradient)" }}>
-          <span className="text-white font-bold text-sm">S</span>
-        </div>
-        {!collapsed && (
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Sera OPC OS</span>
-            <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>Control Center</span>
-          </div>
-        )}
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 py-4 px-2 space-y-1 overflow-y-auto">
-        {navItems.map(({ href, label, icon: Icon }) => {
-          const isActive = pathname === href || (href === "/dashboard" && pathname === "/")
-          return (
-            <Link
-              key={href}
-              href={href}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 group"
-              style={{
-                color: isActive ? "var(--brand)" : "var(--text-muted)",
-                background: isActive ? "var(--brand-soft)" : "transparent",
-                border: isActive ? `1px solid ${"var(--brand)"}20` : "1px solid transparent",
-              }}
-              onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = "var(--bg-surface-hover)"; e.currentTarget.style.color = "var(--text-primary)" }}
-              onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-muted)" }}}
-            >
-              <Icon className="w-5 h-5 shrink-0" style={{ color: isActive ? "var(--brand)" : "inherit" }} />
-              {!collapsed && <span className="font-medium">{t(label)}</span>}
-            </Link>
-          )
-        })}
-      </nav>
-
-      {/* Theme Toggle */}
-      {!collapsed && (
-        <div className="px-3 py-1">
-          <button
-            onClick={toggle}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200"
-            style={{ color: "var(--text-muted)" }}
-            onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface-hover)"; e.currentTarget.style.color = "var(--text-primary)" }}
-            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-muted)" }}
-          >
-            {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            <span className="font-medium">{lang === "zh" ? (theme === "dark" ? "日间" : "夜间") : (theme === "dark" ? "Light" : "Dark")}</span>
-          </button>
-        </div>
-      )}
-
-      {/* Language Switcher */}
-      {!collapsed && (
-        <div className="px-3 py-1">
-          <button
-            onClick={() => setLang(lang === "zh" ? "en" : "zh")}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200"
-            style={{ color: "var(--text-muted)" }}
-            onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface-hover)"; e.currentTarget.style.color = "var(--text-primary)" }}
-            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-muted)" }}
-          >
-            <Languages className="w-5 h-5" />
-            <span className="font-medium">{lang === "zh" ? "English" : "中文"}</span>
-          </button>
-        </div>
-      )}
-
-      {/* Collapse */}
-      <div className="p-2 border-t" style={{ borderColor: "var(--border)" }}>
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="w-full flex items-center justify-center p-2 rounded-lg transition-all"
-          style={{ color: "var(--text-muted)" }}
-          onMouseEnter={e => { e.currentTarget.style.background = "var(--bg-surface-hover)"; e.currentTarget.style.color = "var(--text-primary)" }}
-          onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-muted)" }}
-        >
-          <ChevronRight className={cn("w-4 h-4 transition-transform", collapsed ? "" : "rotate-180")} />
-        </button>
-      </div>
-
-      {/* Bottom status */}
-      {!collapsed && (
-        <div className="px-4 py-3 border-t" style={{ borderColor: "var(--border)" }}>
-          <div className="flex items-center gap-2">
-            <span className="status-dot active" />
-            <span className="text-xs" style={{ color: "var(--text-muted)" }}>{t("nav.all-operational")}</span>
-          </div>
-        </div>
-      )}
-    </aside>
-  )
+  const { theme, toggle } = useTheme()
+  return <aside className="sera-sidebar">
+    <div className="brand-lockup"><div className="brand-mark">S</div><div><strong>SERA <span>/ OS</span></strong><small>AI COMPANY SYSTEM</small></div></div>
+    <div className="nav-label">{t("nav.layers")}</div>
+    <nav>{nav.map(({ href, label, meta, icon: Icon }) => <Link key={href} href={href} className={pathname === href || (href === "/dashboard" && pathname === "/") ? "active" : ""}><span>{meta}</span><Icon /><b>{t(label)}</b></Link>)}</nav>
+    <div className="sidebar-spacer" />
+    <div className="system-block"><div><Activity /><span><b>{t("nav.nominal")}</b><small>{t("nav.runtimes")}</small></span></div><div className="health-line"><i /><i /><i /><i /></div></div>
+    <button aria-label={t(theme === "dark" ? "nav.light" : "nav.dark")} className="settings-link" onClick={toggle}>{theme === "dark" ? <Sun /> : <Moon />}<span>{t(theme === "dark" ? "nav.light" : "nav.dark")}</span></button>
+    <button aria-label={t("nav.language")} className="settings-link" onClick={() => setLang(lang === "zh" ? "en" : "zh")}><Languages /><span>{t("nav.language")}</span></button>
+    <Link className="settings-link" href="/projects"><Network /><span>{t("nav.registry")}</span></Link>
+    {/* K3 review: removed the dead "System settings" button (no href/onClick). Re-add when wired. */}
+  </aside>
 }

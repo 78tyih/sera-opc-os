@@ -26,7 +26,7 @@ export function WorkflowPreview({ name, description, status, nodes, index }: Wor
         <div className="flex items-center gap-2">
           <Workflow className="w-4 h-4" style={{ color: "var(--brand)" }} />
           <h4 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>{name}</h4>
-          <span className="badge badge-running text-[10px]">{t("workflows.running")}</span>
+          <span className="badge badge-running text-[10px]">{t(status === "completed" ? "workflows.completed" : "workflows.running")}</span>
         </div>
         <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "var(--text-muted)" }} />
       </div>

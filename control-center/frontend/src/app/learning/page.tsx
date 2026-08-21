@@ -1,0 +1,17 @@
+"use client"
+import { ArrowDown, CheckCircle2, CircleDot, GitCommitHorizontal, ShieldCheck } from "lucide-react"
+import { useLang } from "@/lib/language-provider"
+import { localized } from "@/lib/localized"
+
+const events = [
+  {date:"AUG 01",type:"FAILURE",title:"Video generation failed",body:"Output looked synthetic and lacked credible product evidence.",state:"captured"},
+  {date:"AUG 05",type:"ROOT CAUSE",title:"Real interface footage was missing",body:"The failure was not the model. The context package omitted the product's strongest trust signal.",state:"analyzed"},
+  {date:"AUG 10",type:"PATTERN",title:"Same failure found across three tasks",body:"Three independent video missions showed the same trust degradation pattern.",state:"validated"},
+  {date:"AUG 20",type:"ORGANIZATION RULE",title:"Financial videos require real interface footage",body:"Promoted with organization authority and injected into every relevant future mission.",state:"active"},
+]
+export default function LearningPage(){const {lang}=useLang();const c=(zh:string,en:string)=>localized(lang,zh,en);const copy=[
+  ["失败","FAILURE","视频生成失败","Video generation failed","输出看起来像合成内容，缺少可信的产品证据。","Output looked synthetic and lacked credible product evidence."],
+  ["根因","ROOT CAUSE","缺少真实界面素材","Real interface footage was missing","问题不在模型，而是上下文包遗漏了最强的信任信号。","The failure was not the model. The context package omitted the product's strongest trust signal."],
+  ["模式","PATTERN","三个任务发现同一失败","Same failure found across three tasks","三个独立的视频任务都出现了相同的信任下降模式。","Three independent video missions showed the same trust degradation pattern."],
+  ["组织规则","ORGANIZATION RULE","金融视频必须使用真实界面素材","Financial videos require real interface footage","该规则已获得组织级权威，并注入所有相关未来任务。","Promoted with organization authority and injected into every relevant future mission."],
+];return <div className="command-page"><header className="page-head"><div><span>LEARNING OS / EVOLUTION</span><h1>{c("公司如何变得更聪明","How the company gets smarter")}</h1><p>{c("失败变成证据，证据变成模式，经过验证的模式变成组织规则。","Failures become evidence. Evidence becomes patterns. Validated patterns become organizational rules.")}</p></div><div className="head-stat"><strong>+02</strong><span>{c("本月新增规则","RULES THIS MONTH")}</span></div></header><div className="learning-layout"><section className="learning-timeline">{events.map((e,i)=><div className="learning-event" key={e.date}><div className="timeline-date">{e.date}</div><div className="timeline-marker"><CircleDot/>{i<events.length-1&&<i/>}</div><div className="terminal-panel event-card"><div><span>{c(copy[i][0],copy[i][1])}</span><b data-state={e.state}>{e.state.toUpperCase()}</b></div><h2>{c(copy[i][2],copy[i][3])}</h2><p>{c(copy[i][4],copy[i][5])}</p><small><GitCommitHorizontal/> confidence {i===0?"0.42":i===1?"0.71":i===2?"0.91":"1.00"}</small></div>{i<events.length-1&&<ArrowDown className="event-arrow"/>}</div>)}</section><aside className="terminal-panel loop-card"><span>{c("认知闭环","COGNITIVE LOOP")}</span><h2>{c("记忆通过使用不断复利。","Memory compounds through use.")}</h2>{[c("记忆","Memory"),c("上下文","Context"),c("智能体","Agent"),c("行动","Action"),c("经验","Experience"),c("学习","Learning"),c("规则","Rule")].map((x,i)=><div key={x}><b>0{i+1}</b><strong>{x}</strong>{i<6&&<i/>}</div>)}<footer><ShieldCheck/><span><b>{c("下一项任务","Next mission")}</b><small>{c("将收到更好的上下文包","Receives a better context package")}</small></span><CheckCircle2/></footer></aside></div></div>}

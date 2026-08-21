@@ -10,11 +10,12 @@ const ThemeContext = createContext<{
 }>({ theme: "dark", toggle: () => {} })
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  // SSR-consistent default; localStorage is synced after mount to avoid hydration mismatch.
   const [theme, setTheme] = useState<Theme>("dark")
 
   useEffect(() => {
-    const saved = localStorage.getItem("htx-theme") as Theme | null
-    if (saved) setTheme(saved)
+    const saved = localStorage.getItem("htx-theme")
+    if (saved === "light" || saved === "dark") setTheme(saved)
   }, [])
 
   useEffect(() => {

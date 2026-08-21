@@ -14,6 +14,8 @@ export function useData<T>(fetcher: () => Promise<T>) {
       .catch(err => { if (!cancelled) setError(err) })
       .finally(() => { if (!cancelled) setLoading(false) })
     return () => { cancelled = true }
+  // Fetchers are page-owned one-shot loaders; re-running on inline function identity would loop.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return { data, loading, error }

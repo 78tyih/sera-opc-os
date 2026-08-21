@@ -1,145 +1,58 @@
 "use client"
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { Bot, FolderKanban, Activity, TrendingUp, Send, Sparkles } from "lucide-react"
-import { ProjectCard } from "@/components/dashboard/project-card"
-import { AgentStatus } from "@/components/dashboard/agent-status"
-import { WorkflowPreview } from "@/components/dashboard/workflow-preview"
-import { ActivityTimeline } from "@/components/dashboard/activity-timeline"
-import { useLang } from "@/lib/language-provider"
-import { useData } from "@/lib/use-data"
-import { api } from "@/lib/api-client"
-import projectsData from "@/data/projects.json"
-import agentsData from "@/data/agents.json"
-import workflowsData from "@/data/workflows.json"
-import departmentsData from "@/data/departments.json"
 import Link from "next/link"
+import { useEffect, useState } from "react"
+import { motion } from "framer-motion"
+import { ArrowUpRight, BrainCircuit, CheckCircle2, CircleDot, Clock3, Network, ShieldCheck, Sparkles } from "lucide-react"
+import { useLang } from "@/lib/language-provider"
 
-const QUICK_COMMANDS = [
-  { label: "发射牛牛 AI", href: "/canvas" },
-  { label: "项目进度", href: "/projects" },
-  { label: "组建团队", href: "/agents" },
-  { label: "系统状态", href: "/console" },
+const missions = [
+  { name: "TradeSpan Website", owner: "Frontend Agent", status: "EXECUTING", progress: 68, next: "Validate trust hierarchy" },
+  { name: "PropFirm Video Factory", owner: "Video Producer", status: "REVIEW", progress: 84, next: "Approve real UI footage" },
+  { name: "OTC Intelligence", owner: "OTC Agent", status: "LEARNING", progress: 42, next: "Distill client pattern" },
 ]
+const signals = [
+  ["Financial UI trust rule updated", "RULE", "organization", "2m"],
+  ["Video failure pattern detected", "EXPERIENCE", "project", "18m"],
+  ["Founder preference resolved a conflict", "DECISION", "founder", "41m"],
+]
+const stats = [["command.activeMissions", "03", "command.advancing"], ["command.agentsOnline", "12", "command.executing"], ["command.pendingDecisions", "05", "command.founderInput"], ["command.newLearnings", "02", "command.readyDistill"]]
 
 export default function DashboardPage() {
-  const { t } = useLang()
-  const { data: stats } = useData(() => api.stats())
-  const [cmdInput, setCmdInput] = useState("")
-  const activeAgents = agentsData.filter(a => a.status === "active").slice(0, 5)
-  const activeWorkflows = workflowsData.workflows.filter(w => w.status === "active")
-  const agentCount = agentsData.filter(a => a.status === "active").length
-
-  const statCards = [
-    { label: "dashboard.active-projects", value: stats?.activeProjects.toString() || "5", icon: FolderKanban },
-    { label: "dashboard.running-agents", value: stats?.totalAgents.toString() || "13", icon: Bot },
-    { label: "dashboard.today-output", value: stats?.todayOutput || "12", icon: Activity },
-    { label: "dashboard.system-uptime", value: stats?.uptime || "99.7%", icon: TrendingUp },
-  ]
-
-  return (
-    <div className="space-y-6">
-      {/* Command Entry — inspired by K3 */}
-      <div className="rounded-xl border p-5" style={{ background: "var(--bg-surface)", borderColor: "var(--border)" }}>
-        <h1 className="text-xl font-bold mb-1" style={{ color: "var(--text-primary)" }}>今天让公司做什么？</h1>
-        <p className="text-sm mb-4" style={{ color: "var(--text-muted)" }}>
-          {agentsData.length} 名 AI 员工 · {departmentsData.length} 个部门 · 1 个共享大脑，随时待命
-        </p>
-        <div className="flex items-center gap-2">
-          <div className="flex-1 flex items-center gap-2 rounded-lg border px-3 py-2.5" style={{ borderColor: "var(--border)", background: "var(--bg-base)" }}>
-            <Sparkles className="w-4 h-4 shrink-0" style={{ color: "var(--brand)" }} />
-            <input
-              type="text"
-              value={cmdInput}
-              onChange={e => setCmdInput(e.target.value)}
-              placeholder="向公司下达指令…"
-              className="flex-1 bg-transparent text-sm outline-none"
-              style={{ color: "var(--text-primary)" }}
-            />
-            <button className="w-8 h-8 flex items-center justify-center rounded-lg shrink-0" style={{ background: "var(--brand)", color: "#fff" }}>
-              <Send className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-2 mt-3">
-          {QUICK_COMMANDS.map(cmd => (
-            <Link
-              key={cmd.label}
-              href={cmd.href}
-              className="px-3 py-1.5 rounded-lg text-xs transition-all border"
-              style={{ background: "var(--bg-base)", borderColor: "var(--border)", color: "var(--text-secondary)" }}
-            >
-              {cmd.label}
-            </Link>
-          ))}
-        </div>
+  const { t, tt } = useLang()
+  // Live clock; rendered only after mount so SSR HTML always matches first client render.
+  const [now, setNow] = useState<Date | null>(null)
+  useEffect(() => {
+    const tick = () => setNow(new Date())
+    tick()
+    const id = setInterval(tick, 1000)
+    return () => clearInterval(id)
+  }, [])
+  const dateLabel = now
+    ? new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Shanghai", day: "2-digit", month: "short", year: "numeric" }).format(now).toUpperCase()
+    : "-- --- ----"
+  const timeLabel = now
+    ? new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Shanghai", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }).format(now)
+    : "--:--:--"
+  return <div className="command-page">
+    <motion.section className="command-intro" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}>
+      <div><div className="eyebrow"><CircleDot /> {t("command.eyebrow")}</div><h1>{t("command.title")}</h1><p>{t("command.greeting")}</p></div>
+      <div className="system-time"><span>{dateLabel}</span><strong>{timeLabel}</strong><small>ASIA / SHANGHAI</small></div>
+    </motion.section>
+    <section className="metric-strip">{stats.map(([label, value, note], index) => <motion.div key={label} className="metric-cell" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .08 * index }}><span>{t(label)}</span><strong>{value}</strong><small>{t(note)}</small></motion.div>)}</section>
+    <section className="command-grid">
+      <div className="terminal-panel intelligence-map">
+        <div className="panel-heading"><div><span>01</span><h2>{t("command.graph")}</h2></div><Link href="/memory">{t("command.openGraph")} <ArrowUpRight /></Link></div>
+        <div className="cognition-map"><div className="map-spine" /><div className="map-node founder"><small>{t("command.authority")}</small><strong>Sera</strong><span>{t("command.founderIntelligence")}</span></div><div className="map-node context"><BrainCircuit /><small>CONTEXT OS</small><strong>{t("command.contextGovernor")}</strong><span>{t("command.contextRank")}</span></div><div className="map-branches"><div className="map-node"><Network /><small>{t("command.org")}</small><strong>12 {t("nav.agents")}</strong><span>{t("command.departments")}</span></div><div className="map-node"><Sparkles /><small>{t("command.workflow")}</small><strong>3 {t("command.missions")}</strong><span>{t("command.runtimeTasks")}</span></div><div className="map-node"><ShieldCheck /><small>{t("command.memoryOs")}</small><strong>346 objects</strong><span>{t("command.graphHealthy")}</span></div></div><div className="learning-loop">{t("command.learningLoop")} <span>{t("command.betterContext")}</span></div></div>
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {statCards.map((stat, i) => {
-          const Icon = stat.icon
-          return (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="htx-card p-5"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>{t(stat.label)}</span>
-                <Icon className="w-5 h-5" style={{ color: "var(--brand)" }} />
-              </div>
-              <div className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>{stat.value}</div>
-            </motion.div>
-          )
-        })}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <div className="flex items-center justify-between mb-3">
-            <span className="section-title">{t("dashboard.active-projects")}</span>
-            <span className="text-xs" style={{ color: "var(--brand)", cursor: "pointer" }}>{t("dashboard.view-all")} →</span>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {projectsData.filter(p => p.status === "active").slice(0, 4).map((proj, i) => (
-              <ProjectCard key={proj.id} {...proj} index={i} />
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <span className="section-title mb-3 block">{t("dashboard.activity")}</span>
-          <ActivityTimeline />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div>
-          <div className="flex items-center justify-between mb-3">
-            <span className="section-title">{t("dashboard.active-agents")}</span>
-            <span className="text-xs" style={{ color: "var(--brand)", cursor: "pointer" }}>{t("dashboard.view-all")} →</span>
-          </div>
-          <div className="space-y-2">
-            {activeAgents.map((agent, i) => (
-              <AgentStatus key={agent.id} {...agent} index={i} />
-            ))}
-          </div>
-        </div>
-        <div>
-          <div className="flex items-center justify-between mb-3">
-            <span className="section-title">{t("dashboard.running-workflows")}</span>
-            <span className="text-xs" style={{ color: "var(--brand)", cursor: "pointer" }}>{t("dashboard.view-all")} →</span>
-          </div>
-          <div className="space-y-3">
-            {activeWorkflows.map((wf, i) => (
-              <WorkflowPreview key={wf.id} name={wf.name} description={wf.description} status={wf.status} nodes={wf.nodes} index={i} />
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+      <aside className="terminal-panel runtime-watch">
+        <div className="panel-heading"><div><span>02</span><h2>{t("command.runtime")}</h2></div><i className="live-dot" /></div>
+        <div className="agent-identity"><div>FA</div><span><strong>Frontend Agent</strong><small>agent.frontend.engineer</small></span><b>EXECUTING</b></div>
+        <dl className="runtime-list"><div><dt>{t("command.currentTask")}</dt><dd>Build TradeSpan landing page</dd></div><div><dt>{t("command.contextInjected")}</dt><dd>18 objects · 3 rules</dd></div><div><dt>{t("command.founderAuthority")}</dt><dd className="ok"><CheckCircle2 /> {t("command.authorityTrust")}</dd></div><div><dt>{t("command.knownRisk")}</dt><dd className="warn">{t("command.reactRisk")}</dd></div></dl>
+        <div className="token-row"><span>CONTEXT BUDGET</span><strong>7,800 / 12,000</strong></div><div className="token-track"><i /></div><Link className="panel-action" href="/context">{t("command.inspectContext")} <ArrowUpRight /></Link>
+      </aside>
+    </section>
+    <section className="terminal-panel mission-panel"><div className="panel-heading"><div><span>03</span><h2>{t("command.missions")}</h2></div><small>{t("command.outcomeHeader")}</small></div><div className="mission-table">{missions.map((mission, index) => <div className="mission-row" key={mission.name}><span className="mission-index">0{index + 1}</span><div><strong>{tt(mission.name)}</strong><small>{tt(mission.owner)}</small></div><b data-state={mission.status}>{t(mission.status === "EXECUTING" ? "command.statusExecuting" : mission.status === "REVIEW" ? "command.statusReview" : "command.statusLearning")}</b><div className="mission-progress"><i style={{ transform: `scaleX(${mission.progress / 100})` }} /><span>{mission.progress}%</span></div><p>{t("command.next")}{tt(mission.next)}</p><ArrowUpRight /></div>)}</div></section>
+    <section className="terminal-panel learning-panel"><div className="panel-heading"><div><span>04</span><h2>{t("command.learning")}</h2></div><Link href="/learning">{t("command.viewTimeline")} <ArrowUpRight /></Link></div>{signals.map(([title, type, scope, time]) => <div className="signal-row" key={title}><Clock3 /><div><strong>{tt(title)}</strong><span>{type} · authority/{scope}</span></div><time>{time}</time></div>)}</section>
+  </div>
 }

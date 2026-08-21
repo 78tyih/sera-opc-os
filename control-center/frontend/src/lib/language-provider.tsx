@@ -18,12 +18,11 @@ const LangContext = createContext<{
 })
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
+  // SSR-consistent default; localStorage is synced after mount to avoid hydration mismatch.
   const [lang, setLang] = useState<Lang>("zh")
-  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
-    const saved = localStorage.getItem("sera-lang") as Lang | null
+    const saved = localStorage.getItem("sera-lang")
     if (saved === "en" || saved === "zh") setLang(saved)
   }, [])
 
@@ -38,8 +37,6 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     if (isProperNoun(text)) return text
     return translateDataText(text, lang)
   }, [lang])
-
-  if (!mounted) return <>{children}</>
 
   return (
     <LangContext.Provider value={{ lang, setLang: setLangAndPersist, t, tt }}>

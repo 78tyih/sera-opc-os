@@ -1,0 +1,46 @@
+# Opportunity Engine Schema v1.0
+opportunity:
+  type: object
+  required: [id, title, source_signals, score, recommendation, status]
+  properties:
+    id: { type: string, pattern: "^OPP-\\d{8}-\\d{3}$" }
+    title: { type: string }
+    source_signals: { type: array, items: { type: string } }
+    score:
+      type: object
+      properties:
+        total: { type: number, minimum: 0, maximum: 100 }
+        breakdown:
+          type: object
+          properties:
+            market_size: { type: number, minimum: 0, maximum: 100 }
+            capability_match: { type: number, minimum: 0, maximum: 100 }
+            strategic_alignment: { type: number, minimum: 0, maximum: 100 }
+            execution_feasibility: { type: number, minimum: 0, maximum: 100 }
+            financial_viability: { type: number, minimum: 0, maximum: 100 }
+    analysis:
+      type: object
+      properties:
+        summary: { type: string }
+        market_context: { type: string }
+        competitive_landscape: { type: string }
+        risks: { type: array, items: { type: string } }
+        mitigations: { type: array, items: { type: string } }
+    recommendation:
+      type: object
+      properties:
+        decision: { type: string, enum: [pursue, investigate, monitor, discard] }
+        confidence: { type: number, minimum: 0, maximum: 1 }
+        suggested_factory: { type: string }
+        suggested_priority: { type: integer, minimum: 1, maximum: 5 }
+    action:
+      type: object
+      properties:
+        create_project: { type: boolean }
+        project_name: { type: string, nullable: true }
+        assigned_to: { type: string, nullable: true }
+    status:
+      type: string
+      enum: [new, analyzed, approved, rejected, in_progress, completed]
+    created_at: { type: string, format: date-time }
+    updated_at: { type: string, format: date-time }

@@ -1,0 +1,28 @@
+# Competitor Intelligence Schema v1.0
+competitor_intelligence:
+  type: object
+  required: [id, scan_time, competitor, changes, threat_level]
+  properties:
+    id: { type: string, pattern: "^CI-\\d{8}-\\d{3}$" }
+    scan_time: { type: string, format: date-time }
+    competitor:
+      type: object
+      properties:
+        name: { type: string }
+        category: { type: string }
+        monitoring_priority: { type: string, enum: [high, medium, low] }
+    changes:
+      type: array
+      items:
+        type: object
+        properties:
+          type: { type: string, enum: [product_change, pricing_change, website_change, hiring, marketing, funding] }
+          detected_at: { type: string, format: date-time }
+          field: { type: string }
+          old_value: { type: string }
+          new_value: { type: string }
+          impact: { type: string }
+    threat_level: { type: string, enum: [critical, high, medium, low, informational] }
+    recommended_action: { type: string }
+    summary: { type: string }
+    created_at: { type: string, format: date-time }

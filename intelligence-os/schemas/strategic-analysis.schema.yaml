@@ -1,0 +1,67 @@
+# Strategic Analysis Schema v1.0
+strategic_analysis:
+  type: object
+  required: [id, type, period, input, analysis, output, status]
+  properties:
+    id: { type: string, pattern: "^SA-\\d{8}-\\d{3}$" }
+    type: { type: string, enum: [weekly_brief, quarterly_review, annual_plan, ad_hoc] }
+    period: { type: string }
+    input:
+      type: object
+      properties:
+        market_signals: { type: integer }
+        competitor_signals: { type: integer }
+        technology_signals: { type: integer }
+        customer_insights: { type: integer }
+        opportunities: { type: integer }
+    analysis:
+      type: object
+      properties:
+        swot:
+          type: object
+          properties:
+            strengths: { type: array, items: { type: string } }
+            weaknesses: { type: array, items: { type: string } }
+            opportunities: { type: array, items: { type: string } }
+            threats: { type: array, items: { type: string } }
+        key_findings:
+          type: array
+          items:
+            type: object
+            properties:
+              area: { type: string }
+              finding: { type: string }
+              confidence: { type: number, minimum: 0, maximum: 1 }
+              implication: { type: string }
+        strategic_options:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: string }
+              title: { type: string }
+              description: { type: string }
+              required_resources: { type: array, items: { type: string } }
+              expected_impact: { type: string }
+              risk: { type: string }
+              recommendation: { type: string }
+    output:
+      type: object
+      properties:
+        ceo_brief:
+          type: object
+          properties:
+            title: { type: string }
+            summary: { type: string }
+            key_decisions_needed: { type: array, items: { type: string } }
+            recommended_actions:
+              type: array
+              items:
+                type: object
+                properties:
+                  priority: { type: integer }
+                  action: { type: string }
+                  owner: { type: string }
+                  deadline: { type: string, format: date-time }
+    status: { type: string, enum: [draft, in_review, approved, completed] }
+    created_at: { type: string, format: date-time }

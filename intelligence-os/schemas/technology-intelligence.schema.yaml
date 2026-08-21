@@ -1,0 +1,34 @@
+# Technology Intelligence Schema v1.0
+technology_intelligence:
+  type: object
+  required: [id, scan_time, domain, signals]
+  properties:
+    id: { type: string, pattern: "^TI-\\d{8}-\\d{3}$" }
+    scan_time: { type: string, format: date-time }
+    domain: { type: string, enum: [ai_models, agent_frameworks, tools, open_source] }
+    signals:
+      type: array
+      items:
+        type: object
+        properties:
+          id: { type: string }
+          type: { type: string, enum: [new_release, update, trend, benchmark] }
+          title: { type: string }
+          description: { type: string }
+          relevance:
+            type: object
+            properties:
+              score: { type: number, minimum: 0, maximum: 1 }
+              reason: { type: string }
+              affected_factories: { type: array, items: { type: string } }
+          adoption:
+            type: object
+            properties:
+              stage: { type: string, enum: [emerging, growing, mature, declining] }
+              community_interest: { type: string, enum: [low, medium, high, viral] }
+          action:
+            type: object
+            properties:
+              recommended: { type: string, enum: [watch, evaluate, adopt, migrate] }
+              urgency: { type: string, enum: [now, this_quarter, this_year, not_now] }
+    created_at: { type: string, format: date-time }

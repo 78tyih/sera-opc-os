@@ -1,0 +1,91 @@
+# Intelligence OS → Control Plane Integration
+
+## 接口定义
+
+```yaml
+intelligence_to_control_plane:
+  # 机会 → 项目提案
+  submit_opportunity:
+    trigger: "opportunity.score.total >= 70"
+    method: POST
+    input: opportunity.schema.yaml
+    output: project_proposal
+    mapping:
+      opportunity.title: project.name
+      opportunity.recommendation.suggested_factory: project.owner
+      opportunity.score.total: project.priority
+      opportunity.analysis.summary: project.description
+    control_plane_action: "create project proposal in pending_review"
+
+  # 紧急信号 → 任务
+  submit_critical_signal:
+    trigger: "signal.impact.level == critical"
+    method: POST
+    input: signal
+    output: task
+    mapping:
+      signal.id: task.description
+      signal.impact.level: task.priority
+      signal.relevance.affected_departments: task.assignee
+    control_plane_action: "create high-priority task"
+
+  # CEO Brief → OKR 更新
+  submit_brief:
+    trigger: "weekly_brief completed"
+    method: POST
+    input: strategic-analysis.schema.yaml
+    output: okr_update
+    mapping:
+      brief.output.ceo_brief.recommended_actions: okr.key_results
+      brief.output.ceo_brief.key_decisions_needed: okr.objective
+    control_plane_action: "update OKR priorities"
+
+  # 财务预警 → 资源调整
+  submit_financial_alert:
+    trigger: "financial signal.severity == warning or critical"
+    method: POST
+    input: financial-intelligence.schema.yaml
+    output: resource_adjustment
+    control_plane_action: "adjust resource allocation"
+```
+
+## 事件订阅
+
+```yaml
+events:
+  publishes:
+    - opportunity.discovered:
+        description: "新机会发现，score >= 70"
+        payload: opportunity.schema.yaml
+        target: mission-system
+    - signal.critical:
+        description: "紧急信号，需要立即处理"
+        payload: signal
+        target: task-engine
+    - brief.ready:
+        description: "CEO Brief 完成"
+        payload: strategic-analysis.schema.yaml
+        target: ceo-agent
+    - financial.alert:
+        description: "财务预警"
+        payload: financial-intelligence.schema.yaml
+        target: resource-manager
+    - competitor.move:
+        description: "竞争对手重大变化"
+        payload: competitor-intelligence.schema.yaml
+        target: strategy-department
+
+  subscribes:
+    - project.created:
+        description: "新项目创建"
+        action: "add to monitoring scope"
+    - task.completed:
+        description: "任务完成"
+        action: "validate intelligence impact"
+    - okr.updated:
+        description: "OKR 更新"
+        action: "recalibrate opportunity scoring"
+    - evaluation.completed:
+        description: "评估完成"
+        action: "update intelligence accuracy metrics"
+```

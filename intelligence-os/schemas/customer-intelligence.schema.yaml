@@ -1,0 +1,50 @@
+# Customer Intelligence Schema v1.0
+customer_intelligence:
+  type: object
+  required: [id, analysis_period, insights, recommendations]
+  properties:
+    id: { type: string, pattern: "^CUI-\\d{8}-\\d{3}$" }
+    analysis_period:
+      type: object
+      properties:
+        start: { type: string, format: date-time }
+        end: { type: string, format: date-time }
+    segments:
+      type: array
+      items:
+        type: object
+        properties:
+          name: { type: string }
+          size: { type: integer }
+          characteristics: { type: array, items: { type: string } }
+          needs: { type: array, items: { type: string } }
+          pain_points: { type: array, items: { type: string } }
+          satisfaction_score: { type: number }
+    insights:
+      type: array
+      items:
+        type: object
+        properties:
+          id: { type: string }
+          type: { type: string, enum: [need, pain, behavior, opportunity] }
+          description: { type: string }
+          evidence: { type: array, items: { type: string } }
+          confidence: { type: number, minimum: 0, maximum: 1 }
+          priority: { type: integer, minimum: 1, maximum: 5 }
+    feedback_summary:
+      type: object
+      properties:
+        positive_themes: { type: array, items: { type: string } }
+        negative_themes: { type: array, items: { type: string } }
+        feature_requests: { type: array, items: { type: string } }
+        common_objections: { type: array, items: { type: string } }
+    recommendations:
+      type: array
+      items:
+        type: object
+        properties:
+          action: { type: string }
+          target_factory: { type: string }
+          expected_impact: { type: string }
+          priority: { type: integer }
+    created_at: { type: string, format: date-time }

@@ -1,0 +1,42 @@
+# Financial Intelligence Schema v1.0
+financial_intelligence:
+  type: object
+  required: [id, period, signals, report]
+  properties:
+    id: { type: string, pattern: "^FI-\\d{8}-\\d{3}$" }
+    period: { type: string }
+    signals:
+      type: array
+      items:
+        type: object
+        properties:
+          id: { type: string }
+          type: { type: string, enum: [revenue_milestone, cost_alert, metric_change, forecast] }
+          severity: { type: string, enum: [positive, warning, critical, informational] }
+          metric:
+            type: object
+            properties:
+              name: { type: string }
+              current: { type: number }
+              previous: { type: number }
+              target: { type: number }
+              change_percent: { type: number }
+          analysis:
+            type: object
+            properties:
+              root_cause: { type: string }
+              trend: { type: string, enum: [improving, stable, declining] }
+              forecast: { type: string }
+          action:
+            type: object
+            properties:
+              required: { type: boolean }
+              suggestion: { type: string }
+              owner: { type: string }
+    report:
+      type: object
+      properties:
+        summary: { type: string }
+        key_metrics: { type: object }
+        recommendations: { type: array, items: { type: string } }
+    created_at: { type: string, format: date-time }

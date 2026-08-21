@@ -1,0 +1,44 @@
+# Market Intelligence Schema v1.0
+market_intelligence:
+  type: object
+  required: [id, scan_time, signals, aggregated]
+  properties:
+    id: { type: string, pattern: "^MI-\\d{8}-\\d{3}$" }
+    scan_time: { type: string, format: date-time }
+    source: { type: string }
+    signals:
+      type: array
+      items:
+        type: object
+        properties:
+          id: { type: string }
+          category: { type: string, enum: [news, social, data, research] }
+          title: { type: string }
+          summary: { type: string }
+          source_url: { type: string }
+          published_at: { type: string, format: date-time }
+          relevance:
+            type: object
+            properties:
+              score: { type: number, minimum: 0, maximum: 1 }
+              reason: { type: string }
+              affected_departments: { type: array, items: { type: string } }
+          sentiment:
+            type: object
+            properties:
+              value: { type: string, enum: [positive, negative, neutral] }
+              score: { type: number, minimum: -1, maximum: 1 }
+          impact:
+            type: object
+            properties:
+              level: { type: string, enum: [critical, high, medium, low, informational] }
+              timeline: { type: string, enum: [immediate, short_term, long_term] }
+              action_required: { type: boolean }
+    aggregated:
+      type: object
+      properties:
+        top_signals: { type: array, items: { type: string } }
+        market_mood: { type: number, minimum: -1, maximum: 1 }
+        emerging_patterns: { type: array, items: { type: string } }
+        risk_indicators: { type: array, items: { type: string } }
+    created_at: { type: string, format: date-time }

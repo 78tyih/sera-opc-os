@@ -1,0 +1,60 @@
+# Revenue Dashboard Schema v1.0
+revenue_dashboard:
+  type: object
+  required: [date, summary, pipeline, kpis]
+  properties:
+    date: { type: string, format: date-time }
+    summary:
+      type: object
+      properties:
+        new_revenue: { type: number }
+        mrr: { type: number }
+        arr: { type: number }
+        total_customers: { type: integer }
+    pipeline:
+      type: object
+      properties:
+        total_leads: { type: integer }
+        new_leads: { type: integer }
+        qualified: { type: integer }
+        demo: { type: integer }
+        negotiation: { type: integer }
+        closed_won: { type: integer }
+    kpis:
+      type: object
+      properties:
+        cac: { type: number }
+        ltv: { type: number }
+        ltv_cac_ratio: { type: number }
+        conversion_rate: { type: number }
+        churn_rate: { type: number }
+    new_customers:
+      type: array
+      items:
+        type: object
+        properties:
+          name: { type: string }
+          plan: { type: string }
+          value: { type: number }
+    alerts:
+      type: array
+      items: { type: string }
+
+# Growth Experiment Schema v1.0
+growth_experiment:
+  type: object
+  required: [id, name, hypothesis, status]
+  properties:
+    id: { type: string, pattern: "^EXP-\\d{3}$" }
+    name: { type: string }
+    hypothesis: { type: string }
+    status: { type: string, enum: [proposed, running, completed, stopped] }
+    results:
+      type: object
+      nullable: true
+      properties:
+        metric: { type: string }
+        control: { type: number }
+        variant: { type: number }
+        improvement: { type: number }
+        conclusion: { type: string }

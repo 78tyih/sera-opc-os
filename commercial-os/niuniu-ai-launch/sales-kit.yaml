@@ -1,0 +1,96 @@
+# NiuNiu AI — Sales Kit
+
+## 产品定位
+
+```yaml
+product: "NiuNiu AI"
+tagline: "Your AI Trading Co-Pilot"
+target: "MT4/MT5 独立交易员"
+value_proposition: "帮交易员自动识别信号 + 风险管理 + 策略优化"
+```
+
+## 定价
+
+```yaml
+pricing:
+  basic:
+    price: 29
+    features: ["5 个信号/天", "基础分析", "Telegram 推送"]
+    target: "入门交易员"
+
+  pro:
+    price: 99
+    features: ["不限信号", "高级分析", "API 接入", "策略回测"]
+    target: "活跃交易员"
+
+  enterprise:
+    price: 299
+    features: ["全部功能", "专属支持", "定制集成", "多账户"]
+    target: "Prop Firm / 机构"
+```
+
+## 销售话术
+
+```yaml
+scripts:
+  initial_contact:
+    channel: "telegram"
+    template: |
+      Hi {name}，
+      看到你在 {group} 很活跃。
+      我们最近做了一个 AI 交易助手，可以：
+      → 自动识别交易信号
+      → 实时风险分析
+      → 个性化策略建议
+      目前有 {n} 个交易员在用。
+      想看看 Demo 吗？免费的。
+
+  follow_up_1:
+    delay: "3 days"
+    template: |
+      Hi {name}，还在考虑吗？
+      送你 7 天免费试用，无风险体验。
+
+  follow_up_2:
+    delay: "7 days"
+    template: |
+      {name}，最后机会：
+      前 100 名用户终身 7 折。
+      还剩 {remaining} 个名额。
+
+  demo:
+    duration: "15 min"
+    agenda:
+      - "了解用户交易方式"
+      - "展示 NiuNiu AI 如何匹配需求"
+      - "回答疑问"
+      - "引导试用"
+    close: "今天开通试用，7 天免费。"
+
+  objection_handling:
+    - objection: "担心准确率"
+      response: "我们回测准确率 78%，而且持续优化。先试用 7 天，你自己验证。"
+
+    - objection: "太贵了"
+      response: "Pro 版 $99/月，如果帮你多赚 $500/月，ROI 是 5 倍。"
+
+    - objection: "需要时间学习"
+      response: "5 分钟设置，15 分钟学会。我带你走一遍。"
+```
+
+## FAQ
+
+```yaml
+faq:
+  - q: "NiuNiu AI 和普通信号有什么区别？"
+    a: "AI 自适应学习你的交易风格，不是固定信号。"
+
+  - q: "支持哪些平台？"
+    a: "MT4, MT5, 以及主流券商 API。"
+
+  - q: "准确率多少？"
+    a: "历史回测 78%，持续优化中。"
+
+  - q: "可以退款吗？"
+    a: "7 天无理由退款。"
+```

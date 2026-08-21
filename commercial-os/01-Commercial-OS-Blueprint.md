@@ -1,150 +1,135 @@
-# Sera OPC OS Commercial Operating System V1.0
+# Sera OPC OS Commercial OS V1.0
 
-## AI 公司商业引擎 — Layer 4.75
+## AI 商业增长引擎 — Layer 6
 
 | Field | Value |
 |-------|-------|
 | Version | 1.0 |
-| Layer | 4.75 |
+| Layer | 6 |
 | Status | Engineering Specification |
-| Owner | CBO (SERA-CBO-001) |
-| Category | Business Engine |
+| Owner | CRO (SERA-CRO-001) |
+| Mission | 持续发现机会 → 产品化 → 获客 → 销售 → 收入 → 复盘 |
 
 ---
 
 # 目录
 
-1. [商业操作系统定位](#一商业操作系统定位)
-2. [系统架构总览](#二系统架构总览)
+1. [为什么需要 Commercial OS](#一为什么需要-commercial-os)
+2. [总架构](#二总架构)
 3. [Opportunity Engine](#三opportunity-engine)
-4. [Venture Studio Engine](#四venture-studio-engine)
-5. [Product Launch Engine](#五product-launch-engine)
-6. [Revenue Engine](#六revenue-engine)
-7. [Growth Engine](#七growth-engine)
-8. [Partnership Engine](#八partnership-engine)
-9. [Pricing Engine](#九pricing-engine)
-10. [Customer Success Engine](#十customer-success-engine)
+4. [Product Validation Engine](#四product-validation-engine)
+5. [Brand Engine](#五brand-engine)
+6. [Marketing Engine](#六marketing-engine)
+7. [Sales Engine](#七sales-engine)
+8. [CRM System](#八crm-system)
+9. [Revenue Engine](#九revenue-engine)
+10. [Growth Engine](#十growth-engine)
 11. [Commercial Agent Catalog](#十一commercial-agent-catalog)
 12. [YAML Schema 总集](#十二yaml-schema-总集)
-13. [Revenue Pipeline Design](#十三revenue-pipeline-design)
-14. [NiuNiu AI 完整运行流程](#十四niuniu-ai-完整运行流程)
-15. [Control Plane Integration](#十五control-plane-integration)
-16. [Repository Structure](#十六repository-structure)
-17. [Implementation Roadmap](#十七implementation-roadmap)
+13. [Niuniu AI Launch Demo](#十三niuniu-ai-launch-demo)
+14. [Runtime Integration](#十四runtime-integration)
+15. [Repository Structure](#十五repository-structure)
+16. [Implementation Roadmap](#十六implementation-roadmap)
 
 ---
 
-# 一、商业操作系统定位
+# 一、为什么需要 Commercial OS
 
-## 为什么需要 Commercial OS
+## 现状
 
-前面的系统解决：
+当前 Sera OPC OS 已经能：
 
-| 层 | 解决 | 但缺少 |
-|----|------|--------|
-| Organization OS | 怎么组织 | 怎么赚钱 |
-| Factory OS | 怎么生产 | 卖什么 |
-| Employee OS | 怎么管理员工 | 员工创造什么价值 |
-| Control Plane | 怎么运行 | 运行什么业务 |
-| Learning OS | 怎么学习 | 学什么最赚钱 |
-| Intelligence OS | 怎么观察世界 | 观察到机会后怎么做 |
+| 层 | 能力 |
+|----|------|
+| Intelligence OS | 发现市场信号 |
+| Runtime | 执行任务 |
+| Factory OS | 生产产品 |
+| Learning OS | 学习优化 |
 
-**Commercial OS 填补的空白**：
+但缺少：
 
 ```
-Intelligence OS 发现机会
+市场 → 客户 → 销售 → 收入 → 增长
+```
+
+## Commercial OS 填补的空白
+
+```
+Intelligence OS 发现 "AI Trading 市场增长 300%"
   ↓
-Commercial OS 判断商业价值 + 创建项目 + 生产产品 + 获取收入 + 客户成功
+Commercial OS 回答:
+  ├── 这是真的机会吗？        (Opportunity Engine)
+  ├── 客户愿意付钱吗？        (Product Validation)
+  ├── 品牌怎么定位？          (Brand Engine)
+  ├── 怎么触达客户？          (Marketing Engine)
+  ├── 怎么成交？              (Sales Engine)
+  ├── 客户关系怎么管？        (CRM)
+  ├── 赚了多少钱？            (Revenue Engine)
+  └── 怎么增长？              (Growth Engine)
   ↓
-Learning OS 优化复制
+  → 产生真实收入
 ```
 
 ## 核心理念
 
 ```
-传统公司: 市场部 → 产品部 → 研发部 → 销售部 → 运营部
-         (信息断裂, 部门壁垒, 决策慢)
-
-Sera OPC OS: 机会 → 判断 → 创建 → 生产 → 销售 → 收入 → 成功
-             (自动闭环, 数据驱动, 持续优化)
+Sera OPC OS 不是研究型 AI 公司。
+它是：
+  一个人控制的 AI Enterprise，
+  能够像 500 人科技公司一样
+  快速发现商业机会并完成商业闭环。
 ```
-
-## 参考组织
-
-| 组织 | 借鉴 | Commercial OS 对应 |
-|------|------|-------------------|
-| **Y Combinator** | 创业投资 + 加速 | Opportunity Engine + Venture Studio |
-| **Sequoia** | 项目评估 + 投后管理 | Opportunity Scoring |
-| **Salesforce** | CRM + Revenue Pipeline | Revenue Engine |
-| **HubSpot** | 集客营销 + 客户成功 | Growth Engine + Customer Success |
-| **TikTok** | 增长实验 + 病毒传播 | Growth Engine |
-| **Amazon** | 定价 + 合作伙伴网络 | Pricing Engine + Partnership Engine |
 
 ---
 
-# 二、系统架构总览
+# 二、总架构
 
 ```
-                     Intelligence OS
-                     (发现机会信号)
-                          │
-                          ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    Commercial OS  (Layer 4.75)                │
-│                                                              │
-│  ┌────────────────┐    ┌────────────────┐                   │
-│  │  Opportunity   │───▶│  Venture       │                   │
-│  │  Engine        │    │  Studio        │                   │
-│  │  (机会评估)     │    │  (项目创建)     │                   │
-│  └────────────────┘    └────────┬───────┘                   │
-│                                 │                           │
-│  ┌────────────────┐    ┌────────┴───────┐                   │
-│  │  Pricing       │    │  Product       │                   │
-│  │  Engine        │    │  Launch        │                   │
-│  │  (定价策略)     │    │  (产品发布)     │                   │
-│  └────────────────┘    └────────┬───────┘                   │
-│                                 │                           │
-│  ┌────────────────┐    ┌────────┴───────┐                   │
-│  │  Partnership   │    │  Revenue       │                   │
-│  │  Engine        │◀───│  Engine        │                   │
-│  │  (渠道合作)     │    │  (收入引擎)     │                   │
-│  └────────────────┘    └────────┬───────┘                   │
-│                                 │                           │
-│  ┌────────────────┐    ┌────────┴───────┐                   │
-│  │  Growth        │    │  Customer      │                   │
-│  │  Engine        │◀───│  Success       │                   │
-│  │  (增长实验)     │    │  (客户成功)     │                   │
-│  └────────────────┘    └────────────────┘                   │
-│                                                              │
-└──────────────────────────┬───────────────────────────────────┘
-                           │ 商业项目 / 收入 / 客户
+                    Intelligence OS (信号)
+                           │
                            ▼
-              ┌────────────────────────┐
-              │  Revenue Pipeline      │
-              │  Lead → Sale → Revenue │
-              └────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                    Commercial OS  Layer 6                    │
+│                                                             │
+│  ┌────────────────┐    ┌────────────────┐                  │
+│  │  Opportunity   │───▶│  Product       │                  │
+│  │  Engine        │    │  Validation    │                  │
+│  │  (发现机会)     │    │  (验证需求)     │                  │
+│  └────────────────┘    └────────┬───────┘                  │
+│                                 │                           │
+│  ┌────────────────┐    ┌────────┴───────┐                  │
+│  │  Brand         │    │  Marketing     │                  │
+│  │  Engine        │───▶│  Engine        │                  │
+│  │  (品牌定位)     │    │  (获客)        │                  │
+│  └────────────────┘    └────────┬───────┘                  │
+│                                 │                           │
+│  ┌────────────────┐    ┌────────┴───────┐                  │
+│  │  Sales         │    │  CRM           │                  │
+│  │  Engine        │◀───│  System        │                  │
+│  │  (成交)        │    │  (客户管理)     │                  │
+│  └────────────────┘    └────────┬───────┘                  │
+│                                 │                           │
+│  ┌────────────────┐    ┌────────┴───────┐                  │
+│  │  Revenue       │    │  Growth        │                  │
+│  │  Engine        │◀───│  Engine        │                  │
+│  │  (收入)        │    │  (增长飞轮)     │                  │
+│  └────────────────┘    └────────────────┘                  │
+│                                                             │
+└──────────────────────────┬──────────────────────────────────┘
+                           │ 收入 + 数据
+                           ▼
+                 ┌────────────────────┐
+                 │  Learning OS       │
+                 │  (优化 → 循环)     │
+                 └────────────────────┘
 ```
 
 ## 商业闭环
 
 ```
-Intelligence OS
-  └── 信号: "AI Trading 市场增长 300%"
-      ↓
-Commercial OS
-  ├── Opportunity Engine: 评分 87 → GO
-  ├── Venture Studio: 创建 NiuNiu AI 项目
-  ├── Pricing Engine: 定价 $29/$99/$299
-  ├── Product Launch Factory: 官网 + 内容 + 销售资料
-  ├── Revenue Engine: 获取客户 → 成交
-  ├── Partnership Engine: 渠道合作
-  ├── Growth Engine: 实验优化
-  └── Customer Success: 留存 + 复购
-      ↓
-Learning OS
-  └── 哪个渠道转化率高？哪个定价最优？
-      ↓
-Intelligence OS (循环)
+Opportunity → Validate → Brand → Marketing → Sales → CRM → Revenue → Growth
+      ↑                                                              │
+      └────────────────────── Learning OS ───────────────────────────┘
 ```
 
 ---
@@ -153,365 +138,569 @@ Intelligence OS (循环)
 
 ## 定位
 
-商业机会的"投资委员会"。参考 Y Combinator / Sequoia 的投资决策流程。
+公司的"VC 投资委员会"。每天扫描市场，发现新商业机会。
+
+## 输入
+
+来自 Intelligence OS 的信号：
+
+```yaml
+signal:
+  source: "market_intelligence"
+  title: "MT5 AI Trading Assistant 需求增长"
+  data:
+    search_volume: "+300% YoY"
+    competitor_gap: "FTMO 刚推出 AI 功能"
+    user_pain: "交易员需要自动化工具"
+    monetization: "SaaS $29-299/mo"
+```
 
 ## 评估维度
 
 ```yaml
-evaluation_dimensions:
+opportunity_scoring:
   market:
-    tam: float           # 总可寻址市场 ($)
-    sam: float           # 可服务市场 ($)
-    growth_rate: float   # 年增长率 (%)
-    market_stage: string # emerging | growing | mature | declining
+    tam: 0-100          # 总可寻址市场
+    growth_rate: 0-100  # 增长率
+    timing: 0-100       # 时机
 
   product:
-    capability_match: float  # 0-100
-    time_to_market: string   # weeks
-    technical_risk: string   # low | medium | high
-    competitive_advantage: string[]
+    capability_match: 0-100  # 能力匹配度
+    time_to_market: 0-100    # 上市速度
+    differentiation: 0-100   # 差异化
 
   business:
-    expected_margin: float   # %
-    payback_period: string   # months
-    revenue_potential: string# immediate | 3_months | 6_months | 12_months
-    scalability: float       # 0-100
+    margin: 0-100       # 利润率
+    scalability: 0-100  # 可规模化
+    monetization: 0-100 # 变现能力
 
   strategic:
-    okr_alignment: float     # 0-100
-    brand_fit: float         # 0-100
-    learning_value: string   # 这个项目能学到什么
-    network_effect: boolean
+    okr_alignment: 0-100
+    learning_value: 0-100
+    brand_fit: 0-100
 ```
 
 ## 决策矩阵
 
 ```yaml
-decision_matrix:
-  - score >= 85: "GO — 立即启动 Venture Studio"
+decision:
+  - score >= 85: "GO — 立即启动 Product Validation"
   - score >= 70: "INVESTIGATE — 需要更多调研"
   - score >= 50: "WATCH — 加入观察列表"
   - score < 50:  "DROP — 不具商业价值"
-
-  special_conditions:
-  - "strategic_alignment >= 90 && score >= 65": "GO — 战略价值优先"
-  - "learning_value == high && score >= 60": "INVESTIGATE — 学习价值高"
-  - "capability_match >= 95 && score >= 60": "GO — 能力匹配极强"
 ```
 
-## YAML Schema
+## Schema
 
 ```yaml
-# Schema: opportunity-assessment.yaml
-opportunity_assessment:
-  id: string                # OPP-YYYYMMDD-XXX
-  title: string
-  source: string            # 来源 Intelligence OS 信号 ID
-
-  market:
-    tam: float
-    sam: float
-    growth_rate: float
-    market_stage: string
-
-  product:
-    capability_match: float
-    time_to_weeks: int
-    technical_risk: string
-    competitive_advantage: string[]
-
-  business:
-    expected_margin: float
-    payback_months: int
-    revenue_potential: string
-    scalability: float
-
-  strategic:
-    okr_alignment: float
-    brand_fit: float
-    learning_value: string
-    network_effect: boolean
-
-  scoring:
-    total: float           # 0-100
-    breakdown:
-      market: float
-      product: float
-      business: float
-      strategic: float
-
-  decision:
-    verdict: string        # go | investigate | watch | drop
-    confidence: float
-    rationale: string
-    next_steps: string[]
-
-  created_at: string
+opportunity:
+  id: "OPP-20260821-001"
+  title: "AI Trading Assistant"
+  source: "market_intelligence"
+  score: 87
+  breakdown:
+    market: 92
+    product: 85
+    business: 88
+    strategic: 83
+  decision: "GO"
+  rationale: "市场增长300%, 能力匹配度高, 变现路径清晰"
+  next_steps:
+    - "验证 20 个潜在客户付费意愿"
+    - "分析 FTMO 产品差距"
+  created_at: "2026-08-21T09:00:00Z"
 ```
 
 ---
 
-# 四、Venture Studio Engine
+# 四、Product Validation Engine
 
 ## 定位
 
-AI 创业工作室。参考 Google X / Amazon Innovation Lab。
+公司的"产品验证部门"。学习 Stripe / Amazon / YC 的方法论。
 
-## 输入 → 输出
+## 验证流程
 
 ```
-输入: 通过评估的机会 (Opportunity Assessment)
-输出: 完整的商业项目 (Project Charter)
+Step 1: Problem Discovery
+  ├── "客户有什么痛点？"
+  ├── "这个痛点有多痛？"
+  └── "客户愿意付多少钱解决？"
+
+Step 2: Customer Discovery
+  ├── "谁是最早期用户？"
+  ├── "他们在哪里？"
+  └── "怎么触达他们？"
+
+Step 3: Solution Validation
+  ├── "最小可行方案是什么？"
+  ├── "客户愿意现在付钱吗？"
+  └── "什么价格他们能接受？"
+
+Step 4: Market Validation
+  ├── "市场规模够大吗？"
+  ├── "竞争格局如何？"
+  └── "我们的优势是什么？"
 ```
 
-## Project Charter Schema
+## 输出: Product Brief
 
 ```yaml
-# Schema: project-charter.yaml
-project_charter:
-  id: string                # PRJ-YYYYMMDD-XXX
-  name: string
-  opportunity_id: string
+product_brief:
+  id: "PB-20260821-001"
+  opportunity_id: "OPP-20260821-001"
+  name: "NiuNiu AI"
 
-  mission:
-    one_line: string
-    objective: string
-    success_criteria: string[]
-    kpis:
-      - metric: string
-        target: float
-        timeframe: string
+  problem:
+    statement: "MT4/MT5 交易员需要 AI 辅助决策"
+    evidence: [
+      "15+ Telegram 群讨论",
+      "3 个 support ticket",
+      "FTMO 已推出类似功能"
+    ]
+    pain_level: 8/10
 
-  scope:
-    deliverables: string[]
-    out_of_scope: string[]
-    dependencies: string[]
+  customer:
+    persona: "独立交易员 / Prop Firm 交易员"
+    size: "全球 500 万+ MT4/MT5 用户"
+    willingness_to_pay: "$29-99/月"
+    acquisition_channel: "Telegram 社群 + YouTube"
 
-  team:
-    lead: string            # Agent ID
-    required_agents: string[]
-    recommended_agents: string[]
+  solution:
+    mvp: "AI 交易信号推送 + 分析"
+    timeline: "14 天"
+    key_features: ["信号识别", "风险分析", "策略建议"]
 
-  budget:
-    api_costs: float
-    tool_costs: float
-    marketing_budget: float
-    total: float
-    runway_days: int
+  validation:
+    method: "20 个潜在客户访谈"
+    conversion_rate: "60% 愿意付费"
+    avg_price: "$49/月"
 
-  timeline:
-    phases:
-      - name: string
-        duration_days: int
-        deliverables: string[]
-        milestones: string[]
+  risk:
+    - "竞争对手快速跟进"
+    - "模型准确率不达标"
+    - "用户信任问题"
 
-  status: string            # draft | active | paused | completed | cancelled
-  created_at: string
-  owner: string
-```
-
-## Venture Studio 工作流
-
-```
-Step 1: 接收机会 (从 Opportunity Engine)
-Step 2: 生成 Project Charter
-Step 3: 提交 CEO Agent 审批
-Step 4: 审批通过 → 分配资源
-Step 5: 创建项目 → 进入 Product Launch Engine
-Step 6: 监控项目进度
-Step 7: 项目完成 → 移交 Revenue Engine
+  status: "validated"
+  created_at: "2026-08-21T12:00:00Z"
 ```
 
 ---
 
-# 五、Product Launch Engine
+# 五、Brand Engine
 
 ## 定位
 
-商业资产生产工厂。把项目 charter 转化为可交付的产品和营销资产。
+公司的"品牌工厂"。对应 Apple Brand Team。
 
-## 生产流水线
+## 品牌生产流水线
 
 ```
-Input: Project Charter
+Product Brief
   ↓
-Brand Agent: 品牌命名 + 视觉识别
+Brand Strategy: 定位 + 差异化
   ↓
-Product Agent: 产品定义 + 价值主张
+Visual Identity: Logo + 颜色 + 字体
   ↓
-Copy Agent: 营销文案 + 销售话术
+Brand Voice: 语气 + 风格
   ↓
-Design Agent: 官网 + 着陆页 + 素材
+Landing Page: 官网 + 着陆页
   ↓
-Video Agent: 产品视频 + 演示
+Marketing Materials: 宣传册 + 广告素材
   ↓
-Sales Agent: 销售资料 + 定价页
-  ↓
-Output: 完整的商业资产包
+Brand Package (交付)
 ```
 
-## YAML Schema
+## 输出: Brand Package
 
 ```yaml
-# Schema: product-launch.yaml
-product_launch:
-  id: string                # PLN-YYYYMMDD-XXX
-  project_id: string
-  status: string            # planning | in_progress | review | launched
+brand_package:
+  project: "NiuNiu AI"
+  tagline: "Your AI Trading Co-Pilot"
 
-  brand:
-    name: string
-    tagline: string
-    visual_identity: string # 参考 assets/ 路径
-    tone_of_voice: string
+  strategy:
+    positioning: "最懂交易员的 AI 助手"
+    differentiation: "专注 MT4/MT5 + 中文社群"
+    target_audience: "独立交易员"
+
+  visual:
+    primary_color: "#146EFF"
+    secondary_color: "#05070A"
+    accent_color: "#2ECC71"
+    font_heading: "Instrument Serif"
+    font_body: "Inter"
+
+  voice:
+    tone: "专业 + 友好 + 数据驱动"
+    do: ["简洁", "具体", "有数据支撑"]
+    dont: ["夸张", "承诺收益", "技术术语堆砌"]
 
   assets:
-    website:
-      status: string
-      url: string|null
-      pages: string[]
-    content:
-      - type: string        # blog | video | social | email
-        title: string
-        status: string
-    sales:
-      - type: string        # deck | pricing | proposal | case_study
-        status: string
-
-  launch:
-    date: string
-    channels: string[]
-    budget: float
-    metrics:
-      - metric: string
-        target: float
-        actual: float|null
-
-  created_at: string
-  launched_at: string|null
+    logo: "niuniu-ai-logo.svg"
+    landing_page: "https://niuniu.ai"
+    brand_guidelines: "brand-guidelines.pdf"
 ```
 
 ---
 
-# 六、Revenue Engine
+# 六、Marketing Engine
 
 ## 定位
 
-公司的收银机。参考 Salesforce CRM + HubSpot Pipeline。
+公司的"增长营销系统"。对应 HubSpot + Growth Team。
 
-## Revenue Pipeline 架构
-
-```
-Pipeline Stages:
-
-Lead (原始线索)
-  │ 来源: 网站 / 社群 / 推荐 / 广告 / 渠道
-  ▼
-Contact (已联系)
-  │ 首次触达: 是否回复？
-  ▼
-Qualified (合格线索)
-  │ 需求匹配: 有预算 + 有决策权 + 有需求
-  ▼
-Demo (演示)
-  │ 产品展示: 是否感兴趣？
-  ▼
-Negotiation (谈判)
-  │ 价格 / 条款: 是否达成一致？
-  ▼
-Closed Won (成交)
-  │ 收款: 恭喜！
-  ▼
-Active (活跃客户)
-  │ 使用: 是否激活？
-  ▼
-Retained (留存)
-  │ 续费: 是否复购？
-  ▼
-Advocate (推荐)
-  │ 推荐: 是否带来新客户？
-```
-
-## YAML Schema
+## 营销渠道矩阵
 
 ```yaml
-# Schema: revenue.yaml
-revenue:
-  id: string                # REV-YYYYMMDD-XXX
-  period: string            # YYYY-MM
+channels:
+  organic:
+    - channel: "Telegram 社群"
+      effort: "3 posts/周"
+      expected_leads: 50/周
+      priority: "P0"
 
-  pipeline:
-    stages:
-      - name: string
-        count: int
-        value: float
-        conversion_rate: float
+    - channel: "YouTube 视频"
+      effort: "2 videos/周"
+      expected_leads: 30/周
+      priority: "P0"
 
-  metrics:
-    mrr: float
-    arr: float
-    new_customers: int
-    churn_rate: float
-    cac: float
-    ltv: float
-    ltv_cac_ratio: float
-    payback_months: float
+    - channel: "Twitter/X"
+      effort: "5 posts/周"
+      expected_leads: 15/周
+      priority: "P1"
 
-  deals:
-    - id: string
-      customer_name: string
-      product: string
-      value: float
-      stage: string
-      probability: float
-      expected_close: string
-      owner: string
+    - channel: "Blog SEO"
+      effort: "2 articles/周"
+      expected_leads: 20/周
+      priority: "P1"
 
-  forecasts:
-    next_month: float
-    next_quarter: float
-    confidence: string      # low | medium | high
+  paid:
+    - channel: "Google Ads"
+      budget: "$200/月"
+      expected_leads: 40/月
+      priority: "P2"
 
-  created_at: string
+    - channel: "Affiliate"
+      commission: "30%"
+      expected_leads: 50/月
+      priority: "P0"
+
+  community:
+    - channel: "Trading Forums"
+      effort: "1 post/天"
+      expected_leads: 10/周
+      priority: "P2"
+
+    - channel: "Discord Server"
+      effort: "active"
+      expected_leads: 20/周
+      priority: "P1"
 ```
 
-## Revenue 核心指标
+## 内容生产流水线
+
+```
+Content Calendar
+  ↓
+Script → Voice → Video → Thumbnail → Publish → Distribute
+  ↓
+Blog → SEO → Newsletter → Repurpose → Syndicate
+  ↓
+Social → Community → Engage → Convert → Lead
+```
+
+## Schema
+
+```yaml
+campaign:
+  id: "CAMP-20260821-001"
+  name: "NiuNiu AI Launch"
+  channels: ["telegram", "youtube", "twitter", "affiliate"]
+  budget: 500
+  duration_days: 30
+
+  content:
+    - type: "video"
+      title: "NiuNiu AI Demo"
+      channel: "youtube"
+      publish_date: "2026-08-25"
+      status: "planned"
+
+    - type: "post"
+      title: "为什么 AI 交易是未来"
+      channel: "telegram"
+      publish_date: "2026-08-22"
+      status: "planned"
+
+  metrics:
+    target_leads: 200
+    target_conversion: 5%
+    actual_leads: null
+    actual_revenue: null
+```
+
+---
+
+# 七、Sales Engine
+
+## 定位
+
+公司的"销售系统"。这是你目前最重要的模块。
+
+## Sales Pipeline
+
+```
+Lead (原始线索)
+  │ 来源: 网站 / 社群 / 广告 / 推荐
+  ▼
+Contact (已联系)
+  │ 首次触达: 模板消息 → 个性化跟进
+  ▼
+Qualified (合格线索)
+  │ BANT: Budget / Authority / Need / Time
+  ▼
+Demo (演示)
+  │ 产品展示 → 解决痛点 → 展示价值
+  ▼
+Negotiation (谈判)
+  │ 价格 / 套餐 / 条款
+  ▼
+Closed Won (成交)
+  │ 收款 → 欢迎 → 入职
+  ▼
+Active (活跃客户)
+  │ 使用 → 激活 → 留存
+  ▼
+Advocate (推荐)
+  │ NPS ≥ 9 → 推荐计划
+```
+
+## 销售剧本
+
+```yaml
+sales_script:
+  stage: "initial_contact"
+  channel: "telegram"
+
+  template: |
+    Hi {name}，
+    看到你在 {group} 很活跃。
+    我们最近做了一个 AI 交易助手，可以：
+    → 自动识别交易信号
+    → 实时风险分析
+    → 个性化策略建议
+    目前有 {n} 个交易员在用。
+    想看看 Demo 吗？免费的。
+
+  follow_up_1:
+    delay: "3 days"
+    message: "Hi {name}，还在考虑吗？送你 7 天免费试用。"
+
+  follow_up_2:
+    delay: "7 days"
+    message: "最后机会：前 100 名用户终身 7 折。"
+```
+
+## Schema
+
+```yaml
+deal:
+  id: "DEAL-20260821-001"
+  customer_name: "张三"
+  source: "telegram"
+  product: "NiuNiu AI Pro"
+
+  pipeline:
+    stage: "demo"
+    previous_stage: "qualified"
+    stage_changed_at: "2026-08-21T14:00:00Z"
+
+  value: 99
+  probability: 60
+  expected_close: "2026-08-28"
+
+  notes:
+    - "对自动信号功能非常感兴趣"
+    - "担心准确率问题"
+    - "需要先试用再决定"
+
+  actions:
+    - type: "demo"
+      scheduled: "2026-08-22T10:00:00Z"
+      status: "confirmed"
+    - type: "trial"
+      activated: true
+      duration_days: 7
+```
+
+---
+
+# 八、CRM System
+
+## 定位
+
+公司的"客户关系大脑"。对应 Salesforce。
+
+## 客户记录
+
+```yaml
+customer:
+  id: "CUS-20260821-001"
+  name: "张三"
+  source: "telegram"
+  first_contact: "2026-08-20"
+
+  profile:
+    type: "retail_trader"
+    platform: "MT5"
+    experience: "3 years"
+    monthly_trading_volume: "50 lots"
+
+  communication:
+    - date: "2026-08-20"
+      channel: "telegram"
+      content: "询问产品功能"
+      sentiment: "positive"
+
+    - date: "2026-08-21"
+      channel: "telegram"
+      content: "预约 Demo"
+      sentiment: "interested"
+
+  deals:
+    - deal_id: "DEAL-20260821-001"
+      product: "NiuNiu AI Pro"
+      value: 99
+      stage: "demo"
+      probability: 60
+
+  lifecycle:
+    status: "lead"
+    stage: "qualified"
+    nps: null
+    ltv: null
+```
+
+## 客户健康评分
+
+```yaml
+health_score:
+  dimensions:
+    engagement: 0.3     # 使用频率
+    satisfaction: 0.3   # 满意度
+    support: 0.2        # 支持工单
+    payment: 0.2        # 支付历史
+
+  thresholds:
+    >= 80: "healthy"
+    >= 60: "attention"
+    >= 40: "at_risk"
+    < 40: "churn_risk"
+
+  actions:
+    healthy: "upsell"
+    attention: "check_in"
+    at_risk: "intervention"
+    churn_risk: "save"
+```
+
+---
+
+# 九、Revenue Engine
+
+## 定位
+
+公司的"收银机"。CEO 最关心的模块。
+
+## 核心指标
 
 ```yaml
 revenue_kpis:
   mrr:
     description: "月度经常性收入"
-    target: 10000           # 第一阶段目标
+    target: 10000
+    current: 2900
+    trend: "up"
+
+  arr:
+    description: "年化经常性收入"
+    target: 120000
+    current: 34800
+    trend: "up"
 
   cac:
     description: "获客成本"
-    target: 50              # 目标 $50/客户
-    current: 75
+    target: 50
+    current: 72
+    trend: "down"
 
   ltv:
     description: "客户生命周期价值"
     target: 600
     current: 450
+    trend: "up"
+
+  ltv_cac_ratio:
+    description: "LTV/CAC 比值"
+    target: 10
+    current: 6.25
+    trend: "up"
 
   conversion_rate:
-    description: "线索到成交转化率"
-    target: 5               # 5%
-    current: 3.2
+    description: "线索到成交率"
+    target: 5%
+    current: 3.2%
+    trend: "up"
 
   churn_rate:
     description: "月流失率"
-    target: 3               # 3%
-    current: 5
+    target: 3%
+    current: 4.5%
+    trend: "down"
+```
+
+## 每日收入报告
+
+```yaml
+daily_revenue_report:
+  date: "2026-08-21"
+
+  summary:
+    new_revenue: 526
+    mrr: 2900
+    arr: 34800
+
+  pipeline:
+    total_leads: 48
+    new_leads: 8
+    qualified: 24
+    demo: 12
+    negotiation: 5
+    closed_won: 3
+
+  new_customers:
+    - name: "TradeKing Capital"
+      plan: "Pro"
+      value: 99
+    - name: "ForexWave Pro"
+      plan: "Enterprise"
+      value: 299
+    - name: "AlphaTrade"
+      plan: "Basic"
+      value: 29
+
+  alerts:
+    - "CAC 高于目标 44% — 建议优化获客渠道"
+    - "3 个客户进入 at_risk 状态 — 需要干预"
 ```
 
 ---
 
-# 七、Growth Engine
+# 十、Growth Engine
 
 ## 定位
 
-增长实验系统。参考 TikTok Growth / Airbnb Growth。
+公司的"增长飞轮"。持续优化商业闭环。
 
 ## 增长实验循环
 
@@ -520,833 +709,351 @@ Hypothesis (假设)
   │  "如果我们做 X，Y 会增长 Z%"
   ▼
 Experiment (实验)
-  │  设计 A/B 测试
-  ▼
-Execute (执行)
-  │  发布实验
-  ▼
-Measure (测量)
-  │  数据是否显著？
+  │  设计 → 执行 → 测量
   ▼
 Learn (学习)
-  │  结论 + 洞察
+  │  结论 → 洞察 → 文档化
   ▼
 Scale (规模化)
-  │  如果是正向 → 全量推广
-  │  如果是负向 → 停止
-  │  如果是不确定 → 重新设计实验
+  │  正向 → 全量推广
+  │  负向 → 停止
+  │  不确定 → 重新设计
 ```
 
-## 增长渠道矩阵
+## 实验列表
 
 ```yaml
-growth_channels:
-  content:
-    - blog_seo
-    - video_youtube
-    - newsletter
-    - twitter_threads
+growth_experiments:
+  - id: "EXP-001"
+    name: "Telegram 自动回复"
+    hypothesis: "自动回复 Demo 链接 → 转化率提升 20%"
+    status: "running"
+    results: null
 
-  community:
-    - telegram_groups
-    - discord_servers
-    - reddit_communities
-    - forums
+  - id: "EXP-002"
+    name: "定价 A/B 测试"
+    hypothesis: "$29 基础版 → 更多转化"
+    status: "proposed"
+    results: null
 
-  paid:
-    - google_ads
-    - twitter_ads
-    - affiliate_network
-    - sponsored_content
+  - id: "EXP-003"
+    name: "Affiliate 计划"
+    hypothesis: "30% 佣金 → 50+ 合作伙伴"
+    status: "planned"
+    results: null
 
-  partnerships:
-    - cross_promotion
-    - affiliate_program
-    - influencer_collab
-    - referral_program
-```
-
-## YAML Schema
-
-```yaml
-# Schema: growth-experiment.yaml
-growth_experiment:
-  id: string                # GRW-YYYYMMDD-XXX
-  title: string
-  hypothesis: string
-
-  design:
-    channel: string
-    variant: string
-    control: string
-    sample_size: int
-    duration_days: int
-    success_metric: string
-
-  execution:
-    status: string          # proposed | running | completed | stopped
-    started_at: string|null
-    completed_at: string|null
-
-  results:
-    metric:
-      control: float
-      variant: float
-      improvement: float    # 百分比
-      statistical_significance: float
-
-    conclusion: string
-    decision: string        # scale | stop | redesign
-
-  learnings: string[]
-  created_at: string
-```
-
----
-
-# 八、Partnership Engine
-
-## 定位
-
-渠道合作系统。参考 Salesforce Partner Network / AWS Marketplace。
-
-## 合作伙伴类型
-
-```yaml
-partner_types:
-  affiliate:
-    description: "佣金制合作伙伴"
-    commission: "20-30%"
-    suitable_for: "社群主 / KOL / 内容创作者"
-
-  reseller:
-    description: "白标/转售"
-    margin: "30-50%"
-    suitable_for: "培训公司 / 咨询公司"
-
-  referral:
-    description: "推荐合作伙伴"
-    commission: "10-15%"
-    suitable_for: "现有客户 / 行业朋友"
-
-  integration:
-    description: "技术集成合作伙伴"
-    model: "revenue_share"
-    suitable_for: "SaaS / 平台"
-```
-
-## YAML Schema
-
-```yaml
-# Schema: partnership.yaml
-partnership:
-  id: string                # PTR-YYYYMMDD-XXX
-  name: string
-  type: string              # affiliate | reseller | referral | integration
-
-  profile:
-    audience_size: int
-    audience_type: string
-    engagement_rate: float
-    fit_score: float        # 0-100
-
-  terms:
-    commission: float
-    payment_terms: string
-    exclusive: boolean
-    minimum_commitment: float|null
-
-  performance:
-    leads_generated: int
-    conversion_rate: float
-    revenue_generated: float
-    status: string          # active | paused | terminated
-
-  created_at: string
-```
-
----
-
-# 九、Pricing Engine
-
-## 定位
-
-价格智能系统。参考 Netflix / SaaS 定价策略。
-
-## 定价策略
-
-```yaml
-pricing_strategies:
-  value_based:
-    description: "基于价值定价"
-    method: "客户愿意支付多少？"
-    example: "NiuNiu AI: 帮客户赚 $1000/月 → 收 $99/月"
-
-  tiered:
-    description: "分层定价"
-    method: "不同功能对应不同价格"
-    example: "Basic $29 / Pro $99 / Enterprise $299"
-
-  penetration:
-    description: "渗透定价"
-    method: "低价获客，后续涨价"
-    example: "前 3 个月 $19 → 恢复 $49"
-
-  freemium:
-    description: "免费增值"
-    method: "免费吸引用户，付费解锁高级功能"
-    example: "免费版 5 个信号/月 → 付费版不限"
-```
-
-## YAML Schema
-
-```yaml
-# Schema: pricing.yaml
-pricing:
-  id: string                # PRC-YYYYMMDD-XXX
-  product_id: string
-  version: int
-
-  plans:
-    - name: string
-      price: float
-      currency: string
-      billing: string       # monthly | yearly | lifetime
-      features: string[]
-      limits: string[]
-
-  experiments:
-    - id: string
-      variant: string
-      conversion_rate: float
-      revenue_per_user: float
-      status: string
-
-  optimization:
-    recommended_price: float
-    confidence: float
-    rationale: string
-
-  created_at: string
-```
-
----
-
-# 十、Customer Success Engine
-
-## 定位
-
-客户生命周期管理。目标不是卖一次，而是客户终身价值最大化。
-
-## 客户旅程
-
-```
-Day 0: 付费 → 触发 Onboarding
-Day 1: 发送欢迎邮件 + 入门指南
-Day 3: 检查是否激活？→ 未激活触发人工跟进
-Day 7: 首次价值体验
-Day 14: 使用情况检查
-Day 30: 满意度调查
-Day 60: 复购/升级推荐
-Day 90: 推荐计划邀请
-```
-
-## YAML Schema
-
-```yaml
-# Schema: customer-success.yaml
-customer_success:
-  id: string                # CS-YYYYMMDD-XXX
-  customer_id: string
-  product: string
-
-  lifecycle:
-    status: string          # onboarded | active | at_risk | churned
-    days_since_signup: int
-    last_active: string
-    total_sessions: int
-
-  health:
-    score: float            # 0-100
-    factors:
-      - name: string
-        value: float
-        threshold: float
-        status: string      # good | warning | critical
-
-  interventions:
-    - type: string          # email | message | call | discount
-      trigger: string
-      sent_at: string
-      response: string|null
-
-  metrics:
-    nps: int|null
-    usage_frequency: string
-    support_tickets: int
-    upsell_potential: string # low | medium | high
-
-  created_at: string
+  - id: "EXP-004"
+    name: "7 天试用转化"
+    hypothesis: "试用 → 付费转化率 40%"
+    status: "completed"
+    results:
+      conversion: 35%
+      conclusion: "有效，但需优化入职流程"
 ```
 
 ---
 
 # 十一、Commercial Agent Catalog
 
-## Commercial Department (12 人)
-
-| ID | 角色 | 职责 | 汇报 |
-|----|------|------|------|
-| SERA-CBO-001 | Chief Business Officer | 商业战略总负责 | CEO |
-| SERA-CRO-001 | Chief Revenue Officer | 收入目标总负责 | CEO |
-| SERA-OAA-001 | Opportunity Analyst | 机会评估 | CBO |
-| SERA-VBA-001 | Venture Builder | 项目创建 | CBO |
-| SERA-PMA-001 | Product Marketing Agent | 产品商业包装 | CBO |
-| SERA-PRA-001 | Pricing Agent | 价格策略 | CRO |
-| SERA-SSA-001 | Sales Strategy Agent | 销售打法 | CRO |
-| SERA-CRM-001 | CRM Agent | 客户管理 | CRO |
-| SERA-GHA-001 | Growth Hacker Agent | 增长实验 | CRO |
-| SERA-PTA-001 | Partnership Agent | 渠道合作 | CRO |
-| SERA-CSA-001 | Customer Success Agent | 客户成功 | CRO |
-| SERA-BIA-001 | Business Intelligence Agent | 商业分析 | CBO |
-
-## Agent 定义
-
-### CBO Agent
+## Commercial Department (15 人)
 
 ```yaml
-# identity.yaml
-agent:
-  id: SERA-CBO-001
-  role: Chief Business Officer
-  department: Commercial
-  reports_to: SERA-CEO-001
-  level: L4
-  benchmark: "Sequoia Partners / YC Partners"
-  model: claude-sonnet-4
-```
+commercial_team:
+  cbo_office:
+    - id: "SERA-CBO-001"
+      role: "Chief Business Officer"
+      level: "L4"
+      kpi: "revenue growth, opportunity accuracy"
 
-```yaml
-# evaluation.yaml
-evaluation:
-  dimensions:
-    - name: opportunity_accuracy
-      weight: 30
-      metrics:
-        - go_decision_success_rate
-        - false_positive_rate
+  marketing:
+    - id: "SERA-MKT-001"
+      role: "Marketing Strategist"
+      level: "L3"
+      kpi: "lead generation, campaign ROI"
 
-    - name: revenue_impact
-      weight: 35
-      metrics:
-        - total_revenue_attributed
-        - project_success_rate
+    - id: "SERA-CONTENT-001"
+      role: "Content Producer"
+      level: "L2"
+      kpi: "content output, engagement"
 
-    - name: speed
-      weight: 20
-      metrics:
-        - time_from_opportunity_to_launch
-        - time_from_launch_to_revenue
+    - id: "SERA-SEO-001"
+      role: "SEO Specialist"
+      level: "L2"
+      kpi: "organic traffic, keyword ranking"
 
-    - name: efficiency
-      weight: 15
-      metrics:
-        - resource_utilization
-        - cost_per_project
-```
+    - id: "SERA-COMMUNITY-001"
+      role: "Community Manager"
+      level: "L2"
+      kpi: "community growth, engagement"
 
-### CRO Agent
+    - id: "SERA-DESIGN-001"
+      role: "Marketing Designer"
+      level: "L2"
+      kpi: "asset production, brand consistency"
 
-```yaml
-# identity.yaml
-agent:
-  id: SERA-CRO-001
-  role: Chief Revenue Officer
-  department: Commercial
-  reports_to: SERA-CEO-001
-  level: L4
-  benchmark: "Salesforce Sales Leadership"
-  model: claude-sonnet-4
-```
+  sales:
+    - id: "SERA-SALES-001"
+      role: "Sales Director"
+      level: "L3"
+      kpi: "revenue, team performance"
 
-```yaml
-# evaluation.yaml
-evaluation:
-  dimensions:
-    - name: revenue
-      weight: 40
-      metrics:
-        - mrr_growth
-        - arr_achievement
-        - pipeline_value
+    - id: "SERA-LEAD-001"
+      role: "Lead Researcher"
+      level: "L2"
+      kpi: "leads found, lead quality"
 
-    - name: conversion
-      weight: 25
-      metrics:
-        - lead_to_customer_rate
-        - demo_to_close_rate
+    - id: "SERA-CLOSER-001"
+      role: "Sales Closer"
+      level: "L3"
+      kpi: "conversion rate, deal size"
 
-    - name: efficiency
-      weight: 20
-      metrics:
-        - cac
-        - ltv_cac_ratio
-        - payback_period
+    - id: "SERA-CS-001"
+      role: "Customer Success"
+      level: "L2"
+      kpi: "activation rate, retention"
 
-    - name: retention
-      weight: 15
-      metrics:
-        - churn_rate
-        - upsell_rate
-        - nps
+  growth:
+    - id: "SERA-GROWTH-001"
+      role: "Growth Hacker"
+      level: "L3"
+      kpi: "experiments run, growth rate"
+
+    - id: "SERA-ANALYTICS-001"
+      role: "Growth Analyst"
+      level: "L2"
+      kpi: "data quality, actionable insights"
+
+  operations:
+    - id: "SERA-CRM-001"
+      role: "CRM Manager"
+      level: "L2"
+      kpi: "data accuracy, pipeline health"
+
+    - id: "SERA-PARTNER-001"
+      role: "Partnership Manager"
+      level: "L2"
+      kpi: "partners secured, partner revenue"
+
+    - id: "SERA-PRICING-001"
+      role: "Pricing Strategist"
+      level: "L2"
+      kpi: "revenue optimization, experiment results"
 ```
 
 ---
 
 # 十二、YAML Schema 总集
 
-## 目录结构
-
 ```
-commercial-os/schemas/
-├── opportunity-assessment.schema.yaml
-├── project-charter.schema.yaml
-├── product-launch.schema.yaml
-├── revenue.schema.yaml
-├── growth-experiment.schema.yaml
-├── partnership.schema.yaml
-├── pricing.schema.yaml
-└── customer-success.schema.yaml
-```
-
-## Schema 注册表
-
-```yaml
-# registry/commercial-schemas.yaml
-schemas:
-  - name: opportunity-assessment
-    version: 1.0
-    path: commercial-os/schemas/opportunity-assessment.schema.yaml
-    status: draft
-
-  - name: project-charter
-    version: 1.0
-    path: commercial-os/schemas/project-charter.schema.yaml
-    status: draft
-
-  - name: product-launch
-    version: 1.0
-    path: commercial-os/schemas/product-launch.schema.yaml
-    status: draft
-
-  - name: revenue
-    version: 1.0
-    path: commercial-os/schemas/revenue.schema.yaml
-    status: draft
-
-  - name: growth-experiment
-    version: 1.0
-    path: commercial-os/schemas/growth-experiment.schema.yaml
-    status: draft
-
-  - name: partnership
-    version: 1.0
-    path: commercial-os/schemas/partnership.schema.yaml
-    status: draft
-
-  - name: pricing
-    version: 1.0
-    path: commercial-os/schemas/pricing.schema.yaml
-    status: draft
-
-  - name: customer-success
-    version: 1.0
-    path: commercial-os/schemas/customer-success.schema.yaml
-    status: draft
+schemas/
+├── opportunity.schema.yaml
+├── product-validation.schema.yaml
+├── brand-package.schema.yaml
+├── campaign.schema.yaml
+├── sales-pipeline.schema.yaml
+├── customer.schema.yaml
+├── revenue-dashboard.schema.yaml
+└── growth-experiment.schema.yaml
 ```
 
 ---
 
-# 十三、Revenue Pipeline Design
+# 十三、NiuNiu AI Launch Demo
 
-## 完整收入管道
-
-```
-                    ┌─────────────────────────┐
-                    │     Traffic Sources      │
-                    │  Organic / Paid / Refer  │
-                    └───────────┬─────────────┘
-                                │
-                    ┌───────────┴─────────────┐
-                    │    Lead Generation      │
-                    │  Website → Signup → Lead │
-                    └───────────┬─────────────┘
-                                │
-                    ┌───────────┴─────────────┐
-                    │    Lead Qualification    │
-                    │  BANT: Budget / Authority│
-                    │        / Need / Time     │
-                    └───────────┬─────────────┘
-                                │
-                    ┌───────────┴─────────────┐
-                    │      Demo / Trial        │
-                    │  Product Walkthrough     │
-                    └───────────┬─────────────┘
-                                │
-                    ┌───────────┴─────────────┐
-                    │      Negotiation         │
-                    │  Price / Terms / Commit  │
-                    └───────────┬─────────────┘
-                                │
-                    ┌───────────┴─────────────┐
-                    │       Closed Won         │
-                    │    Payment Received      │
-                    └───────────┬─────────────┘
-                                │
-                    ┌───────────┴─────────────┐
-                    │      Onboarding          │
-                    │  Setup + Training        │
-                    └───────────┬─────────────┘
-                                │
-                    ┌───────────┴─────────────┐
-                    │  Active / Retained       │
-                    │  Usage + Renewal         │
-                    └───────────┬─────────────┘
-                                │
-                    ┌───────────┴─────────────┐
-                    │    Advocate / Refer      │
-                    │  NPS ≥ 9 → Referral      │
-                    └─────────────────────────┘
-```
-
-## 管道指标
+## 项目概述
 
 ```yaml
-pipeline_metrics:
-  top_of_funnel:
-    metric: "每月线索数"
-    target: 500
-    tracking: "per source"
+project: "NiuNiu AI Launch"
+type: "First Company Simulation"
+duration: "30 days"
+goal: "验证 Sera OPC OS 能否从机会发现到收入的完整闭环"
+```
 
-  middle_of_funnel:
-    metric: "演示转化率"
-    target: 15%
-    tracking: "per source"
+## 执行流程
 
-  bottom_of_funnel:
-    metric: "成交率"
-    target: 5%
-    tracking: "per product"
+```
+Day 1:  Intelligence OS 发现机会
+         → "AI Trading 市场需求增长 300%"
+         → Opportunity Engine 评分 87 → GO
 
-  post_sale:
-    metric: "月激活率"
-    target: 80%
-    tracking: "per cohort"
+Day 2:  Product Validation
+         → 20 个潜在客户访谈
+         → 60% 愿意付费
+         → Product Brief 确认
 
-  revenue:
-    metric: "MRR"
-    target: 10000
-    tracking: "monthly"
+Day 3:  Brand Engine
+         → 品牌定位: "Your AI Trading Co-Pilot"
+         → 视觉体系: Dark Finance Blue
+         → Landing Page 设计
+
+Day 4-7: Marketing Engine
+         → Telegram 社群启动
+         → YouTube 频道上线
+         → Twitter 内容开始
+
+Day 5-10: Sales Engine
+         → Lead Generation 开始
+         → 销售剧本执行
+         → Demo 预约
+
+Day 10-30: Revenue Engine
+         → 持续获客
+         → 成交转化
+         → 客户入职
+         → 收入追踪
+
+Day 30: Learning OS
+         → 复盘: 哪个渠道有效?
+         → 哪个话术成交?
+         → 哪个定价最优?
+         → 优化 → 循环
+```
+
+## 预期成果
+
+```yaml
+expected_outcomes:
+  month_1:
+    customers: 100
+    mrr: 2900
+    channels: ["telegram", "youtube", "affiliate"]
+    partners: 5
+
+  month_3:
+    customers: 300
+    mrr: 9900
+    target: "breakeven"
+
+  month_6:
+    customers: 500
+    mrr: 30000
+    target: "profitable"
 ```
 
 ---
 
-# 十四、NiuNiu AI 完整运行流程
+# 十四、Runtime Integration
 
-## 从信号到收入的完整闭环
-
-```
-Time  |  System        |  Action
-------|----------------|-------------------------------------------
-T+0h  | Intelligence   | 检测到 "AI Trading 市场需求增长 300%"
-T+1h  | Opportunity    | 评分 87 → 决策 GO
-T+2h  | Venture Studio | 创建 NiuNiu AI Project Charter
-T+4h  | CEO Agent      | 审批通过
-T+1d  | Product Launch | Brand Agent 定义品牌
-T+2d  | Product Launch | Design Agent 创建官网
-T+3d  | Product Launch | Copy Agent 生成营销文案
-T+4d  | Product Launch | Video Agent 制作产品视频
-T+5d  | Pricing Engine | 定价 $29/$99/$299
-T+6d  | Revenue Engine | 上线销售
-T+7d  | Partnership    | 触达 5 个潜在渠道伙伴
-T+14d | Growth Engine  | 启动 3 个增长实验
-T+30d | Revenue        | 目标: 100 客户 → $2,900 MRR
-T+60d | Customer Success | 激活率 > 80%
-T+90d | Learning OS    | 分析哪个渠道/定价最优
-T+120d| Intelligence   | 发现新机会 → 循环
-```
-
-## 项目资产清单
+## Commercial OS → Runtime 接口
 
 ```yaml
-niuniu_ai_launch:
-  project_id: PRJ-20260821-001
-  name: "NiuNiu AI Global Launch"
+commercial_runtime_integration:
+  # Commercial OS 触发 Runtime 动作
+  triggers:
+    - event: "opportunity.graded_go"
+      runtime_action: "创建 Mission: validate_product"
+      priority: "P0"
 
-  timeline:
-    total_days: 30
-    phase: "pre-launch"
+    - event: "product.validated"
+      runtime_action: "创建 Mission: launch_brand"
+      priority: "P0"
 
-  assets:
-    brand:
-      name: "NiuNiu AI"
-      tagline: "Your AI Trading Co-Pilot"
-    website: "in_progress"
-    content: ["blog_post", "landing_page", "faq"]
-    sales: ["pricing_page", "demo_video"]
-    partnership: ["affiliate_program"]
+    - event: "campaign.ready"
+      runtime_action: "创建 Mission: execute_marketing"
+      priority: "P0"
 
-  revenue_targets:
-    month_1: 2900            # 100 customers × $29
-    month_3: 9900            # 300 customers × $33 avg
-    month_6: 30000           # 500 customers × $60 avg
-    month_12: 100000         # 1000 customers × $100 avg
+    - event: "lead.qualified"
+      runtime_action: "创建 Task: assign_to_closer"
+      priority: "P1"
 
-  channels:
-    primary: "telegram_communities"
-    secondary: ["twitter", "youtube", "affiliate"]
-    experimental: ["tiktok", "reddit"]
+    - event: "deal.closed"
+      runtime_action: "创建 Task: onboarding"
+      priority: "P0"
+
+  # Runtime → Commercial OS 事件
+  events:
+    - event: "mission.completed"
+      commercial_action: "检查结果 → 下一步"
+
+    - event: "task.completed"
+      commercial_action: "更新 pipeline 状态"
+
+    - event: "agent.output"
+      commercial_action: "存入 CRM / 触发下一步"
 ```
 
 ---
 
-# 十五、Control Plane Integration
-
-## Commercial OS → Control Plane 接口
-
-```yaml
-commercial_to_control_plane:
-  # 机会 → 项目
-  opportunity_to_project:
-    trigger: "opportunity_assessment.decision == go"
-    action: "create project in Control Plane"
-    priority: "根据 score 动态"
-    mapping:
-      assessment.title → project.name
-      assessment.scoring.total → project.priority
-      assessment.source → project.description
-
-  # 项目 → 任务
-  project_to_tasks:
-    trigger: "project_charter approved"
-    action: "decompose into tasks"
-    decomposition:
-      - "brand_creation → design_department"
-      - "website_development → engineering_department"
-      - "content_creation → marketing_department"
-      - "sales_pipeline → revenue_department"
-
-  # 收入 → 报告
-  revenue_to_report:
-    trigger: "daily / weekly / monthly"
-    action: "update Control Plane dashboard"
-    data:
-      - mrr
-      - new_customers
-      - pipeline_value
-      - churn_rate
-
-  # 预警 → 行动
-  alert_to_action:
-    trigger: "revenue.metric < threshold"
-    action: "create corrective task"
-    examples:
-      - "CAC > 100 → trigger cost optimization"
-      - "Conversion < 3% → trigger sales training"
-      - "Churn > 5% → trigger customer success intervention"
-```
-
-## 事件订阅
-
-```yaml
-events:
-  publishes:
-    - opportunity.identified:
-        payload: opportunity-assessment.schema.yaml
-        target: [ceo-agent, mission-system]
-
-    - project.created:
-        payload: project-charter.schema.yaml
-        target: [factory-os, department-manager]
-
-    - deal.closed:
-        payload: revenue.schema.yaml
-        target: [ceo-agent, financial-intelligence]
-
-    - revenue.milestone:
-        payload: revenue.schema.yaml
-        target: [ceo-agent, learning-os]
-
-    - customer.churned:
-        payload: customer-success.schema.yaml
-        target: [learning-os, failure-analysis]
-
-  subscribes:
-    - intelligence.signal.critical:
-        action: "refresh opportunity assessment"
-
-    - factory.product.ready:
-        action: "trigger revenue engine launch"
-
-    - learning.insight.generated:
-        action: "update growth experiment design"
-```
-
----
-
-# 十六、Repository Structure
-
-## 目录结构
+# 十五、Repository Structure
 
 ```
 commercial-os/
 ├── 01-Commercial-OS-Blueprint.md          # 本文档
-│
-├── schemas/                               # 8 个 Schema
-│   ├── opportunity-assessment.schema.yaml
-│   ├── project-charter.schema.yaml
-│   ├── product-launch.schema.yaml
-│   ├── revenue.schema.yaml
-│   ├── growth-experiment.schema.yaml
-│   ├── partnership.schema.yaml
-│   ├── pricing.schema.yaml
-│   └── customer-success.schema.yaml
-│
-├── agents/                                # 12 个 Commercial Agent
-│   ├── cbo-agent/
+├── schemas/
+│   ├── opportunity.schema.yaml
+│   ├── product-validation.schema.yaml
+│   ├── brand-package.schema.yaml
+│   ├── campaign.schema.yaml
+│   ├── sales-pipeline.schema.yaml
+│   ├── customer.schema.yaml
+│   ├── revenue-dashboard.schema.yaml
+│   └── growth-experiment.schema.yaml
+├── agents/
 │   ├── cro-agent/
-│   ├── opportunity-analyst-agent/
-│   ├── venture-builder-agent/
-│   ├── product-marketing-agent/
-│   ├── pricing-agent/
-│   ├── sales-strategy-agent/
-│   ├── crm-agent/
-│   ├── growth-hacker-agent/
-│   ├── partnership-agent/
+│   ├── marketing-strategist-agent/
+│   ├── content-producer-agent/
+│   ├── seo-specialist-agent/
+│   ├── community-manager-agent/
+│   ├── sales-director-agent/
+│   ├── lead-researcher-agent/
+│   ├── sales-closer-agent/
 │   ├── customer-success-agent/
-│   └── business-intelligence-agent/
-│
-├── workflows/                             # 商业工作流
-│   ├── opportunity-to-launch.yaml
-│   ├── lead-to-revenue.yaml
+│   ├── growth-hacker-agent/
+│   ├── growth-analyst-agent/
+│   ├── crm-manager-agent/
+│   ├── partnership-manager-agent/
+│   └── pricing-strategist-agent/
+├── workflows/
+│   ├── opportunity-to-revenue.yaml
+│   ├── lead-to-cash.yaml
 │   └── customer-lifecycle.yaml
-│
-├── integrations/                          # 集成协议
-│   ├── control-plane-integration.yaml
-│   ├── intelligence-integration.yaml
-│   └── factory-integration.yaml
-│
-├── projects/                              # 项目模板
-│   ├── niuniu-ai/
-│   └── project-template.yaml
-│
-└── docs/                                  # 文档
-    ├── 01-Operation-Guide.md
-    └── 02-Metrics-Dashboard.md
+└── niuniu-ai-launch/
+    ├── launch-plan.yaml
+    ├── brand-package.yaml
+    ├── marketing-plan.yaml
+    └── sales-kit.yaml
 ```
 
 ---
 
-# 十七、Implementation Roadmap
+# 十六、Implementation Roadmap
 
-## Phase 1: Revenue Foundation (Week 1-2)
-
-| 系统 | 交付物 | 优先级 |
-|------|--------|--------|
-| Revenue Engine | Pipeline Schema + CRM + Metrics | P0 |
-| Pricing Engine | Schema + Strategy + Experiments | P0 |
-| Customer Success | Schema + Lifecycle + Health Score | P0 |
-
-**目标**: 能追踪收入管道，管理客户生命周期。
-
-## Phase 2: Opportunity → Project (Week 3-4)
+## Phase 1: Revenue Foundation (Week 1)
 
 | 系统 | 交付物 | 优先级 |
 |------|--------|--------|
-| Opportunity Engine | Assessment + Scoring + Decision | P0 |
-| Venture Studio | Project Charter + Workflow | P0 |
-| Product Launch | Launch Pipeline + Asset Production | P0 |
+| Revenue Engine | 收入追踪 + 日报 | P0 |
+| CRM System | 客户记录 + Pipeline | P0 |
+| Sales Engine | 销售剧本 + 跟进 | P0 |
 
-**目标**: 能从机会到项目启动的完整流程。
+**目标**: 能追踪每一笔交易，每天有收入报告。
 
-## Phase 3: Growth (Week 5-6)
-
-| 系统 | 交付物 | 优先级 |
-|------|--------|--------|
-| Growth Engine | Experiment Loop + Channel Matrix | P1 |
-| Partnership Engine | Partner Types + Commission + Tracking | P1 |
-| Commercial Agents | 12 Agent Contracts | P1 |
-
-**目标**: 自动增长实验 + 渠道合作体系。
-
-## Phase 4: Integration & Automation (Week 7-8)
+## Phase 2: Marketing Engine (Week 2-3)
 
 | 系统 | 交付物 | 优先级 |
 |------|--------|--------|
-| Control Plane Integration | Event Bus + Task Creation | P0 |
-| Full Pipeline | End-to-end from signal to revenue | P1 |
-| NiuNiu AI Project | First live project | P0 |
+| Marketing Engine | 渠道矩阵 + 内容计划 | P0 |
+| Brand Engine | 品牌包 + Landing Page | P0 |
+| Opportunity Engine | 机会评分 + 决策 | P0 |
 
-**目标**: Commercial OS 全线运行，NiuNiu AI 产生第一笔收入。
+**目标**: 持续获客，品牌上线。
 
----
+## Phase 3: Growth (Week 4-5)
 
-## 当前 Sera OPC OS 完成度
+| 系统 | 交付物 | 优先级 |
+|------|--------|--------|
+| Growth Engine | 实验循环 + 分析 | P1 |
+| Product Validation | 验证流程 + 模板 | P1 |
+| 15 Commercial Agents | 完整 Contract | P1 |
 
-```
-Layer 0:  Constitution      ✅
-Layer 1:  Organization OS   ✅
-Layer 2:  Factory OS        ✅
-Layer 3:  Employee OS       ✅
-Layer 3.5: Control Plane    ✅
-Layer 4:  Learning OS       ✅
-Layer 4.5: Intelligence OS  ✅
-Layer 4.75: Commercial OS   ✅  (刚完成)
-Layer 5:  Autonomous        ⏳  (下一阶段)
-```
+**目标**: 增长实验驱动优化。
 
----
+## Phase 4: NiuNiu AI Launch (Week 6-8)
 
-## 附录：Sera OPC OS 完整 8.5 层架构
+| 系统 | 交付物 | 优先级 |
+|------|--------|--------|
+| Full Integration | Commercial OS + Runtime | P0 |
+| NiuNiu AI Launch | 完整闭环执行 | P0 |
+| Revenue Target | $2,900 MRR | P0 |
 
-```
-                      Human CEO (你)
-                           │
-                   ┌───────┴───────┐
-                   │   CEO Agent   │
-                   └───────┬───────┘
-                           │
-              ┌────────────┼────────────┐
-              │            │            │
-     ┌────────┴───┐       │    ┌───────┴────────┐
-     │ Control    │       │    │ Intelligence   │
-     │ Plane      │       │    │ OS             │
-     └────────┬───┘       │    └───────┬────────┘
-              │           │            │
-              │    ┌──────┴───────┐    │
-              │    │ Commercial   │    │
-              │    │ OS           │    │
-              │    └──────┬───────┘    │
-              │           │            │
-              └─────┬─────┴─────┬──────┘
-                    │           │
-           ┌────────┴───┐      │
-           │ Executive  │      │
-           │ Council    │      │
-           └────────┬───┘      │
-                    │          │
-           ┌────────┴───┐      │
-           │ Factories  │      │
-           │ (5)        │      │
-           └────────┬───┘      │
-                    │          │
-           ┌────────┴───┐      │
-           │ Employees  │      │
-           │ (62)       │      │
-           └────────┬───┘      │
-                    │          │
-           ┌────────┴───┐      │
-           │ Learning   │◄─────┘
-           │ OS         │
-           └────────────┘
-```
+**目标**: 第一个完整商业闭环，产生真实收入。

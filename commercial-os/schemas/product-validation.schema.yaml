@@ -1,0 +1,35 @@
+# Product Validation Schema v1.0
+product_validation:
+  type: object
+  required: [id, opportunity_id, name, problem, customer, validation, status]
+  properties:
+    id: { type: string, pattern: "^PB-\\d{8}-\\d{3}$" }
+    opportunity_id: { type: string }
+    name: { type: string }
+    problem:
+      type: object
+      properties:
+        statement: { type: string }
+        evidence: { type: array, items: { type: string } }
+        pain_level: { type: integer, minimum: 1, maximum: 10 }
+    customer:
+      type: object
+      properties:
+        persona: { type: string }
+        size: { type: string }
+        willingness_to_pay: { type: string }
+        acquisition_channel: { type: string }
+    solution:
+      type: object
+      properties:
+        mvp: { type: string }
+        timeline: { type: string }
+        key_features: { type: array, items: { type: string } }
+    validation:
+      type: object
+      properties:
+        method: { type: string }
+        conversion_rate: { type: string }
+        avg_price: { type: string }
+    status: { type: string, enum: [draft, validating, validated, invalid] }
+    created_at: { type: string, format: date-time }

@@ -1,0 +1,69 @@
+# Sales Pipeline Schema v1.0
+deal:
+  type: object
+  required: [id, customer_name, source, product, pipeline, value]
+  properties:
+    id: { type: string, pattern: "^DEAL-\\d{8}-\\d{3}$" }
+    customer_name: { type: string }
+    source: { type: string }
+    product: { type: string }
+    pipeline:
+      type: object
+      properties:
+        stage: { type: string, enum: [lead, contact, qualified, demo, negotiation, closed_won, closed_lost] }
+        previous_stage: { type: string }
+        stage_changed_at: { type: string, format: date-time }
+    value: { type: number }
+    probability: { type: integer, minimum: 0, maximum: 100 }
+    expected_close: { type: string, format: date-time, nullable: true }
+    notes: { type: array, items: { type: string } }
+    actions:
+      type: array
+      items:
+        type: object
+        properties:
+          type: { type: string, enum: [call, demo, trial, follow_up, email] }
+          scheduled: { type: string, format: date-time }
+          status: { type: string, enum: [pending, confirmed, completed, cancelled] }
+
+# Customer Schema v1.0
+customer:
+  type: object
+  required: [id, name, source, profile, lifecycle]
+  properties:
+    id: { type: string, pattern: "^CUS-\\d{8}-\\d{3}$" }
+    name: { type: string }
+    source: { type: string }
+    first_contact: { type: string, format: date-time }
+    profile:
+      type: object
+      properties:
+        type: { type: string }
+        platform: { type: string, nullable: true }
+        experience: { type: string, nullable: true }
+    communication:
+      type: array
+      items:
+        type: object
+        properties:
+          date: { type: string, format: date-time }
+          channel: { type: string }
+          content: { type: string }
+          sentiment: { type: string, enum: [positive, neutral, negative] }
+    deals:
+      type: array
+      items:
+        type: object
+        properties:
+          deal_id: { type: string }
+          product: { type: string }
+          value: { type: number }
+          stage: { type: string }
+          probability: { type: integer }
+    lifecycle:
+      type: object
+      properties:
+        status: { type: string, enum: [lead, prospect, customer, churned] }
+        stage: { type: string }
+        nps: { type: integer, nullable: true }
+        ltv: { type: number, nullable: true }

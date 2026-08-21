@@ -1,0 +1,20 @@
+# Opportunity Schema v1.0
+opportunity:
+  type: object
+  required: [id, title, source, score, decision]
+  properties:
+    id: { type: string, pattern: "^OPP-\\d{8}-\\d{3}$" }
+    title: { type: string }
+    source: { type: string, enum: [market_intelligence, competitor_alert, customer_signal, trend_analysis] }
+    score: { type: number, minimum: 0, maximum: 100 }
+    breakdown:
+      type: object
+      properties:
+        market: { type: number, minimum: 0, maximum: 100 }
+        product: { type: number, minimum: 0, maximum: 100 }
+        business: { type: number, minimum: 0, maximum: 100 }
+        strategic: { type: number, minimum: 0, maximum: 100 }
+    decision: { type: string, enum: [go, investigate, watch, drop] }
+    rationale: { type: string }
+    next_steps: { type: array, items: { type: string } }
+    created_at: { type: string, format: date-time }

@@ -16,7 +16,7 @@ status: active
 # Sera Design Intelligence Skill
 
 > 这不是一个"复制页面"的技能。
-> 这是 Sera Agent OS 的 Cyber Design Intelligence Engine。
+> 这是 Sera OPC OS 的 Cyber Design Intelligence Engine。
 > 它能学习优秀设计、提炼 Design DNA、自动驱动产品设计，并通过反馈循环持续优化。
 
 ## Purpose

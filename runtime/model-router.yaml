@@ -1,4 +1,4 @@
-# Sera Agent OS — Model Router（模型路由）
+# Sera OPC OS — Model Router（模型路由）
 # 按任务类型路由到最佳模型/平台
 # 原则：Research→DeepSeek（深度检索）、Coding→Codex（代码）、Design→Trae（视觉）、
 #       Automation→WorkBuddy（本地执行）、Image/Video→Serawin（本地算力）

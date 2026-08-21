@@ -14,7 +14,7 @@ status: skeleton
 # sera-skill-registry
 
 ## Purpose
-Sera Agent OS 的 Skill 注册表：管理所有能力（core / business / creative / adapters），统一 Skill 标准格式（name · purpose · inputs · outputs · workflow · dependencies · examples · version），供各 Agent 发现与加载。
+Sera OPC OS 的 Skill 注册表：管理所有能力（core / business / creative / adapters），统一 Skill 标准格式（name · purpose · inputs · outputs · workflow · dependencies · examples · version），供各 Agent 发现与加载。
 
 ## When to use
 - 新 Agent（WorkBuddy/Codex/Trae/Claude）接入时需要注册表索引

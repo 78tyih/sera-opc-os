@@ -11,7 +11,7 @@ OpenAI Codex CLI 支持 Agent Skills 标准格式（SKILL.md + frontmatter）。
 
 ```bash
 # 软链用户级
-REPO=~/sera-agent-os
+REPO=~/sera-opc-os
 mkdir -p ~/.codex/skills
 for d in "$REPO"/core/*/ "$REPO"/business/*/ "$REPO"/creative/*/ "$REPO"/adapters/*/; do
   [ -d "$d" ] && ln -sfn "$d" ~/.codex/skills/$(basename "$d")

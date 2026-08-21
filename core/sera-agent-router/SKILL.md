@@ -15,10 +15,10 @@ compatible:
 # sera-agent-router
 
 ## Purpose
-Sera Agent OS 的 **Agent Router**：把用户自然语言请求自动解析为 Agent/Skill 编排链。输入一句话，输出「该用哪个 Agent、按什么顺序调用哪些 Skill」的执行计划。是 Agent Orchestrator 的规则引擎。
+Sera OPC OS 的 **Agent Router**：把用户自然语言请求自动解析为 Agent/Skill 编排链。输入一句话，输出「该用哪个 Agent、按什么顺序调用哪些 Skill」的执行计划。是 Agent Orchestrator 的规则引擎。
 
 ## When to use
-- 任何进入 Sera Agent OS 的用户请求（编排器入口）
+- 任何进入 Sera OPC OS 的用户请求（编排器入口）
 - 需要把任务自动路由到 5 个核心 Agent（propfirm/otc/trading/video/design）之一
 - 复合任务需要多 Agent 编排（如「做产品发布页」→ 多 Agent 链）
 

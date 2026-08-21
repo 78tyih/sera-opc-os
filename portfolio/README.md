@@ -1,7 +1,7 @@
 # Sera Project Portfolio
 
 > 版本：1.2.0
-> 管理 Sera Agent OS 所有项目资产
+> 管理 Sera OPC OS 所有项目资产
 
 ---
 

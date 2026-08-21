@@ -1,5 +1,5 @@
 #!/bin/bash
-# Sera Agent OS — 一键安装脚本
+# Sera OPC OS — 一键安装脚本
 # 把 Skill Registry 挂载到指定 AI 平台的 skills 目录
 #
 # 用法：
@@ -92,7 +92,7 @@ if [[ -z "$REQUESTED" ]]; then
   done
 fi
 
-echo "Sera Agent OS Installer"
+echo "Sera OPC OS Installer"
 echo "  仓库: $REPO"
 echo "  模式: $MODE"
 echo ""

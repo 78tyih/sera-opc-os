@@ -11,7 +11,7 @@ Anthropic Claude Code 原生支持 Agent Skills（SKILL.md + frontmatter name/de
 
 ```bash
 # 个人级软链
-REPO=~/sera-agent-os
+REPO=~/sera-opc-os
 mkdir -p ~/.claude/skills
 for d in "$REPO"/core/*/ "$REPO"/business/*/ "$REPO"/creative/*/ "$REPO"/adapters/*/; do
   [ -d "$d" ] && ln -sfn "$d" ~/.claude/skills/$(basename "$d")

@@ -1,9 +1,9 @@
 # 平台接入总览
 
-Sera Agent OS 的 Skill Registry 是**平台无关**的。任何 Agent 只要遵循标准 SKILL.md 格式 + 正确的目录放置，即可加载全部能力。
+Sera OPC OS 的 Skill Registry 是**平台无关**的。任何 Agent 只要遵循标准 SKILL.md 格式 + 正确的目录放置，即可加载全部能力。
 
 ```
-Sera Agent OS Skill Registry（本仓库）
+Sera OPC OS Skill Registry（本仓库）
         │
         ├── WorkBuddy  → ~/.workbuddy/skills/         （原生）
         ├── Codex      → ~/.codex/skills/              （或项目 .codex/skills/）

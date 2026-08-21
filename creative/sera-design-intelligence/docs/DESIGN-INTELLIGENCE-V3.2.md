@@ -2,7 +2,7 @@
 
 > Cyber Design Intelligence Engine
 > 版本：3.2.0 · 2026-08-21
-> 定位：Sera Agent OS 的 AI Design Department
+> 定位：Sera OPC OS 的 AI Design Department
 
 ---
 

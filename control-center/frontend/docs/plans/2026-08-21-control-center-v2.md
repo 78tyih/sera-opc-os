@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Upgrade Sera Agent OS Control Center from mock JSON frontend to real API-backed, deployable console with CMS data source and new pages.
+**Goal:** Upgrade Sera OPC OS Control Center from mock JSON frontend to real API-backed, deployable console with CMS data source and new pages.
 
 **Architecture:** 
 - Phase 1: Vercel deployment with custom domain (quick win, get live URL)
@@ -774,7 +774,7 @@ const mockLogs = Array.from({ length: 50 }, (_, i) => ({
     "Agent Brand Agent started processing: Brand Identity Review",
     "Data source switched from mock to tencent-docs",
     "Scheduled task Daily Intelligence Brief triggered",
-    "Connection to Sera Agent OS backend established",
+    "Connection to Sera OPC OS backend established",
     "Cache refreshed for agents data (12 items)",
   ][Math.floor(Math.random() * 8)],
   source: ["system", "agent", "api", "workflow"][Math.floor(Math.random() * 4)],

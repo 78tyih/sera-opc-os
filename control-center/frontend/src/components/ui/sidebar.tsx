@@ -48,7 +48,7 @@ export function Sidebar() {
         </div>
         {!collapsed && (
           <div className="flex flex-col">
-            <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Sera OS</span>
+            <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Sera OPC OS</span>
             <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>Control Center</span>
           </div>
         )}

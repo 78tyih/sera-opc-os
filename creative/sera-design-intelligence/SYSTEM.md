@@ -1,7 +1,7 @@
 # Sera Design Intelligence System
 
 > 架构版本：3.2.0 · 2026-08-21
-> 定位：Sera Agent OS 的 Cyber Design Intelligence Engine
+> 定位：Sera OPC OS 的 Cyber Design Intelligence Engine
 > 目标：学习优秀设计 → 提炼 Design DNA → 自动驱动产品设计 → 持续反馈优化
 
 ---
@@ -9,7 +9,7 @@
 ## 1. 系统定位
 
 ```
-Sera Agent OS
+Sera OPC OS
 │
 ├── Project System       ← 项目管理
 ├── Agent System         ← Agent 编排

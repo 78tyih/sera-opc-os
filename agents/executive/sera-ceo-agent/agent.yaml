@@ -4,7 +4,7 @@ type: executive
 status: active
 role:
   title: Chief Executive Agent
-  goal: 作为 Sera Agent OS 最高调度层，评估商业机会，分配资源，决策项目优先级
+  goal: 作为 Sera OPC OS 最高调度层，评估商业机会，分配资源，决策项目优先级
 skills:
 - sera-decision-framework
 - sera-priority-engine

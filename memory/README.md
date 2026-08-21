@@ -1,4 +1,4 @@
-# Sera Agent OS — Memory（长期记忆）
+# Sera OPC OS — Memory（长期记忆）
 
 > 回答「**我过去知道什么**」——长期、稳定、跨会话。
 

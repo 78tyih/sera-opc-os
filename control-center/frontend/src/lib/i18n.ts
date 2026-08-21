@@ -262,7 +262,7 @@ const properNouns = new Set([
   "TradingView", "Jupyter", "React", "Next.js", "TypeScript", "Python",
   "Node.js", "PostgreSQL", "Redis", "Tailwind CSS", "Framer Motion",
   "Lottie", "GSAP", "SEO", "PRD", "OTC", "CRM", "API",
-  "PropFirm TV", "Niuniu AI", "TradeSpan", "Sera Agent OS", "Content Factory",
+  "PropFirm TV", "Niuniu AI", "TradeSpan", "Sera OPC OS", "Content Factory",
   "OTC CRM",
 ])
 

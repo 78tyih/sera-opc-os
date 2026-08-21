@@ -14,7 +14,7 @@ status: skeleton
 # sera-memory-system
 
 ## Purpose
-Sera Agent OS 的共享记忆层：统一管理 Context Hub（用户偏好/系统规则/活动项目）、Obsidian 知识库（报告/文档/决策/研究）、项目状态（当前状态/下一步/历史决策）。
+Sera OPC OS 的共享记忆层：统一管理 Context Hub（用户偏好/系统规则/活动项目）、Obsidian 知识库（报告/文档/决策/研究）、项目状态（当前状态/下一步/历史决策）。
 
 原则：**"Agents forget. Systems remember."**（Agent 会遗忘，系统会记住）
 

@@ -1,7 +1,7 @@
 # Sera Control Center MVP
 
 > 版本：1.2.0
-> Sera Agent OS 控制中心 — 可视化操作台
+> Sera OPC OS 控制中心 — 可视化操作台
 
 ---
 

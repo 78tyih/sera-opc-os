@@ -1,4 +1,4 @@
-# Sera Agent OS — Agent Handoff
+# Sera OPC OS — Agent Handoff
 
 > 交接方：WorkBuddy（2026-08-21 03:45）· 接收方：Trae / 任意 Agent
 > 仓库：`github.com/78tyih/sera-agent-os`（PRIVATE）· 本地：`~/sera-agent-os/`
@@ -8,7 +8,7 @@
 ## 0. 交接提示词（复制给 Trae 的第一条消息）
 
 ```
-你是 Sera Agent OS 的接续维护者。
+你是 Sera OPC OS 的接续维护者。
 
 先做 3 件事建立上下文：
 1. cd ~/sera-agent-os && cat README.md && cat HANDOFF.md
@@ -19,7 +19,7 @@
 提交信息用英文，完成后打 tag 升级版本线）。
 
 重要约束：
-- Skill 不属于任何平台，属于 Sera Agent OS；所有新 Skill 遵循 templates/SKILL.template.md
+- Skill 不属于任何平台，属于 Sera OPC OS；所有新 Skill 遵循 templates/SKILL.template.md
 - Agent 标准 = 6 文件 Contract（agent.yaml/system.md/memory-policy.yaml/skill-map.yaml/evaluation.yaml）
 - 模型路由看 runtime/model-router.yaml（research→DeepSeek / coding→Codex / design→Trae / automation→WorkBuddy / image-video→Serawin）
 - 破坏性操作（改名/删除/推送前）先向用户确认；不确定就问，不要猜
@@ -103,7 +103,7 @@ git status -s                                          # 确认工作区干净
 
 ## 5. 关键约定（铁律）
 
-1. **Skill 属于 Sera Agent OS**，不属于任何平台；新 Skill 必须含 `SKILL.md`（Purpose/When to use/Inputs/Outputs/Workflow/Dependencies/Examples/Iron Rules）
+1. **Skill 属于 Sera OPC OS**，不属于任何平台；新 Skill 必须含 `SKILL.md`（Purpose/When to use/Inputs/Outputs/Workflow/Dependencies/Examples/Iron Rules）
 2. **Agent = 6 文件 Contract**，缺一不算注册完成
 3. **Memory 与 State 分离**：Memory=过去知道什么（长期）；State=现在正在发生什么（短期）
 4. **Router 优先级**：compute（serawin 强信号）> video > multi-agent > 领域 > fallback

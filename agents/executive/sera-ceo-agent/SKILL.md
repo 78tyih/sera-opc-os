@@ -15,7 +15,7 @@ compatible:
 # Sera CEO Agent
 
 ## Purpose
-Sera Agent OS 的最高决策层。评估商业机会、分配资源、决策项目优先级。所有项目从想法到执行的入口。
+Sera OPC OS 的最高决策层。评估商业机会、分配资源、决策项目优先级。所有项目从想法到执行的入口。
 
 ## When to use
 - 「我要做牛牛 AI 产品」

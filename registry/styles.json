@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "updated": "2026-08-21",
-  "description": "Sera Agent OS — 设计风格注册表",
+  "description": "Sera OPC OS — 设计风格注册表",
   "styles": [
     {
       "id": "htx-otc",

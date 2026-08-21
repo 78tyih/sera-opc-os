@@ -15,7 +15,7 @@ compatible:
 # sera-agent-registry
 
 ## Purpose
-Sera Agent OS 的 **Agent 注册表**：登记所有 Agent 的身份、角色、Skill 组合与模型偏好，供 Router / Planner / 各平台查询。每个 Agent 是一份完整 Agent Contract（5 文件）。
+Sera OPC OS 的 **Agent 注册表**：登记所有 Agent 的身份、角色、Skill 组合与模型偏好，供 Router / Planner / 各平台查询。每个 Agent 是一份完整 Agent Contract（5 文件）。
 
 ## When to use
 - Router 需要知道有哪些 Agent 可用（Agent Planner 查询）

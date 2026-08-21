@@ -1,4 +1,4 @@
-# Sera Agent OS — Agent 评分汇总
+# Sera OPC OS — Agent 评分汇总
 # 用法：任务完成后按 agents/<name>/evaluation.yaml 维度打分（1-5），加权后更新这里
 # 对比不同模型：同一 task 用不同 model 跑，记录 model 列
 

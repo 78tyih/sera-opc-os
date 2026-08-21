@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "updated": "2026-08-21",
-  "description": "Sera Agent OS — 所有项目注册表",
+  "description": "Sera OPC OS — 所有项目注册表",
   "projects": [
     {
       "id": "htx-otc",
@@ -108,7 +108,7 @@
       "name": "Sera Agent Console",
       "category": "infrastructure",
       "status": "active",
-      "description": "Sera Agent OS 控制中心 WebUI",
+      "description": "Sera OPC OS 控制中心 WebUI",
       "repos": [],
       "mapped_path": "projects/sera-agent-console/",
       "agent": "core"

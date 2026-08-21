@@ -1,6 +1,6 @@
 # WorkBuddy 接入
 
-WorkBuddy 原生支持 Agent Skills，是 Sera Agent OS 的主阵地。
+WorkBuddy 原生支持 Agent Skills，是 Sera OPC OS 的主阵地。
 
 ## Skill 目录
 
@@ -11,7 +11,7 @@ WorkBuddy 原生支持 Agent Skills，是 Sera Agent OS 的主阵地。
 
 ```bash
 # 方式 A：软链（推荐，git pull 后自动同步）
-REPO=~/sera-agent-os
+REPO=~/sera-opc-os
 for d in "$REPO"/core/*/ "$REPO"/business/*/ "$REPO"/creative/*/ "$REPO"/adapters/*/; do
   [ -d "$d" ] && ln -sfn "$d" ~/.workbuddy/skills/$(basename "$d")
 done

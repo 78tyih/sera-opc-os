@@ -11,7 +11,7 @@ Trae（字节跳动 AI IDE）支持 Agent Skills 标准格式。
 
 ```bash
 # 项目级挂载（在目标项目仓库内）
-REPO=~/sera-agent-os
+REPO=~/sera-opc-os
 mkdir -p .trae/skills
 for d in "$REPO"/core/*/ "$REPO"/business/*/ "$REPO"/creative/*/ "$REPO"/adapters/*/; do
   [ -d "$d" ] && ln -sfn "$d" .trae/skills/$(basename "$d")

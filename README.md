@@ -76,7 +76,7 @@ sera-opc-os/
 ## 架构（V1.0 · 保留参考）
 
 ```
-                    Sera Agent OS
+                    Sera OPC OS
                          User
                           |
               Agent Orchestrator Layer
@@ -96,7 +96,10 @@ sera-opc-os/
         Mac | Serawin | Cloud GPU | API Services
 ```
 
-完整架构文档：[`architecture/sera-agent-os-v1.md`](architecture/sera-agent-os-v1.md)
+完整架构文档：
+
+- **V2.0 五层架构**（当前）：[`architecture/v2/`](architecture/v2/) — Memory Graph / Memory Engine / SMOP 协议 / Organization OS / Workflow OS
+- V1 历史版本：[`architecture/sera-agent-os-v1.md`](architecture/sera-agent-os-v1.md)
 
 ## Agent Registry（个人 AI 团队）
 
@@ -218,8 +221,8 @@ research→DeepSeek / coding→Codex / design→Trae / automation→WorkBuddy / 
 ### 方式 A：一键安装（推荐）
 
 ```bash
-git clone https://github.com/78tyih/sera-agent-os.git ~/sera-agent-os
-cd ~/sera-agent-os
+git clone https://github.com/78tyih/sera-opc-os.git ~/sera-opc-os
+cd ~/sera-opc-os
 ./install.sh --all                  # 安装到全部 5 平台
 ./install.sh --platform workbuddy   # 或指定平台
 ./install.sh --copy                 # Windows/无软链环境用复制
@@ -228,7 +231,7 @@ cd ~/sera-agent-os
 ### 方式 B：手动软链（WorkBuddy）
 
 ```bash
-for d in ~/sera-agent-os/{core,business,creative,adapters}/*/; do
+for d in ~/sera-opc-os/{core,business,creative,adapters}/*/; do
   [ -f "$d/SKILL.md" ] && ln -s "$d" ~/.workbuddy/skills/$(basename "$d")
 done
 ```
@@ -258,7 +261,7 @@ cp -r core/sera-context-system ~/.workbuddy/skills/sera-context-system
 ## 仓库结构
 
 ```
-sera-agent-os/
+sera-opc-os/
 ├── README.md
 ├── architecture/
 │   ├── sera-agent-os-v1.md           # 架构 V1.0 文档
@@ -338,4 +341,4 @@ sera-agent-os/
 
 ---
 
-*Sera Agent OS V1.1 · 2026-08-21 · 由 WorkBuddy 构建*
+*Sera OPC OS V1.1 · 2026-08-21 · 由 WorkBuddy 构建*

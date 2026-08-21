@@ -1,6 +1,6 @@
-# Sera Agent OS — Control Center V0.1
+# Sera OPC OS — Control Center V0.1
 
-> **Sera Agent OS 的控制中心 WebUI 原型。**
+> **Sera OPC OS 的控制中心 WebUI 原型。**
 > AI 公司操作台 + Agent 调度中心 + Workflow 编排系统。
 
 ## 技术栈
@@ -35,7 +35,7 @@
 
 所有数据基于 Mock JSON，位于 `src/data/`：
 
-- `projects.json` — 6 个示例项目（PropFirm TV, Niuniu AI, TradeSpan, Sera Agent OS, Content Factory, OTC CRM）
+- `projects.json` — 6 个示例项目（PropFirm TV, Niuniu AI, TradeSpan, Sera OPC OS, Content Factory, OTC CRM）
 - `agents.json` — 13 个 Agent，分属 6 个部门
 - `departments.json` — 部门定义（Product/Design/Marketing/Content/Engineering/Business）
 - `workflows.json` — 3 个工作流模板（Product Launch Pipeline, Daily Intelligence Brief, Video Production Pipeline）

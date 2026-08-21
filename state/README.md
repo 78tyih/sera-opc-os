@@ -1,4 +1,4 @@
-# Sera Agent OS — State（工作状态）
+# Sera OPC OS — State（工作状态）
 
 > 回答「**现在正在发生什么**」——短期、实时、供 Router/编排器查询。
 

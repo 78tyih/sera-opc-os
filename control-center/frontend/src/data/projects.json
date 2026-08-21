@@ -37,7 +37,7 @@
   },
   {
     "id": "proj-4",
-    "name": "Sera Agent OS",
+    "name": "Sera OPC OS",
     "category": "Infrastructure",
     "status": "active",
     "priority": "critical",

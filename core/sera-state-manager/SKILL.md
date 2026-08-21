@@ -15,7 +15,7 @@ compatible:
 # sera-state-manager
 
 ## Purpose
-Sera Agent OS 的**工作状态管理器**：记录「当前正在发生什么」——活动项目的当前阶段、阻塞项、下一步行动。与 Memory（过去发生什么）互补，为 Agent Router 提供实时状态输入。
+Sera OPC OS 的**工作状态管理器**：记录「当前正在发生什么」——活动项目的当前阶段、阻塞项、下一步行动。与 Memory（过去发生什么）互补，为 Agent Router 提供实时状态输入。
 
 > Memory 回答「我们做过什么」，State 回答「我们现在在哪、下一步去哪」。
 

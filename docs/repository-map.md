@@ -1,4 +1,4 @@
-# Sera Agent OS — Repository Map
+# Sera OPC OS — Repository Map
 
 > 生成时间：2026-08-21
 > 扫描范围：GitHub @78tyih — 32 repositories
@@ -8,7 +8,7 @@
 ## 一、架构总览
 
 ```
-Sera Agent OS
+Sera OPC OS
 │
 ├── Core Infrastructure       (6 repos)
 ├── Agent System              (1 repo — sera-agent-os 自身)
@@ -23,7 +23,7 @@ Sera Agent OS
 
 ## 二、Core Infrastructure（核心基础设施）
 
-| # | Repository | 语言 | 可见性 | 当前作用 | Sera OS 映射 |
+| # | Repository | 语言 | 可见性 | 当前作用 | Sera OPC OS 映射 |
 |---|-----------|------|--------|---------|-------------|
 | 1 | **ai-gateway** | JavaScript | PRIV | 多模型聊天网关，支持 API/SSE/Web UI | `core/sera-compute-control/` — 模型路由与计算控制 |
 | 2 | **ai-workflow-monitor** | TypeScript | PRIV | AI Agent 运行时监控与治理控制台 | `core/sera-agent-orchestrator/` — 编排状态监控 |
@@ -36,7 +36,7 @@ Sera Agent OS
 
 ## 三、Agent System（Agent 系统）
 
-| # | Repository | 语言 | 可见性 | 当前作用 | Sera OS 映射 |
+| # | Repository | 语言 | 可见性 | 当前作用 | Sera OPC OS 映射 |
 |---|-----------|------|--------|---------|-------------|
 | 7 | **sera-agent-os** | Python | PRIV | 核心 Agent OS — 跨平台 AI 操作系统 | `./` — 根仓库自身 |
 
@@ -53,7 +53,7 @@ Sera Agent OS
 
 ## 四、Skill Library（技能库）
 
-| # | Repository | 语言 | 可见性 | 当前作用 | Sera OS 映射 |
+| # | Repository | 语言 | 可见性 | 当前作用 | Sera OPC OS 映射 |
 |---|-----------|------|--------|---------|-------------|
 | 8 | **kimi-design-refer** | N/A | PUBL | Kimi 设计风格参考库 | `creative/sera-design-intelligence/references/kimi/` |
 | 9 | **htx-design-refer** | N/A | PUBL | 火币 HTX 设计风格参考 | `creative/sera-design-intelligence/case-studies/htx-otc-v1/` |
@@ -63,7 +63,7 @@ Sera Agent OS
 
 ## 五、Factory System（工厂系统）
 
-| # | Repository | 语言 | 可见性 | 当前作用 | Sera OS 映射 |
+| # | Repository | 语言 | 可见性 | 当前作用 | Sera OPC OS 映射 |
 |---|-----------|------|--------|---------|-------------|
 | 11 | **propfirm-tv-video-factory** | TypeScript | PUBL | PropFirm.TV 视频自动化工厂 | `video-factory/` — 视频生产流水线 |
 | 12 | **propfirm-tv-pipeline** | Python | PRIV | PropFirm.TV 完整处理流水线 | `product-factory/` — 产品处理流水线 |
@@ -72,7 +72,7 @@ Sera Agent OS
 
 ## 六、Project Case Studies（项目案例）
 
-| # | Repository | 语言 | 可见性 | 当前作用 | Sera OS 映射 |
+| # | Repository | 语言 | 可见性 | 当前作用 | Sera OPC OS 映射 |
 |---|-----------|------|--------|---------|-------------|
 | 13 | **htx-otc-landing** | JavaScript | PRIV | HTX OTC 落地页 | `projects/htx-otc/landing/` |
 | 14 | **htx-otc-progress-hub** | JavaScript | PUBL | HTX OTC 进度中心 | `projects/htx-otc/progress-hub/` |
@@ -94,7 +94,7 @@ Sera Agent OS
 
 ## 七、Adapters & Tools（适配器与工具）
 
-| # | Repository | 语言 | 可见性 | 当前作用 | Sera OS 映射 |
+| # | Repository | 语言 | 可见性 | 当前作用 | Sera OPC OS 映射 |
 |---|-----------|------|--------|---------|-------------|
 | 28 | **CC-statusline-kit** | Shell | PUBL | Claude Code 双行状态条 | `adapters/claude-code-statusline/` |
 | 29 | **flomo-auto-tagger** | Python | PUBL | flomo 自动三级标签 | `core/sera-knowledge-sync/` — 知识同步 |
@@ -103,7 +103,7 @@ Sera Agent OS
 
 ## 八、Other / Legacy（其他）
 
-| # | Repository | 语言 | 可见性 | 当前作用 | Sera OS 映射 |
+| # | Repository | 语言 | 可见性 | 当前作用 | Sera OPC OS 映射 |
 |---|-----------|------|--------|---------|-------------|
 | 30 | **78tyih.github.io** | HTML | PUBL | 个人 GitHub Pages | `projects/personal-site/` |
 | 31 | **SeraYue-s-Blog** | HTML | PUBL | SeraYue 博客 | `projects/blog/` |
@@ -137,4 +137,4 @@ Sera Agent OS
 
 ---
 
-*本映射由 Sera Agent OS — Ecosystem Integration V1.0 自动生成*
+*本映射由 Sera OPC OS — Ecosystem Integration V1.0 自动生成*

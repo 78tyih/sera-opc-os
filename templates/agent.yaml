@@ -1,4 +1,4 @@
-# Sera Agent OS Agent Template
+# Sera OPC OS Agent Template
 # Agent 定义模板：把一个 Skill 打包成可被编排器调用的 Agent
 # 用法：定义领域专家 Agent（PropFirm PM / OTC BD / Trading Analyst 等）
 

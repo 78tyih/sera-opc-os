@@ -14,7 +14,7 @@ status: active
 # sera-agent-orchestrator
 
 ## Purpose
-Sera Agent OS 的编排器：把用户请求路由到正确的 Agent + Skill 组合，规划执行步骤，检测冲突。是系统的大脑入口。**核心引擎 = `sera-agent-router`（规则引擎），本 Skill 负责执行编排链的协调**。
+Sera OPC OS 的编排器：把用户请求路由到正确的 Agent + Skill 组合，规划执行步骤，检测冲突。是系统的大脑入口。**核心引擎 = `sera-agent-router`（规则引擎），本 Skill 负责执行编排链的协调**。
 
 ## When to use
 - 用户请求涉及多个 Skill 的复合任务（如「做一条 PropFirm.TV 视频」需要 content-factory → video-pipeline → compute → knowledge-sync 链路）

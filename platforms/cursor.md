@@ -11,7 +11,7 @@ Cursor（Anysphere AI IDE）通过规则文件加载 Agent Skills 标准格式�
 
 ```bash
 # 项目级挂载
-REPO=~/sera-agent-os
+REPO=~/sera-opc-os
 mkdir -p .cursor/skills
 for d in "$REPO"/core/*/ "$REPO"/business/*/ "$REPO"/creative/*/ "$REPO"/adapters/*/; do
   [ -d "$d" ] && ln -sfn "$d" .cursor/skills/$(basename "$d")

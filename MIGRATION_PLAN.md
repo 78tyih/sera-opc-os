@@ -1,4 +1,4 @@
-# Sera Agent OS — Migration Plan V1.0
+# Sera OPC OS — Migration Plan V1.0
 
 > 生成时间：2026-08-21
 > 原则：不破坏已有仓库。先建立软连接/注册/映射，逐步迁移。
@@ -176,4 +176,4 @@ smart-mail-hub + mac-automation-scripts + CC-statusline-kit
 
 ---
 
-*本计划由 Sera Agent OS — Ecosystem Integration V1.0 自动生成*
+*本计划由 Sera OPC OS — Ecosystem Integration V1.0 自动生成*

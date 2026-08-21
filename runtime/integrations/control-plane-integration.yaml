@@ -1,0 +1,135 @@
+# Runtime → 全系统集成协议
+
+## 集成映射
+
+```yaml
+runtime_integrations:
+  # Runtime → Autonomous OS
+  autonomous_integration:
+    - system: "Mission Planning"
+      runtime_action: "接收 Mission Object → 执行"
+      data_flow: "mission.created → orchestrator.start"
+
+    - system: "OKR Generation"
+      runtime_action: "Mission 对齐 OKR → 追踪"
+      data_flow: "mission.completed → okr.update"
+
+    - system: "Company Evolution"
+      runtime_action: "提供执行数据 → 进化分析"
+      data_flow: "evaluation.scores → evolution.assess"
+
+  # Runtime → Control Plane
+  control_plane_integration:
+    - system: "Mission System"
+      runtime_mapping: "Mission Engine ↔ Mission System"
+      data_flow: "双向同步"
+
+    - system: "Project System"
+      runtime_mapping: "Workflow Engine ↔ Project System"
+      data_flow: "Task 状态同步"
+
+    - system: "Decision System"
+      runtime_mapping: "Human Approval Step ↔ Decision Log"
+      data_flow: "审批记录 → 决策记忆"
+
+    - system: "Memory Architecture"
+      runtime_mapping: "Memory Engine ↔ Memory System"
+      data_flow: "实时读写"
+
+    - system: "Evaluation System"
+      runtime_mapping: "Evaluation Engine ↔ Evaluation System"
+      data_flow: "评分 → 报告"
+
+  # Runtime → Intelligence OS
+  intelligence_integration:
+    - system: "Opportunity Engine"
+      runtime_action: "接收信号 → 创建 Mission"
+      data_flow: "opportunity.identified → mission.create"
+
+    - system: "Market Intelligence"
+      runtime_action: "Agent 执行时查询市场数据"
+      data_flow: "query → signal"
+
+  # Runtime → Commercial OS
+  commercial_integration:
+    - system: "Revenue Engine"
+      runtime_action: "CRO Agent 管理收入管道"
+      data_flow: "deal.closed → revenue.update"
+
+    - system: "Venture Studio"
+      runtime_action: "Orchestrator 创建项目"
+      data_flow: "project.created → workflow.start"
+
+  # Runtime → Factory OS
+  factory_integration:
+    - system: "Product Factory"
+      runtime_action: "Workflow 调用 Factory 生产"
+      data_flow: "task → factory.execute"
+
+    - system: "Marketing Factory"
+      runtime_action: "Workflow 调用内容生产"
+      data_flow: "task → factory.execute"
+
+  # Runtime → Learning OS
+  learning_integration:
+    - system: "Experience Engine"
+      runtime_action: "每次任务完成 → 记录经验"
+      data_flow: "task.completed → experience.store"
+
+    - system: "Failure Analysis"
+      runtime_action: "任务失败 → 触发分析"
+      data_flow: "task.failed → failure.analyze"
+
+    - system: "Skill Evolution"
+      runtime_action: "Agent 表现数据 → Skill 优化"
+      data_flow: "evaluation.scores → skill.evolve"
+```
+
+## 事件流映射
+
+```yaml
+event_flow:
+  # 事件 → Runtime 动作
+  event_to_runtime:
+    - event: "intelligence.signal.critical"
+      runtime_action: "创建高优先级 Mission"
+    - event: "commercial.opportunity.identified"
+      runtime_action: "触发 Mission Engine"
+    - event: "learning.agent.performance_dropped"
+      runtime_action: "暂停 Agent → 重新分配任务"
+    - event: "evaluation.agent.below_threshold"
+      runtime_action: "触发 Agent 重新训练"
+
+  # Runtime → 事件
+  runtime_to_event:
+    - event: "mission.created"
+      subscribers: [ceo_agent, orchestrator, commercial_os]
+    - event: "mission.completed"
+      subscribers: [learning_os, evaluation_engine, ceo_console]
+    - event: "task.completed"
+      subscribers: [workflow_engine, orchestrator, memory_engine]
+    - event: "task.failed"
+      subscribers: [learning_os, failure_analysis, ceo_console]
+    - event: "agent.paused"
+      subscribers: [ceo_console, orchestrator]
+    - event: "workflow.completed"
+      subscribers: [ceo_console, evaluation_engine, revenue_engine]
+    - event: "workflow.failed"
+      subscribers: [ceo_console, learning_os, human_ceo]
+```
+
+## 启动顺序
+
+```yaml
+startup_sequence:
+  step_1: "Event Bus — 先启动消息系统"
+  step_2: "Memory Engine — 加载记忆"
+  step_3: "Agent Registry — 注册所有 Agent"
+  step_4: "Model Router — 连接 LLM"
+  step_5: "API Layer — 启动 HTTP 服务"
+  step_6: "Mission Engine — 就绪"
+  step_7: "Orchestrator — 就绪"
+  step_8: "Workflow Engine — 就绪"
+  step_9: "Dashboard — 上线"
+  status: "Sera OPC OS Runtime is running"
+```

@@ -1,0 +1,39 @@
+# Memory Event Schema v1.0
+memory_item:
+  type: object
+  required: [id, layer, key, value]
+  properties:
+    id: { type: string }
+    layer: { type: string, enum: [working, project, organization] }
+    key: { type: string }
+    value: { type: object }
+    embedding: { type: array, items: { type: number }, nullable: true }
+    metadata:
+      type: object
+      properties:
+        tags: { type: array, items: { type: string } }
+        source: { type: string }
+        ttl: { type: integer, nullable: true }
+    created_at: { type: string, format: date-time }
+    expires_at: { type: string, format: date-time, nullable: true }
+
+# Event Schema v1.0
+event:
+  type: object
+  required: [id, type, source, payload]
+  properties:
+    id: { type: string, pattern: "^EVT-\\d{8}-\\d{3}$" }
+    type: { type: string }
+    source: { type: string }
+    timestamp: { type: string, format: date-time }
+    payload: { type: object }
+    context:
+      type: object
+      properties:
+        trace_id: { type: string }
+        user_id: { type: string, nullable: true }
+    metadata:
+      type: object
+      properties:
+        version: { type: integer }
+        retry_count: { type: integer }

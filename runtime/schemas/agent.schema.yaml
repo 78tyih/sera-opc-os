@@ -1,0 +1,50 @@
+# Agent Schema v1.0
+agent_registry:
+  type: object
+  required: [id, name, role, department, level, skills, permissions]
+  properties:
+    id: { type: string, pattern: "^SERA-\\w{3}-\\d{3}$" }
+    name: { type: string }
+    role: { type: string }
+    department: { type: string }
+    level: { type: string, enum: [L1, L2, L3, L4, L5] }
+    skills: { type: array, items: { type: string } }
+    model_preferences:
+      type: object
+      properties:
+        primary: { type: string }
+        fallback: { type: string }
+        max_tokens: { type: integer }
+    permissions:
+      type: object
+      properties:
+        level: { type: integer, minimum: 0, maximum: 4 }
+        allowed_actions: { type: array, items: { type: string } }
+        denied_actions: { type: array, items: { type: string } }
+    status: { type: string, enum: [active, inactive, deprecated] }
+    benchmark: { type: string, nullable: true }
+
+agent_instance:
+  type: object
+  required: [id, agent_id, status]
+  properties:
+    id: { type: string }
+    agent_id: { type: string }
+    project_id: { type: string, nullable: true }
+    status: { type: string, enum: [idle, assigned, active, paused, completed, failed] }
+    context:
+      type: object
+      properties:
+        role: { type: string }
+        project: { type: string, nullable: true }
+        current_task: { type: string, nullable: true }
+    tools: { type: array, items: { type: string } }
+    permissions: { type: array, items: { type: string } }
+    metrics:
+      type: object
+      properties:
+        tasks_completed: { type: integer }
+        avg_quality: { type: number }
+        total_tokens: { type: integer }
+    started_at: { type: string, format: date-time, nullable: true }
+    last_active: { type: string, format: date-time, nullable: true }

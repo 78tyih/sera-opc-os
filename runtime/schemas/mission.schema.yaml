@@ -1,0 +1,35 @@
+# Mission Schema v1.0
+mission:
+  type: object
+  required: [id, raw_input, intent, status]
+  properties:
+    id: { type: string, pattern: "^MIS-\\d{8}-\\d{3}$" }
+    raw_input: { type: string }
+    intent:
+      type: object
+      properties:
+        action: { type: string }
+        subject: { type: string }
+        category: { type: string, enum: [commercial_launch, product_build, research, content, operation] }
+        priority: { type: string, enum: [P0, P1, P2, P3] }
+        confidence: { type: number, minimum: 0, maximum: 1 }
+    constraints:
+      type: object
+      properties:
+        deadline: { type: string, nullable: true }
+        budget: { type: number, nullable: true }
+        quality: { type: string, enum: [draft, review, production] }
+    success_criteria: { type: array, items: { type: string } }
+    strategy:
+      type: object
+      properties:
+        aligned_okr: { type: string, nullable: true }
+        resource_estimate:
+          type: object
+          properties:
+            agents: { type: integer }
+            api_tokens: { type: integer }
+            duration_days: { type: integer }
+    status: { type: string, enum: [pending, approved, executing, completed, failed] }
+    created_at: { type: string, format: date-time }
+    updated_at: { type: string, format: date-time }

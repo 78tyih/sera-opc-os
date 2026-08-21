@@ -1,0 +1,42 @@
+# Task Schema v1.0
+task:
+  type: object
+  required: [id, mission_id, name, status]
+  properties:
+    id: { type: string, pattern: "^TASK-\\d{3}$" }
+    mission_id: { type: string }
+    workflow_id: { type: string, nullable: true }
+    name: { type: string }
+    assigned_to: { type: string, nullable: true }
+    depends_on: { type: array, items: { type: string } }
+    status: { type: string, enum: [pending, in_progress, completed, failed, blocked] }
+    input: { type: object }
+    output: { type: object, nullable: true }
+    priority: { type: integer, minimum: 0, maximum: 5 }
+    estimated_minutes: { type: integer }
+    started_at: { type: string, format: date-time, nullable: true }
+    completed_at: { type: string, format: date-time, nullable: true }
+
+# Workflow Schema v1.0
+workflow:
+  type: object
+  required: [id, mission_id, name, steps, status]
+  properties:
+    id: { type: string, pattern: "^WF-\\d{8}-\\d{3}$" }
+    mission_id: { type: string }
+    name: { type: string }
+    steps:
+      type: array
+      items:
+        type: object
+        properties:
+          id: { type: string }
+          name: { type: string }
+          type: { type: string, enum: [agent_task, human_approval, parallel, conditional, loop] }
+          agent: { type: string, nullable: true }
+          input: { type: object }
+          depends_on: { type: array, items: { type: string } }
+          timeout_minutes: { type: integer }
+          branches: { type: array, items: { type: object }, nullable: true }
+    status: { type: string, enum: [draft, running, paused, completed, failed] }
+    created_at: { type: string, format: date-time }

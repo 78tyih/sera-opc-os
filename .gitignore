@@ -10,3 +10,8 @@ __pycache__/
 
 # 临时
 *.tmp
+
+# Memory Kernel 数据库 (运行时生成)
+memory/sera-kernel.db
+memory/sera-kernel.db-wal
+memory/sera-kernel.db-shm

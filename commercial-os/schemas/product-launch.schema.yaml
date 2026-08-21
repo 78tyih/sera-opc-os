@@ -1,0 +1,55 @@
+# Product Launch Schema v1.0
+product_launch:
+  type: object
+  required: [id, project_id, status, brand]
+  properties:
+    id: { type: string, pattern: "^PLN-\\d{8}-\\d{3}$" }
+    project_id: { type: string }
+    status: { type: string, enum: [planning, in_progress, review, launched] }
+    brand:
+      type: object
+      properties:
+        name: { type: string }
+        tagline: { type: string }
+        visual_identity: { type: string }
+        tone_of_voice: { type: string }
+    assets:
+      type: object
+      properties:
+        website:
+          type: object
+          properties:
+            status: { type: string, enum: [not_started, in_progress, done] }
+            url: { type: string, nullable: true }
+            pages: { type: array, items: { type: string } }
+        content:
+          type: array
+          items:
+            type: object
+            properties:
+              type: { type: string, enum: [blog, video, social, email] }
+              title: { type: string }
+              status: { type: string, enum: [not_started, in_progress, done] }
+        sales:
+          type: array
+          items:
+            type: object
+            properties:
+              type: { type: string, enum: [deck, pricing, proposal, case_study] }
+              status: { type: string, enum: [not_started, in_progress, done] }
+    launch:
+      type: object
+      properties:
+        date: { type: string, format: date-time, nullable: true }
+        channels: { type: array, items: { type: string } }
+        budget: { type: number }
+        metrics:
+          type: array
+          items:
+            type: object
+            properties:
+              metric: { type: string }
+              target: { type: number }
+              actual: { type: number, nullable: true }
+    created_at: { type: string, format: date-time }
+    launched_at: { type: string, format: date-time, nullable: true }

@@ -1,0 +1,140 @@
+# NiuNiu AI — Sera OPC OS Project #001
+
+## 项目信息
+
+```yaml
+project:
+  id: PRJ-20260821-001
+  name: "NiuNiu AI Global Launch"
+  opportunity_id: OPP-20260821-001
+  status: active
+  owner: SERA-CRO-001
+
+  mission:
+    one_line: "Build and launch AI Trading Assistant for retail traders"
+    objective: "Achieve 100 paying customers within 30 days"
+    success_criteria:
+      - "Landing page live and converting"
+      - "100 customers at $29/mo = $2,900 MRR"
+      - "Affiliate program with 5+ partners"
+      - "Customer activation rate > 80%"
+    kpis:
+      - metric: "MRR"
+        target: 2900
+        timeframe: "30 days"
+      - metric: "Customers"
+        target: 100
+        timeframe: "30 days"
+      - metric: "Activation Rate"
+        target: 80
+        timeframe: "30 days"
+
+  timeline:
+    total_days: 30
+    phases:
+      - name: "Brand & Product Definition"
+        duration_days: 2
+        deliverables: ["brand_identity", "product_definition", "value_proposition"]
+      - name: "Asset Production"
+        duration_days: 5
+        deliverables: ["website", "landing_page", "pricing_page", "demo_video"]
+      - name: "Content & Sales"
+        duration_days: 3
+        deliverables: ["blog_post", "sales_deck", "faq", "email_sequence"]
+      - name: "Launch"
+        duration_days: 1
+        deliverables: ["go_live", "channel_announcements"]
+      - name: "Revenue Operations"
+        duration_days: 19
+        deliverables: ["sales", "partnerships", "growth_experiments"]
+
+  team:
+    lead: SERA-CRO-001
+    required_agents:
+      - SERA-PMA-001  # Product Marketing
+      - SERA-PRA-001  # Pricing
+      - SERA-SSA-001  # Sales Strategy
+      - SERA-CRM-001  # CRM
+      - SERA-PTA-001  # Partnership
+    from_factories:
+      - design-factory
+      - product-factory
+      - marketing-factory
+
+  budget:
+    api_costs: 200
+    tool_costs: 100
+    marketing_budget: 500
+    total: 800
+    runway_days: 30
+
+  revenue_targets:
+    month_1: 2900     # 100 customers × $29
+    month_3: 9900     # 300 customers × $33 avg
+    month_6: 30000    # 500 customers × $60 avg
+    month_12: 100000  # 1000 customers × $100 avg
+```
+
+## 商业资产清单
+
+```yaml
+assets:
+  brand:
+    name: "NiuNiu AI"
+    tagline: "Your AI Trading Co-Pilot"
+    tone: "Professional, Approachable, Data-Driven"
+    colors: ["#146EFF", "#05070A", "#F7F9FC"]
+
+  website:
+    pages:
+      - "home"
+      - "features"
+      - "pricing"
+      - "faq"
+      - "blog"
+    target_conversion: 5%
+
+  content:
+    - type: "blog"
+      title: "Why AI Trading is the Future"
+      status: "planned"
+    - type: "video"
+      title: "NiuNiu AI Demo"
+      status: "planned"
+    - type: "email"
+      title: "5-day onboarding sequence"
+      status: "planned"
+
+  sales:
+    - type: "pricing_page"
+      plans:
+        - name: "Basic"
+          price: 29
+          features: ["5 signals/day", "basic_analysis"]
+        - name: "Pro"
+          price: 99
+          features: ["unlimited signals", "advanced_analysis", "api_access"]
+        - name: "Enterprise"
+          price: 299
+          features: ["everything", "dedicated_support", "custom_integration"]
+
+  partnerships:
+    affilicate_commission: 30
+    target_partners: 5
+    target_channels: ["telegram", "twitter", "youtube"]
+```
+
+## 启动时间线
+
+```yaml
+launch_timeline:
+  day_1: "Brand definition + Product positioning"
+  day_2: "Pricing strategy + Value proposition"
+  day_3: "Website design starts"
+  day_4: "Landing page + Copywriting"
+  day_5: "Demo video production"
+  day_6: "Sales materials + FAQ"
+  day_7: "LAUNCH DAY — Announce on all channels"
+  day_8-14: "Active sales + Partner outreach"
+  day_15-30: "Optimize based on conversion data"
+```

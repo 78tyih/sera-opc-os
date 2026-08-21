@@ -1,0 +1,50 @@
+# Revenue Schema v1.0
+revenue:
+  type: object
+  required: [id, period, pipeline, metrics]
+  properties:
+    id: { type: string, pattern: "^REV-\\d{8}-\\d{3}$" }
+    period: { type: string }
+    pipeline:
+      type: object
+      properties:
+        stages:
+          type: array
+          items:
+            type: object
+            properties:
+              name: { type: string }
+              count: { type: integer }
+              value: { type: number }
+              conversion_rate: { type: number }
+    metrics:
+      type: object
+      properties:
+        mrr: { type: number }
+        arr: { type: number }
+        new_customers: { type: integer }
+        churn_rate: { type: number }
+        cac: { type: number }
+        ltv: { type: number }
+        ltv_cac_ratio: { type: number }
+        payback_months: { type: number }
+    deals:
+      type: array
+      items:
+        type: object
+        properties:
+          id: { type: string }
+          customer_name: { type: string }
+          product: { type: string }
+          value: { type: number }
+          stage: { type: string }
+          probability: { type: number }
+          expected_close: { type: string, format: date-time }
+          owner: { type: string }
+    forecasts:
+      type: object
+      properties:
+        next_month: { type: number }
+        next_quarter: { type: number }
+        confidence: { type: string, enum: [low, medium, high] }
+    created_at: { type: string, format: date-time }

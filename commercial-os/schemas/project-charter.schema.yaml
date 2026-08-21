@@ -1,0 +1,57 @@
+# Project Charter Schema v1.0
+project_charter:
+  type: object
+  required: [id, name, opportunity_id, mission, scope, team, budget, timeline, status, owner]
+  properties:
+    id: { type: string, pattern: "^PRJ-\\d{8}-\\d{3}$" }
+    name: { type: string }
+    opportunity_id: { type: string }
+    mission:
+      type: object
+      properties:
+        one_line: { type: string }
+        objective: { type: string }
+        success_criteria: { type: array, items: { type: string } }
+        kpis:
+          type: array
+          items:
+            type: object
+            properties:
+              metric: { type: string }
+              target: { type: number }
+              timeframe: { type: string }
+    scope:
+      type: object
+      properties:
+        deliverables: { type: array, items: { type: string } }
+        out_of_scope: { type: array, items: { type: string } }
+        dependencies: { type: array, items: { type: string } }
+    team:
+      type: object
+      properties:
+        lead: { type: string }
+        required_agents: { type: array, items: { type: string } }
+        recommended_agents: { type: array, items: { type: string } }
+    budget:
+      type: object
+      properties:
+        api_costs: { type: number }
+        tool_costs: { type: number }
+        marketing_budget: { type: number }
+        total: { type: number }
+        runway_days: { type: integer }
+    timeline:
+      type: object
+      properties:
+        phases:
+          type: array
+          items:
+            type: object
+            properties:
+              name: { type: string }
+              duration_days: { type: integer }
+              deliverables: { type: array, items: { type: string } }
+              milestones: { type: array, items: { type: string } }
+    status: { type: string, enum: [draft, active, paused, completed, cancelled] }
+    owner: { type: string }
+    created_at: { type: string, format: date-time }

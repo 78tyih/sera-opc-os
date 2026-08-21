@@ -1,0 +1,30 @@
+# Partnership Schema v1.0
+partnership:
+  type: object
+  required: [id, name, type, profile, terms, status]
+  properties:
+    id: { type: string, pattern: "^PTR-\\d{8}-\\d{3}$" }
+    name: { type: string }
+    type: { type: string, enum: [affiliate, reseller, referral, integration] }
+    profile:
+      type: object
+      properties:
+        audience_size: { type: integer }
+        audience_type: { type: string }
+        engagement_rate: { type: number }
+        fit_score: { type: number, minimum: 0, maximum: 100 }
+    terms:
+      type: object
+      properties:
+        commission: { type: number }
+        payment_terms: { type: string }
+        exclusive: { type: boolean }
+        minimum_commitment: { type: number, nullable: true }
+    performance:
+      type: object
+      properties:
+        leads_generated: { type: integer }
+        conversion_rate: { type: number }
+        revenue_generated: { type: number }
+    status: { type: string, enum: [active, paused, terminated] }
+    created_at: { type: string, format: date-time }

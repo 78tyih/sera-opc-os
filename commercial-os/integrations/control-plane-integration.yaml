@@ -1,0 +1,178 @@
+# Commercial OS → Control Plane + Factory Integration
+
+## 全局集成映射
+
+```yaml
+commercial_integration:
+  # === 与 Intelligence OS 的接口 ===
+  intelligence_os:
+    input:
+      - source: "opportunity.signals"
+        schema: "intelligence-os/schemas/opportunity.schema.yaml"
+        trigger: "new opportunity detected"
+    output:
+      - target: "opportunity.assessment"
+        schema: "commercial-os/schemas/opportunity-assessment.schema.yaml"
+
+  # === 与 Factory OS 的接口 ===
+  factory_os:
+    product_launch:
+      trigger: "project_charter approved"
+      input:
+        - project_charter: "commercial-os/schemas/project-charter.schema.yaml"
+      factories_involved:
+        - product-factory: "产品定义 + 功能开发"
+        - design-factory: "UI + 品牌视觉"
+        - marketing-factory: "内容 + 营销素材"
+        - software-factory: "网站 + 应用"
+        - media-factory: "视频 + 演示"
+
+  # === 与 Control Plane 的接口 ===
+  control_plane:
+    events:
+      - event: "opportunity.identified"
+        action: "create_mission"
+        priority: "high"
+      - event: "project.created"
+        action: "allocate_resources"
+        priority: "high"
+      - event: "deal.closed"
+        action: "update_okr"
+        priority: "medium"
+      - event: "revenue.milestone"
+        action: "ceo_notification"
+        priority: "high"
+      - event: "churn.alert"
+        action: "create_corrective_task"
+        priority: "high"
+
+  # === 与 Learning OS 的接口 ===
+  learning_os:
+    feedback_loop:
+      - source: "revenue pipeline"
+        learning: "哪个渠道转化率最高？"
+        action: "optimize channel allocation"
+      - source: "pricing experiments"
+        learning: "哪个价格点转化率最优？"
+        action: "update pricing strategy"
+      - source: "growth experiments"
+        learning: "哪个增长策略最有效？"
+        action: "scale winning experiments"
+      - source: "customer success"
+        learning: "为什么客户流失？"
+        action: "update onboarding流程"
+
+  # === 事件总线 ===
+  events:
+    publishes:
+      - opportunity.identified:
+          payload: opportunity-assessment.schema.yaml
+          target: [ceo-agent, mission-system, venture-studio]
+      - project.created:
+          payload: project-charter.schema.yaml
+          target: [factory-os, department-manager, resource-manager]
+      - product.launched:
+          payload: product-launch.schema.yaml
+          target: [revenue-engine, marketing-factory, partnership-engine]
+      - deal.closed:
+          payload: revenue.schema.yaml
+          target: [ceo-agent, financial-intelligence, customer-success]
+      - deal.lost:
+          payload: revenue.schema.yaml
+          target: [learning-os, sales-strategy-agent]
+      - revenue.milestone:
+          payload: revenue.schema.yaml
+          target: [ceo-agent, okr-system]
+      - churn.alert:
+          payload: customer-success.schema.yaml
+          target: [learning-os, customer-success-agent]
+      - experiment.completed:
+          payload: growth-experiment.schema.yaml
+          target: [learning-os, growth-hacker-agent]
+
+    subscribes:
+      - intelligence.signal.critical:
+          action: "trigger opportunity reassessment"
+      - factory.product.ready:
+          action: "trigger revenue engine launch"
+      - learning.insight.generated:
+          action: "update growth experiment design"
+      - evaluation.agent.below_threshold:
+          action: "review commercial agent performance"
+```
+
+## 商业工作流
+
+```yaml
+workflows:
+  opportunity_to_launch:
+    name: "Opportunity to Launch"
+    steps:
+      - step: 1
+        name: "Receive Opportunity"
+        system: "Intelligence OS"
+        action: "receive opportunity signal"
+      - step: 2
+        name: "Assess"
+        system: "Opportunity Engine"
+        action: "score and decide"
+        output: "opportunity-assessment"
+      - step: 3
+        name: "Create Project"
+        system: "Venture Studio"
+        action: "generate project charter"
+        output: "project-charter"
+      - step: 4
+        name: "Approve"
+        system: "CEO Agent"
+        action: "review and approve"
+        output: "approved project"
+      - step: 5
+        name: "Produce Assets"
+        system: "Product Launch Factory"
+        action: "brand + website + content + sales"
+        output: "product-launch"
+      - step: 6
+        name: "Launch"
+        system: "Revenue Engine"
+        action: "go live + start sales"
+        output: "launched product"
+      - step: 7
+        name: "Optimize"
+        system: "Growth Engine + Learning OS"
+        action: "experiment + learn + scale"
+        output: "optimized revenue"
+
+  lead_to_revenue:
+    name: "Lead to Revenue"
+    stages:
+      - lead: "capture source"
+      - contact: "first outreach"
+      - qualified: "BANT check"
+      - demo: "product walkthrough"
+      - negotiation: "price & terms"
+      - closed_won: "payment received"
+      - active: "onboarding complete"
+      - retained: "renewal"
+      - advocate: "referral"
+
+  customer_lifecycle:
+    name: "Customer Lifecycle"
+    phases:
+      - phase: "Day 0"
+        action: "trigger onboarding"
+      - phase: "Day 1"
+        action: "send welcome + guide"
+      - phase: "Day 3"
+        action: "check activation → if not, follow up"
+      - phase: "Day 7"
+        action: "first value experience check"
+      - phase: "Day 14"
+        action: "usage review"
+      - phase: "Day 30"
+        action: "satisfaction survey"
+      - phase: "Day 60"
+        action: "upsell recommendation"
+      - phase: "Day 90"
+        action: "referral program invite"
+```

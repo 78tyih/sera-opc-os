@@ -1,0 +1,37 @@
+# Growth Experiment Schema v1.0
+growth_experiment:
+  type: object
+  required: [id, title, hypothesis, design, status]
+  properties:
+    id: { type: string, pattern: "^GRW-\\d{8}-\\d{3}$" }
+    title: { type: string }
+    hypothesis: { type: string }
+    design:
+      type: object
+      properties:
+        channel: { type: string }
+        variant: { type: string }
+        control: { type: string }
+        sample_size: { type: integer }
+        duration_days: { type: integer }
+        success_metric: { type: string }
+    execution:
+      type: object
+      properties:
+        status: { type: string, enum: [proposed, running, completed, stopped] }
+        started_at: { type: string, format: date-time, nullable: true }
+        completed_at: { type: string, format: date-time, nullable: true }
+    results:
+      type: object
+      properties:
+        metric:
+          type: object
+          properties:
+            control: { type: number }
+            variant: { type: number }
+            improvement: { type: number }
+            statistical_significance: { type: number }
+        conclusion: { type: string }
+        decision: { type: string, enum: [scale, stop, redesign] }
+    learnings: { type: array, items: { type: string } }
+    created_at: { type: string, format: date-time }

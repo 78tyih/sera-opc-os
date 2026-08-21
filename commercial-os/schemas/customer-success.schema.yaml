@@ -1,0 +1,45 @@
+# Customer Success Schema v1.0
+customer_success:
+  type: object
+  required: [id, customer_id, product, lifecycle, health]
+  properties:
+    id: { type: string, pattern: "^CS-\\d{8}-\\d{3}$" }
+    customer_id: { type: string }
+    product: { type: string }
+    lifecycle:
+      type: object
+      properties:
+        status: { type: string, enum: [onboarded, active, at_risk, churned] }
+        days_since_signup: { type: integer }
+        last_active: { type: string, format: date-time }
+        total_sessions: { type: integer }
+    health:
+      type: object
+      properties:
+        score: { type: number, minimum: 0, maximum: 100 }
+        factors:
+          type: array
+          items:
+            type: object
+            properties:
+              name: { type: string }
+              value: { type: number }
+              threshold: { type: number }
+              status: { type: string, enum: [good, warning, critical] }
+    interventions:
+      type: array
+      items:
+        type: object
+        properties:
+          type: { type: string, enum: [email, message, call, discount] }
+          trigger: { type: string }
+          sent_at: { type: string, format: date-time }
+          response: { type: string, nullable: true }
+    metrics:
+      type: object
+      properties:
+        nps: { type: integer, nullable: true }
+        usage_frequency: { type: string }
+        support_tickets: { type: integer }
+        upsell_potential: { type: string, enum: [low, medium, high] }
+    created_at: { type: string, format: date-time }

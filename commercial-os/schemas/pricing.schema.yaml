@@ -1,0 +1,36 @@
+# Pricing Schema v1.0
+pricing:
+  type: object
+  required: [id, product_id, version, plans]
+  properties:
+    id: { type: string, pattern: "^PRC-\\d{8}-\\d{3}$" }
+    product_id: { type: string }
+    version: { type: integer }
+    plans:
+      type: array
+      items:
+        type: object
+        properties:
+          name: { type: string }
+          price: { type: number }
+          currency: { type: string }
+          billing: { type: string, enum: [monthly, yearly, lifetime] }
+          features: { type: array, items: { type: string } }
+          limits: { type: array, items: { type: string } }
+    experiments:
+      type: array
+      items:
+        type: object
+        properties:
+          id: { type: string }
+          variant: { type: string }
+          conversion_rate: { type: number }
+          revenue_per_user: { type: number }
+          status: { type: string }
+    optimization:
+      type: object
+      properties:
+        recommended_price: { type: number }
+        confidence: { type: number }
+        rationale: { type: string }
+    created_at: { type: string, format: date-time }

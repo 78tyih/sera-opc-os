@@ -7,20 +7,23 @@ import { AgentStatus } from "@/components/dashboard/agent-status"
 import { WorkflowPreview } from "@/components/dashboard/workflow-preview"
 import { ActivityTimeline } from "@/components/dashboard/activity-timeline"
 import { useLang } from "@/lib/language-provider"
+import { useData } from "@/lib/use-data"
+import { api } from "@/lib/api-client"
 import projectsData from "@/data/projects.json"
 import agentsData from "@/data/agents.json"
 import workflowsData from "@/data/workflows.json"
 
 export default function DashboardPage() {
   const { t } = useLang()
+  const { data: stats } = useData(() => api.stats())
   const activeAgents = agentsData.filter(a => a.status === "active").slice(0, 5)
   const activeWorkflows = workflowsData.workflows.filter(w => w.status === "active")
 
   const statCards = [
-    { label: "dashboard.active-projects", value: "5", icon: FolderKanban },
-    { label: "dashboard.running-agents", value: "8", icon: Bot },
-    { label: "dashboard.today-output", value: "12", icon: Activity },
-    { label: "dashboard.system-uptime", value: "99.7%", icon: TrendingUp },
+    { label: "dashboard.active-projects", value: stats?.activeProjects.toString() || "5", icon: FolderKanban },
+    { label: "dashboard.running-agents", value: stats?.totalAgents.toString() || "13", icon: Bot },
+    { label: "dashboard.today-output", value: stats?.todayOutput || "12", icon: Activity },
+    { label: "dashboard.system-uptime", value: stats?.uptime || "99.7%", icon: TrendingUp },
   ]
 
   return (

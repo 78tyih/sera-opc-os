@@ -1,0 +1,40 @@
+# Autonomous OKR Schema v1.0
+autonomous_okr:
+  type: object
+  required: [id, mission_id, period, objective, key_results, status]
+  properties:
+    id: { type: string, pattern: "^OKR-\\d{8}-\\d{3}$" }
+    mission_id: { type: string }
+    period: { type: string }
+    objective:
+      type: object
+      properties:
+        statement: { type: string }
+        ambition_level: { type: string, enum: [stretch, committed, learning] }
+        owner: { type: string }
+    key_results:
+      type: array
+      minItems: 3
+      maxItems: 5
+      items:
+        type: object
+        properties:
+          id: { type: string }
+          title: { type: string }
+          metrics:
+            type: object
+            properties:
+              metric: { type: string }
+              baseline: { type: number }
+              target: { type: number }
+              current: { type: number }
+          weight: { type: number }
+          owner: { type: string }
+          status: { type: string, enum: [on_track, at_risk, behind, achieved] }
+    progress:
+      type: object
+      properties:
+        overall: { type: number, minimum: 0, maximum: 100 }
+        updated_at: { type: string, format: date-time }
+    status: { type: string, enum: [draft, active, completed, cancelled] }
+    created_at: { type: string, format: date-time }

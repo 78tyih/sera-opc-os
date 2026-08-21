@@ -1,0 +1,38 @@
+# Revenue Automation Schema v1.0
+revenue_automation:
+  type: object
+  required: [id, period, automation_stats, pipeline]
+  properties:
+    id: { type: string, pattern: "^RAU-\\d{8}-\\d{3}$" }
+    period: { type: string }
+    automation_stats:
+      type: object
+      properties:
+        auto_qualified_leads: { type: integer }
+        auto_followups_sent: { type: integer }
+        auto_demos_scheduled: { type: integer }
+        auto_quotes_generated: { type: integer }
+        auto_closed_deals: { type: integer }
+        auto_renewals: { type: integer }
+    pipeline:
+      type: object
+      properties:
+        total_leads: { type: integer }
+        auto_managed: { type: integer }
+        human_touched: { type: integer }
+        automation_rate: { type: number }
+    experiments:
+      type: array
+      items:
+        type: object
+        properties:
+          id: { type: string }
+          type: { type: string, enum: [pricing, channel, offer] }
+          status: { type: string }
+          result: { type: string, nullable: true }
+    forecasts:
+      type: object
+      properties:
+        next_month: { type: number }
+        confidence: { type: string, enum: [low, medium, high] }
+    created_at: { type: string, format: date-time }

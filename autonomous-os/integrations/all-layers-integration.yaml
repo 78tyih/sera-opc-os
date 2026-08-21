@@ -1,0 +1,156 @@
+# Autonomous OS — 全层集成协议
+
+## 完整层间数据流
+
+```yaml
+layer_integration:
+  # Autonomous OS → Intelligence OS
+  autonomous_to_intelligence:
+    - action: "订阅 Intelligence 信号"
+      trigger: "continuous"
+      schema: "intelligence-os/schemas/market-intelligence.schema.yaml"
+    - action: "请求 Opportunity Assessment"
+      trigger: "signal.score > 70"
+      schema: "intelligence-os/schemas/opportunity.schema.yaml"
+
+  # Autonomous OS → Commercial OS
+  autonomous_to_commercial:
+    - action: "创建 Venture Studio 项目"
+      trigger: "mission.approved"
+      schema: "commercial-os/schemas/project-charter.schema.yaml"
+    - action: "启动 Revenue Engine"
+      trigger: "product.launched"
+      schema: "commercial-os/schemas/revenue.schema.yaml"
+
+  # Autonomous OS → Control Plane
+  autonomous_to_control_plane:
+    - action: "注册 Mission"
+      trigger: "mission.created"
+      schema: "autonomous-os/schemas/autonomous-mission.schema.yaml"
+    - action: "注册 OKR"
+      trigger: "okr.generated"
+      schema: "autonomous-os/schemas/autonomous-okr.schema.yaml"
+    - action: "分配任务"
+      trigger: "project.launched"
+      schema: "control-plane/..."
+
+  # Autonomous OS → Learning OS
+  autonomous_to_learning:
+    - action: "提交经验数据"
+      trigger: "project.completed"
+      schema: "learning-os/schemas/experience.schema.yaml"
+    - action: "请求进化建议"
+      trigger: "quarterly.review"
+      schema: "autonomous-os/schemas/company-evolution.schema.yaml"
+
+  # Autonomous OS → Factory OS
+  autonomous_to_factory:
+    - action: "启动产品生产"
+      trigger: "project.launched"
+      factory: "product-factory"
+    - action: "启动营销生产"
+      trigger: "product.ready"
+      factory: "marketing-factory"
+
+## 事件总线
+
+events:
+  # Autonomous OS 发布的事件
+  publishes:
+    - mission.created:
+        description: "新使命创建"
+        payload: autonomous-mission.schema.yaml
+        target: [control-plane, ceo-console]
+
+    - okr.generated:
+        description: "OKR 自动生成"
+        payload: autonomous-okr.schema.yaml
+        target: [control-plane, departments]
+
+    - team.formed:
+        description: "团队组建完成"
+        payload: team-formation.schema.yaml
+        target: [project-automation, departments]
+
+    - project.launched:
+        description: "项目自动启动"
+        payload: project-automation.schema.yaml
+        target: [commercial-os, factory-os, control-plane]
+
+    - resource.allocated:
+        description: "资源分配完成"
+        payload: resource-allocation.schema.yaml
+        target: [control-plane, departments]
+
+    - revenue.auto_closed:
+        description: "自动成交"
+        payload: revenue-automation.schema.yaml
+        target: [ceo-console, commercial-os]
+
+    - evolution.plan_ready:
+        description: "进化计划就绪"
+        payload: company-evolution.schema.yaml
+        target: [ceo-console, human-ceo]
+
+    - ceo.approval_needed:
+        description: "需要 CEO 审批"
+        payload: approval_request
+        target: [ceo-console, human-ceo]
+
+  # Autonomous OS 订阅的事件
+  subscribes:
+    - intelligence.signal.critical:
+        action: "trigger mission planning"
+    - commercial.opportunity.identified:
+        action: "trigger mission creation"
+    - commercial.deal.closed:
+        action: "update revenue metrics"
+    - learning.insight.generated:
+        action: "review for evolution"
+    - learning.failure.analyzed:
+        action: "update company memory"
+    - factory.product.ready:
+        action: "trigger revenue launch"
+    - evaluation.agent.below_threshold:
+        action: "trigger team reassessment"
+```
+
+## 自治级别切换
+
+```yaml
+autonomy_level_management:
+  current_level: "L2 (semi_autonomous)"
+  target_level: "L3 (autonomous)"
+
+  level_definitions:
+    L1_assisted:
+      description: "系统建议，人类决策"
+      human_time: "60 min/day"
+      auto_approve: "事务性任务 (< $100)"
+      human_approve: "所有项目和预算"
+
+    L2_semi_autonomous:
+      description: "系统执行常规任务"
+      human_time: "15 min/day"
+      auto_approve: "常规任务 (< $1,000)"
+      human_approve: "新项目 + 重大决策"
+      current: true
+
+    L3_autonomous:
+      description: "系统自动执行，事后报告"
+      human_time: "5 min/day"
+      auto_approve: "所有常规操作"
+      human_approve: "季度战略调整"
+
+    L4_full_autonomous:
+      description: "系统完全自主，季度汇报"
+      human_time: "30 min/quarter"
+      auto_approve: "所有决策"
+      human_review: "季度回顾"
+
+  switching_rules:
+    - "L2 → L3: 需要连续 3 个月 OKR 达成率 > 80%"
+    - "L3 → L4: 需要连续 6 个月稳定运营无异常"
+    - "任何级别: Sarah CEO 可以随时降级"
+    - "任何级别: 异常会自动触发人工介入"
+```

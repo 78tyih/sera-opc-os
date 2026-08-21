@@ -1,0 +1,39 @@
+# Team Formation Schema v1.0
+team_formation:
+  type: object
+  required: [id, project_id, requirements, selected_team, status]
+  properties:
+    id: { type: string, pattern: "^TFM-\\d{8}-\\d{3}$" }
+    project_id: { type: string }
+    requirements:
+      type: object
+      properties:
+        skills: { type: array, items: { type: string } }
+        team_size: { type: integer }
+        cross_department: { type: boolean }
+    candidates:
+      type: array
+      items:
+        type: object
+        properties:
+          agent_id: { type: string }
+          skill_match: { type: number, minimum: 0, maximum: 100 }
+          availability: { type: number, minimum: 0, maximum: 100 }
+          performance_score: { type: number, minimum: 0, maximum: 100 }
+          selection_score: { type: number, minimum: 0, maximum: 100 }
+    selected_team:
+      type: array
+      items:
+        type: object
+        properties:
+          agent_id: { type: string }
+          role: { type: string }
+          responsibility: { type: string }
+    metrics:
+      type: object
+      properties:
+        team_coverage: { type: number }
+        skill_match: { type: number }
+        avg_experience: { type: number }
+    status: { type: string, enum: [forming, approved, active] }
+    created_at: { type: string, format: date-time }

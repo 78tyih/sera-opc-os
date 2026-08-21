@@ -1,0 +1,50 @@
+# Resource Allocation Schema v1.0
+resource_allocation:
+  type: object
+  required: [id, period, budget, allocation, status]
+  properties:
+    id: { type: string, pattern: "^RAL-\\d{8}-\\d{3}$" }
+    period: { type: string }
+    budget:
+      type: object
+      properties:
+        api_costs:
+          type: object
+          properties:
+            allocated: { type: number }
+            spent: { type: number }
+            remaining: { type: number }
+        marketing:
+          type: object
+          properties:
+            allocated: { type: number }
+            spent: { type: number }
+            remaining: { type: number }
+        total:
+          type: object
+          properties:
+            allocated: { type: number }
+            spent: { type: number }
+            remaining: { type: number }
+    allocation:
+      type: array
+      items:
+        type: object
+        properties:
+          project_id: { type: string }
+          priority: { type: integer }
+          resources:
+            type: object
+            properties:
+              api_budget: { type: number }
+              agent_count: { type: integer }
+              priority_level: { type: string, enum: [p0, p1, p2, p3] }
+          status: { type: string }
+    optimization:
+      type: object
+      properties:
+        recommendation: { type: string }
+        savings: { type: number }
+        reallocation: { type: array, items: { type: string } }
+    status: { type: string }
+    created_at: { type: string, format: date-time }

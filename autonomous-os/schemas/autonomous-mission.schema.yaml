@@ -1,0 +1,35 @@
+# Autonomous Mission Schema v1.0
+autonomous_mission:
+  type: object
+  required: [id, title, source, classification, mission, status]
+  properties:
+    id: { type: string, pattern: "^MIS-\\d{8}-\\d{3}$" }
+    title: { type: string }
+    source: { type: string }
+    classification:
+      type: object
+      properties:
+        type: { type: string, enum: [opportunity, threat, routine, strategic] }
+        urgency: { type: string, enum: [immediate, today, this_week, this_month] }
+        impact: { type: string, enum: [critical, high, medium, low] }
+    mission:
+      type: object
+      properties:
+        objective: { type: string }
+        success_criteria: { type: array, items: { type: string } }
+        expected_outcome: { type: string }
+        timeline_days: { type: integer }
+    okr_alignment:
+      type: object
+      properties:
+        aligned_objective: { type: string, nullable: true }
+        priority: { type: integer }
+        conflict_check: { type: array, items: { type: string } }
+    approval:
+      type: object
+      properties:
+        level: { type: integer, minimum: 1, maximum: 3 }
+        status: { type: string, enum: [pending, approved, rejected] }
+        human_decision: { type: string, nullable: true }
+    status: { type: string, enum: [drafted, approved, active, completed, cancelled] }
+    created_at: { type: string, format: date-time }

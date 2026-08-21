@@ -1,0 +1,158 @@
+# CEO Operating Loop — 核心循环调度
+
+## 连续循环
+
+```yaml
+continuous_loop:
+  name: "CEO Operating Loop"
+  interval: "continuous"
+  description: "公司核心运营循环，24/7 运行"
+
+  triggers:
+    - type: "time"
+      schedule: "continuous"
+      actions:
+        - "intelligence_scan: 扫描外部世界"
+        - "revenue_monitor: 监控收入管道"
+        - "anomaly_detect: 检测异常"
+
+    - type: "event"
+      events:
+        - "signal.critical → 触发 mission planning"
+        - "opportunity.identified → 触发 opportunity assessment"
+        - "deal.closed → 触发 revenue update"
+        - "customer.churned → 触发 failure analysis"
+
+  decision_points:
+    - point: "mission_approval"
+      human_required: "level >= 2"
+      auto_approve: "level == 1"
+      timeout: "24h"
+
+    - point: "resource_allocation"
+      human_required: "amount > $1000"
+      auto_approve: "amount <= $1000"
+      timeout: "12h"
+
+  reporting:
+    - "实时: CEO Console 仪表盘"
+    - "每日: Daily Brief (自动推送)"
+    - "每周: Weekly Strategic Brief"
+    - "每月: Monthly Company Review"
+```
+
+## 每日循环
+
+```yaml
+daily_cycle:
+  name: "Daily Operating Cycle"
+  schedule: "每天 08:00"
+
+  steps:
+    - time: "08:00"
+      action: "生成 Daily Brief"
+      output: "brief.md"
+      systems: [intelligence-os, commercial-os, learning-os]
+
+    - time: "08:05"
+      action: "推送待审批事项"
+      output: "approval_queue"
+      systems: [autonomous-os]
+
+    - time: "08:10"
+      action: "OKR 进度检查"
+      output: "okr_progress"
+      systems: [autonomous-os]
+
+    - time: "08:30"
+      action: "团队站会 (自动)"
+      output: "standup_summary"
+      systems: [all]
+
+    - time: "09:00-17:00"
+      action: "自动执行工作日"
+      systems: [all]
+
+    - time: "17:00"
+      action: "生成今日总结"
+      output: "daily_summary"
+      systems: [learning-os, autonomous-os]
+```
+
+## 每周循环
+
+```yaml
+weekly_cycle:
+  name: "Weekly Strategic Cycle"
+  schedule: "每周五 16:00"
+
+  steps:
+    - step: 1
+      action: "Intelligence OS 周报汇总"
+      systems: [intelligence-os]
+      output: "signal_summary"
+
+    - step: 2
+      action: "Commercial OS 收入周报"
+      systems: [commercial-os]
+      output: "revenue_report"
+
+    - step: 3
+      action: "Learning OS 本周洞察"
+      systems: [learning-os]
+      output: "learning_insights"
+
+    - step: 4
+      action: "Autonomous OS 生成 CEO Brief"
+      systems: [autonomous-os]
+      output: "weekly_ceo_brief"
+
+    - step: 5
+      action: "推送 CEO 审批 (5-10 分钟)"
+      human: "Sarah CEO"
+      output: "approved_decisions"
+
+    - step: 6
+      action: "更新下周 OKR"
+      systems: [autonomous-os]
+      output: "updated_okrs"
+```
+
+## 季度循环
+
+```yaml
+quarterly_cycle:
+  name: "Quarterly Company Review"
+  schedule: "每季度最后一周"
+
+  reviews:
+    - type: "strategic"
+      items:
+        - "战略回顾: 是否需要调整方向？"
+        - "市场变化: 是否需要新策略？"
+        - "竞争分析: 我们的位置？"
+
+    - type: "financial"
+      items:
+        - "收入回顾: 是否达到目标？"
+        - "成本分析: 哪里可以优化？"
+        - "投资决策: 下季度预算？"
+
+    - type: "organizational"
+      items:
+        - "组织评估: 架构是否合理？"
+        - "Agent 绩效: 谁需要提升？"
+        - "能力缺口: 需要什么新技能？"
+
+    - type: "evolution"
+      items:
+        - "进化计划: 下季度改进点"
+        - "OKR 重置: 新季度目标"
+        - "路线图更新: 优先级调整"
+
+  output:
+    - "quarterly_review_report"
+    - "next_quarter_okrs"
+    - "evolution_plan"
+    - "budget_allocation"
+```

@@ -1,0 +1,37 @@
+# Company Evolution Schema v1.0
+company_evolution:
+  type: object
+  required: [id, cycle, assessment, changes, status]
+  properties:
+    id: { type: string, pattern: "^CVE-\\d{8}-\\d{3}$" }
+    cycle: { type: string, enum: [weekly, monthly, quarterly, annual] }
+    assessment:
+      type: array
+      items:
+        type: object
+        properties:
+          dimension: { type: string, enum: [structure, capability, strategy, efficiency, culture] }
+          score: { type: number, minimum: 0, maximum: 100 }
+          trend: { type: string, enum: [improving, stable, declining] }
+          recommendation: { type: string }
+    changes:
+      type: array
+      items:
+        type: object
+        properties:
+          type: { type: string, enum: [structural, capability, strategic, efficiency] }
+          description: { type: string }
+          rationale: { type: string }
+          expected_impact: { type: string }
+          risk: { type: string }
+    evolution_plan:
+      type: array
+      items:
+        type: object
+        properties:
+          action: { type: string }
+          owner: { type: string }
+          timeline: { type: string }
+          success_criteria: { type: string }
+    status: { type: string, enum: [assessing, planned, executing, completed] }
+    created_at: { type: string, format: date-time }

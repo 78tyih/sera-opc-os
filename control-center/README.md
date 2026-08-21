@@ -1,5 +1,14 @@
 # Sera Control Center MVP
 
+> **⚠️ 开发冻结（2026-08-21 ~ 2026-08-28）**
+>
+> 根据 Kimi K3 审计建议，Control Center 前端开发暂时冻结。
+> 等待 Kernel V0 提供真实数据后再恢复开发，避免在 mock 数据基础上构建虚假界面。
+>
+> 当前状态：静态原型已完成（玻璃拟态 Design Lab + SMOP 数据桥 + Context Runtime 页面）。
+> 冻结期间可进行代码审查和学习，不新增页面或功能。
+> 解冻条件：Kernel V0 验收通过，SQLite 三表含有真实 TradeSpan 数据。
+
 > 版本：1.2.0
 > Sera OPC OS 控制中心 — 可视化操作台
 

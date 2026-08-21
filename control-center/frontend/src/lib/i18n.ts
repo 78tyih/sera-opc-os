@@ -2,10 +2,12 @@
 const dict: Record<string, { zh: string; en: string }> = {
   // Navigation
   "nav.dashboard": { zh: "控制台", en: "Dashboard" },
+  "nav.canvas": { zh: "画布", en: "Canvas" },
   "nav.projects": { zh: "项目", en: "Projects" },
   "nav.agents": { zh: "智能体", en: "Agents" },
   "nav.workflows": { zh: "工作流", en: "Workflows" },
   "nav.department": { zh: "组织", en: "Department" },
+  "nav.console": { zh: "内核", en: "Console" },
   "nav.all-operational": { zh: "系统正常", en: "All operational" },
   "nav.search": { zh: "搜索...", en: "Search..." },
 

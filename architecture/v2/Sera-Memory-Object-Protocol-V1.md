@@ -1,11 +1,16 @@
 # Sera Memory Object Protocol (SMOP) V1
 
+> **⚠️ 部分已废弃 — 仅供参考**
+>
+> 本文档的部分内容（如 ID 命名规范、存储方案）已被 [Sera Context Runtime & Learning OS V1.1](Sera-Context-Runtime-Learning-OS-V1.md) 修订。
+> **所有新实现请以 canonical 文档为准。**
+
 ## AI 公司内存总线协议
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
-| Status | Protocol Specification |
+| Version | 1.0 (部分被 supersede) |
+| Status | Protocol Specification — 参考 canonical |
 | Owner | Sera CTO |
 | Layer | Communication (Layer 1) |
 | Predecessor | Sera Memory Graph Schema V1, Sera Memory Engine V1 |

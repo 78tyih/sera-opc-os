@@ -612,7 +612,12 @@ Rule 冲突时，先比较 authority，再考虑 supersedes：
 3. Context Governor 查询时自动忽略被 supersedes 或低权威的 Rule
 
 旧 Rule 过时（无新经验关联）：
-  - 30 天无 access → status 降级为 "deprecated"
+  - rank_score 始终按半衰期公式自然衰减（rule 类型的 half_life = 90 天）
+  - 30 天无 access → rank_score 已衰减至 ~0.5⁰·³³ = ~0.79，不影响 status
+  - 180 天无 access + rank_score < 0.1 → status 标记为 "deprecated"（可恢复，访问后自动回升）
+  - 365 天无 access → status 标记为 "archived"（不可恢复，仅保留审计记录）
+  - 注意：**衰减作用于 rank_score 而非 status**，旧 Rule 即使 rank_score 很低也不丢失，
+    通过 /learn 接口的关联访问可自然回升 rank_score，无需人工干预
 ```
 
 ## 5.5 Experience → Rule 演化状态机
@@ -670,6 +675,135 @@ Rule 冲突时，先比较 authority，再考虑 supersedes：
 | Context Governor | build_context（ranking + budget + 强制注入 Founder Rule） | 纯函数模块 |
 | Learn API | learn（root_cause 归因 + 3 次验证升 Rule） | 纯函数模块 |
 | Seed 数据 | 用 Obsidian 现成的 TradeSpan 内容导入 | 手动/脚本 import |
+
+### 6.2.1 三表 Schema 定义（SQLite DDL）
+
+```sql
+-- ========== objects 表（SMOP 对象） ==========
+CREATE TABLE objects (
+    id          TEXT PRIMARY KEY,          -- 点分命名，如 "project.tradespan"
+    type        TEXT NOT NULL,             -- Project / Decision / Experience / Rule / Agent / Task
+    data_state  TEXT NOT NULL DEFAULT 'raw'
+                CHECK(data_state IN ('raw','processed','structured','learned','rule')),
+    scope       TEXT NOT NULL DEFAULT 'project'
+                CHECK(scope IN ('company','organization','project','agent')),
+    authority   TEXT NOT NULL DEFAULT 'agent'
+                CHECK(authority IN ('founder','organization','project','agent')),
+    status      TEXT NOT NULL DEFAULT 'active'
+                CHECK(status IN ('active','deprecated','archived','draft','replaced')),
+    confidence  REAL NOT NULL DEFAULT 0.0 CHECK(confidence >= 0.0 AND confidence <= 1.0),
+    importance  REAL NOT NULL DEFAULT 0.5 CHECK(importance >= 0.0 AND importance <= 1.0),
+    rank_score  REAL NOT NULL DEFAULT 0.5 CHECK(rank_score >= 0.0 AND rank_score <= 1.0),
+    payload     TEXT NOT NULL DEFAULT '{}', -- JSON: 各类型专有字段
+    created_at  TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at  TEXT NOT NULL DEFAULT (datetime('now')),
+    accessed_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_objects_type ON objects(type);
+CREATE INDEX idx_objects_data_state ON objects(data_state);
+CREATE INDEX idx_objects_rank_score ON objects(rank_score DESC);
+CREATE INDEX idx_objects_scope ON objects(scope);
+CREATE INDEX idx_objects_authority ON objects(authority);
+
+-- ========== relations 表（SMOP 关系边） ==========
+CREATE TABLE relations (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    source_id   TEXT NOT NULL REFERENCES objects(id),
+    target_id   TEXT NOT NULL REFERENCES objects(id),
+    type        TEXT NOT NULL,             -- supersedes / derived_from / led_to / related_to / depends_on
+    weight      REAL NOT NULL DEFAULT 1.0 CHECK(weight >= 0.0 AND weight <= 1.0),
+    metadata    TEXT NOT NULL DEFAULT '{}', -- JSON: 关系元数据
+    created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_relations_source ON relations(source_id);
+CREATE INDEX idx_relations_target ON relations(target_id);
+CREATE INDEX idx_relations_type ON relations(type);
+
+-- ========== events 表（不可变事件日志，append-only） ==========
+-- 注意：此表为 append-only，禁止 UPDATE 和 DELETE（通过 SQLite 触发器强制）
+-- 所有 Memory 变更（创建/更新/状态变更/学习/访问）都在此留下审计记录
+CREATE TABLE events (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_type  TEXT NOT NULL,             -- object_created / object_updated / status_changed / rank_score_decayed / learned / rule_promoted / context_built / access
+    object_id   TEXT,                      -- 关联对象 ID（可为 NULL，如系统事件）
+    actor       TEXT NOT NULL DEFAULT 'system',  -- 触发者：agent_id / "system" / "human"
+    summary     TEXT NOT NULL,             -- 人类可读的描述
+    payload     TEXT NOT NULL DEFAULT '{}', -- JSON: 事件详情（如旧值/新值/根因等）
+    created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_events_type ON events(event_type);
+CREATE INDEX idx_events_object ON events(object_id);
+CREATE INDEX idx_events_created ON events(created_at DESC);
+
+-- 强制 events 表为 append-only（防止篡改审计日志）
+CREATE TRIGGER prevent_events_update BEFORE UPDATE ON events
+BEGIN
+    SELECT RAISE(ABORT, 'events table is append-only: UPDATE forbidden');
+END;
+CREATE TRIGGER prevent_events_delete BEFORE DELETE ON events
+BEGIN
+    SELECT RAISE(ABORT, 'events table is append-only: DELETE forbidden');
+END;
+```
+
+### 6.2.2 Staging 闸门机制
+
+Kernel V0 在写入 objects 表前，需经过 staging 闸门验证，确保数据质量：
+
+```
+用户/Agent 提交数据
+       │
+       ▼
+┌─────────────────────────────┐
+│       Staging Buffer        │  临时存储，不进入主表
+│  (内存 dict / 临时 JSON)    │
+└─────────────┬───────────────┘
+              │
+              ▼
+┌─────────────────────────────┐
+│     Staging Gate Checks     │
+│  ┌───────────────────────┐  │
+│  │ 1. ID 格式验证         │  │  点分命名，非空
+│  │ 2. data_state 合法性   │  │  必须是 5 态之一
+│  │ 3. authority 合法性    │  │  必须是 4 级之一
+│  │ 4. required 字段完整性 │  │  type/payload 非空
+│  │ 5. 重复 ID 检测        │  │  已存在则报错(非幂等)
+│  │ 6. 关系一致性检查      │  │  source/target 必须存在
+│  └───────────────────────┘  │
+└─────────────┬───────────────┘
+              │ 全部通过
+              ▼
+┌─────────────────────────────┐
+│    写入 objects 表          │
+│    同时写入 events 表       │  事件类型: object_created
+└─────────────────────────────┘
+```
+
+Staging Gate 实现为一个纯函数模块，Kernel V0 中直接调用：
+
+```python
+def staging_gate(obj: dict) -> dict:
+    """
+    验证并写入 SMOP 对象。
+    返回: {"ok": True, "id": "..."} 或 {"ok": False, "error": "..."}
+    """
+    checks = [
+        validate_id_format(obj.get("id", "")),
+        validate_data_state(obj.get("data_state", "")),
+        validate_authority(obj.get("authority", "")),
+        validate_required_fields(obj, ["type", "payload"]),
+        validate_no_duplicate_id(obj.get("id", "")),
+        validate_relation_consistency(obj.get("relations", [])),
+    ]
+    for check in checks:
+        if not check["ok"]:
+            return {"ok": False, "error": check["error"]}
+    # 写入 objects 表
+    object_store(obj)
+    # 写入 events 表（append-only）
+    events_append("object_created", obj["id"], actor=obj.get("actor", "system"))
+    return {"ok": True, "id": obj["id"]}
+```
 
 ## 6.3 明确排除（Kernel V0 不做）
 
@@ -757,7 +891,9 @@ Learning Engine  → POST /learn（触发验证）, POST /object/store（写 Rul
 
 ```
 目标：闭环可跑，不做 MCP / Agent Loop
-├── SQLite 三表（objects/relations/events）+ data_state/scope/authority
+├── SQLite 三表 DDL（objects/relations/events）+ data_state/scope/authority CHECK 约束
+├── events 表 append-only 触发器（防止篡改审计日志）
+├── Staging Gate 纯函数（写入前 6 项验证：ID 格式 / data_state / authority / 完整性 / 重复 / 关系）
 ├── Context Governor（build_context：ranking + budget + 强制注入 Founder Rule）
 ├── Learn API（root_cause 归因 + 3 次验证升 Rule）
 ├── TradeSpan 真实数据 seed（来自 Obsidian）

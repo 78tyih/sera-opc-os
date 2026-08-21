@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Building2, Bot, FolderKanban, Users, ChevronRight } from "lucide-react"
+import { Building2, Bot, FolderKanban, Users, ChevronRight, Layers, GitBranch, Zap, Cpu, Shield } from "lucide-react"
 import { useLang } from "@/lib/language-provider"
 import departmentsData from "@/data/departments.json"
 import agentsData from "@/data/agents.json"
@@ -23,6 +23,14 @@ const deptNameKey: Record<string, string> = {
   engineering: "dept.engineering",
   business: "dept.business",
 }
+
+const ARCHITECTURE_LAYERS = [
+  { label: "Learning OS", desc: "经验 → 规则 → 更好的上下文", icon: Layers, color: "#8B5CF6", layer: "L4" },
+  { label: "Context OS", desc: "此刻该知道什么", icon: Cpu, color: "var(--brand)", layer: "L3" },
+  { label: "Organization OS", desc: "员工是谁、如何分配", icon: Shield, color: "#10B981", layer: "L2" },
+  { label: "Workflow OS", desc: "业务流程如何串联", icon: GitBranch, color: "#F59E0B", layer: "L1" },
+  { label: "Execution OS", desc: "工具与机器落地", icon: Zap, color: "#EC4899", layer: "L0" },
+]
 
 function DepartmentSection({ dept, index }: { dept: typeof departmentsData[0]; index: number }) {
   const { t, tt } = useLang()
@@ -130,22 +138,80 @@ export default function DepartmentPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>{t("department.title")}</h1>
-        <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>{t("department.subtitle")}</p>
+        <h1 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>组织 · 公司架构</h1>
+        <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>5 纵向 + 1 横向 + 1 反馈环</p>
       </div>
 
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex items-center justify-center">
-        <div className="rounded-xl p-5 text-center min-w-[200px]" style={{ background: "var(--brand-gradient)" }}>
-          <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-2 text-2xl">👑</div>
-          <h3 className="text-lg font-bold text-white">Sera AI</h3>
-          <p className="text-xs text-white/70">{t("department.ceo")}</p>
+      {/* Architecture Layers — inspired by K3 */}
+      <div className="rounded-xl border p-5" style={{ background: "var(--bg-surface)", borderColor: "var(--border)" }}>
+        <div className="flex items-center gap-2 mb-4">
+          <Layers className="w-4 h-4" style={{ color: "var(--brand)" }} />
+          <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-secondary)" }}>Sera OPC OS 架构层级</span>
         </div>
-      </motion.div>
 
-      <div className="flex justify-center">
-        <div className="w-px h-6" style={{ background: "linear-gradient(180deg, var(--brand), transparent)" }} />
+        {/* CEO */}
+        <div className="flex items-center justify-center mb-3">
+          <div className="flex items-center gap-3 px-4 py-2 rounded-xl border" style={{ background: "var(--bg-base)", borderColor: "#8B5CF630" }}>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold" style={{ background: "#8B5CF615", color: "#8B5CF6" }}>👑</div>
+            <div>
+              <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>CEO</span>
+              <span className="text-xs ml-2" style={{ color: "var(--text-muted)" }}>Founder · person.sera</span>
+            </div>
+            <span className="text-[10px] px-1.5 py-0.5 rounded font-medium" style={{ color: "#8B5CF6", background: "#8B5CF615" }}>品味、价值观、最终裁决</span>
+          </div>
+        </div>
+
+        {/* Down arrow */}
+        <div className="flex justify-center mb-2">
+          <div className="w-px h-4" style={{ background: "var(--border)" }} />
+        </div>
+
+        {/* Vertical Layers */}
+        <div className="flex flex-col gap-2 max-w-lg mx-auto">
+          {ARCHITECTURE_LAYERS.map((layer, i) => {
+            const Icon = layer.icon
+            return (
+              <div key={layer.label} className="flex items-center gap-3 p-3 rounded-lg border transition-all" style={{
+                background: "var(--bg-base)",
+                borderColor: "var(--border)",
+              }}>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${layer.color}15` }}>
+                  <Icon className="w-4 h-4" style={{ color: layer.color }} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>{layer.label}</span>
+                  <span className="text-xs ml-2" style={{ color: "var(--text-muted)" }}>{layer.desc}</span>
+                </div>
+                <span className="text-[10px] px-2 py-0.5 rounded font-medium shrink-0" style={{ background: `${layer.color}15`, color: layer.color }}>{layer.layer}</span>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Horizontal Base */}
+        <div className="mt-3 flex justify-center">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-lg border text-xs" style={{ background: "var(--bg-base)", borderColor: "var(--brand)30", color: "var(--brand)" }}>
+            <GitBranch className="w-3.5 h-3.5" />
+            <span className="font-semibold">BASE Memory OS</span>
+            <span style={{ color: "var(--text-muted)" }}>SMOP · Kernel · Graph — 横贯所有层</span>
+          </div>
+        </div>
+
+        {/* Feedback Loop */}
+        <div className="mt-3 flex justify-center">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-lg border text-xs" style={{ background: "var(--bg-base)", borderColor: "#8B5CF630", color: "#8B5CF6" }}>
+            <span className="text-lg">↻</span>
+            <span className="font-semibold">LOOP Learning OS</span>
+            <span style={{ color: "var(--text-muted)" }}>经验 → 规则 → 更好的上下文 — 写回 Memory ↑</span>
+          </div>
+        </div>
+
+        <p className="text-xs text-center mt-3" style={{ color: "var(--text-muted)" }}>
+          任何 Agent 接入即继承全部层 —— 它加入的不是工具箱，而是一家正在运转的公司
+        </p>
       </div>
 
+      {/* Department sections */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {departmentsData.map((dept, i) => (
           <DepartmentSection key={dept.id} dept={dept} index={i} />

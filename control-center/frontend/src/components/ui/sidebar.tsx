@@ -14,16 +14,20 @@ import {
   Sun,
   Moon,
   Languages,
+  GitBranch,
+  Terminal,
 } from "lucide-react"
 import { useState } from "react"
 import { useTheme } from "@/lib/theme-provider"
 
 const navItems = [
   { href: "/dashboard", label: "nav.dashboard", icon: LayoutDashboard },
+  { href: "/canvas", label: "nav.canvas", icon: GitBranch },
   { href: "/projects", label: "nav.projects", icon: FolderKanban },
   { href: "/agents", label: "nav.agents", icon: Bot },
   { href: "/workflows", label: "nav.workflows", icon: Workflow },
   { href: "/department", label: "nav.department", icon: Building2 },
+  { href: "/console", label: "nav.console", icon: Terminal },
 ]
 
 export function Sidebar() {

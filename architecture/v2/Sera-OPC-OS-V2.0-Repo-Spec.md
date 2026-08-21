@@ -1,9 +1,13 @@
 # Sera OPC OS V2.0
 
+> **⚠️ 已冻结 — 仅供参考**
+>
+> 本文档为仓库规范，冻结期间**不实现**。所有实现以 [Sera Context Runtime & Learning OS V1.1](Sera-Context-Runtime-Learning-OS-V1.md) 为准。
+
 ## GitHub Repository Specification
 
-Version: 2.0
-Status: Engineering Specification
+Version: 2.0 (Frozen)
+Status: Engineering Specification — 冻结中
 Target: DeepSeek / Trae / Codex Direct Execution
 
 ---

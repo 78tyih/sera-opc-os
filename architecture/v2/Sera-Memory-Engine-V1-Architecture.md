@@ -1,11 +1,18 @@
 # Sera Memory Engine V1 技术架构
 
+> **⚠️ 已废弃 — 仅供参考**
+>
+> 本文档已被 [Sera Context Runtime & Learning OS V1.1](Sera-Context-Runtime-Learning-OS-V1.md) 取代。
+> 关键差异：ID 命名从下划线（`project_tradespan_001`）改为点分（`project.tradespan`），
+> 存储方案从纯 SQLite 改为 Memory Matrix，新增 Context Governor / Learning Engine 等机制。
+> **所有新实现请以 canonical 文档为准，勿参考本文件。**
+
 ## AI 公司的大脑基础设施
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
-| Status | Engineering Design |
+| Version | 1.0 (Deprecated) |
+| Status | Superseded — 参考 canonical |
 | Owner | Sera CTO |
 | Layer | Foundation (Layer 0) |
 | Predecessor | Sera Memory Graph Schema V1 |

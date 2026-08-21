@@ -1,11 +1,15 @@
 # Sera OPC OS Factory Blueprint V1.0
 
+> **⚠️ 已冻结 — 仅供参考**
+>
+> 本文档为工厂蓝图，冻结期间**不实现**。所有实现以 [Sera Context Runtime & Learning OS V1.1](Sera-Context-Runtime-Learning-OS-V1.md) 为准。
+
 ## AI 公司生产操作系统
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
-| Status | Foundation Architecture |
+| Version | 1.0 (Frozen) |
+| Status | Foundation Architecture — 冻结中 |
 | Owner | Sarah CEO |
 | Category | Production System |
 

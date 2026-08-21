@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/lib/theme-provider"
 import { LanguageProvider } from "@/lib/language-provider"
 import { Sidebar } from "@/components/ui/sidebar"
 import { Header } from "@/components/layout/header"
+import { MainContent } from "@/components/layout/main-content"
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] })
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] })
@@ -21,11 +22,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider>
           <LanguageProvider>
             <Sidebar />
-            <div className="ml-[220px] min-h-screen" style={{ background: "var(--bg-base)" }}>
+            <div className="ml-[220px] flex flex-col" style={{ background: "var(--bg-base)", minHeight: "100vh" }}>
               <Header />
-              <main className="p-6">
-                {children}
-              </main>
+              <MainContent>{children}</MainContent>
             </div>
           </LanguageProvider>
         </ThemeProvider>

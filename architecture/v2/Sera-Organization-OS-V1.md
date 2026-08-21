@@ -1,14 +1,19 @@
 # Sera Organization OS V1
 
+> **⚠️ 已废弃 — 仅供参考**
+>
+> 本文档已被 [Sera Context Runtime & Learning OS V1.1](Sera-Context-Runtime-Learning-OS-V1.md) 中的 Context Runtime / Learning Engine 设计取代。
+> 冻结期间**不实现本文档内容**，所有实现以 canonical 文档为准。
+
 ## AI 公司组织操作系统
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
-| Status | Engineering Design |
+| Version | 1.0 (Deprecated) |
+| Status | Superseded — 参考 canonical |
 | Owner | Sera CEO |
 | Layer | Organization (Layer 2) |
-| Dependencies | SMOP V1, Memory Engine V1 |
+| Dependencies | 已被 V1.1 合并 |
 | Target | DeepSeek / Trae / Codex Direct Execution |
 
 ---

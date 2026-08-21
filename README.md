@@ -7,9 +7,21 @@
 | Field | Value |
 |-------|-------|
 | Version | 2.0 |
-| Status | Foundation Architecture |
+| Status | Foundation Architecture → Kernel V0 Implementation |
 | Owner | Sarah CEO |
 | Legacy | [`sera-agent-os`](https://github.com/78tyih/sera-agent-os) |
+
+---
+
+> **⚠️ 文档冻结公告（2026-08-21 ~ 2026-08-28）**
+>
+> 根据 [Kimi K3 审计报告](docs/SKILL-AUDIT-REPORT.md) 的建议，本项目进入 **7 天文档冻结期**：
+> - **禁止新增任何架构文档**（含 Markdown Blueprint、YAML Schema、设计文档）
+> - **唯一实施依据**：[Sera Context Runtime & Learning OS V1.1](architecture/v2/Sera-Context-Runtime-Learning-OS-V1.md)
+> - **冻结期间唯一产出**：Kernel V0 的代码实现
+> - 所有旧架构文档已添加 `⚠️ Superseded` 警示，仅供参考
+>
+> 冻结期结束后，将根据 Kernel V0 经验修订并收敛文档体系。
 
 ---
 

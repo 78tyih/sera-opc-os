@@ -1,11 +1,15 @@
 # Sera OPC OS Master Blueprint V2.0
 
+> **⚠️ 已冻结 — 仅供参考**
+>
+> 本文档为顶层愿景文档，冻结期间**不实现**。所有实现以 [Sera Context Runtime & Learning OS V1.1](Sera-Context-Runtime-Learning-OS-V1.md) 为准。
+
 ## World-Class AI Company Operating System
 
 | Field | Value |
 |-------|-------|
-| Version | 2.0 |
-| Status | Foundation Architecture |
+| Version | 2.0 (Frozen) |
+| Status | Foundation Architecture — 冻结中 |
 | Owner | Sarah CEO |
 | Category | AI Native Company Infrastructure |
 

@@ -50,10 +50,22 @@ def _builtin_routes():
          "pipeline": ["sera-compute-control"],
          "finalize": []},
 
+        {"id": "grill-clarify", "intent": "目标/范围/决策澄清", "agent": "core",
+         "keywords": ["grill me", "grillme", "greenme", "sera_grill", "盘问我", "追问我", "帮我想清楚",
+                      "需求澄清", "目标澄清", "范围澄清", "需求不清", "方向不清", "新架构", "架构方案",
+                      "技术选型", "复杂工作流", "我想做一个"],
+         "pipeline": ["sera-grill"],
+         "finalize": []},
+
         {"id": "video-produce", "intent": "视频/素材生产", "agent": "video-agent",
          "keywords": ["视频", "短视频", "口播", "数字人", "合成", "渲染", "B-roll", "素材"],
          "pipeline": ["sera-content-factory", "sera-video-pipeline", "sera-asset-manager", "sera-compute-control"],
          "finalize": ["sera-knowledge-sync"]},
+        {"id": "product-init", "intent": "产品发布/项目初始化", "agent": "product-agent",
+         "keywords": ["产品发布", "推广", "推广产品", "新产品", "项目初始化", "产品分析", "产品手册", "产品定位", "product launch", "启动项目"],
+         "pipeline": ["sera-grill", "sera-project-profile", "sera-product-analysis", "sera-market-research",
+                      "sera-user-persona", "sera-positioning", "sera-copywriting", "sera-product-manual"],
+         "finalize": ["sera-knowledge-sync", "sera-context-system"]},
         {"id": "page-product-launch", "intent": "产品发布页（多 Agent）", "agent": "multi",
          "keywords": ["发布页", "产品页", "落地页", "landing page", "网站", "官网"],
          "pipeline": ["propfirm-agent:sera-content-factory", "design-agent:sera-design-studio",
@@ -80,11 +92,6 @@ def _builtin_routes():
          "keywords": ["归档", "同步", "知识库", "记录", "记忆", "上下文", "交接", "状态", "上次"],
          "pipeline": ["sera-context-system", "sera-state-manager", "sera-knowledge-sync"],
          "finalize": []},
-        {"id": "product-init", "intent": "产品发布/项目初始化", "agent": "product-agent",
-         "keywords": ["产品发布", "推广", "推广产品", "新产品", "项目初始化", "产品分析", "产品手册", "产品定位", "product launch", "启动项目"],
-         "pipeline": ["sera-project-profile", "sera-product-analysis", "sera-market-research",
-                      "sera-user-persona", "sera-positioning", "sera-copywriting", "sera-product-manual"],
-         "finalize": ["sera-knowledge-sync", "sera-context-system"]},
         {"id": "ceo-decision", "intent": "CEO 决策", "agent": "sera-ceo-agent",
          "keywords": ["评估项目", "值不值得做", "商业机会", "要不要做", "项目决策", "ceo", "战略决策"],
          "pipeline": ["sera-decision-framework", "sera-priority-engine"],
@@ -216,6 +223,8 @@ def plan(text, routes=None):
 
 # 内置自测用例
 TESTS = [
+    ("grill me，先帮我把需求想清楚", "grill-clarify"),
+    ("帮我想清楚这个技术选型", "grill-clarify"),
     ("做一条 PropFirm.TV 视频", "video-produce"),
     ("生成官网素材 B-roll", "video-produce"),
     ("推送今天的 PropFirm 优惠", "propfirm-intel"),

@@ -5,7 +5,7 @@
 version: 1.0.0
 
 routes:
-  # ============ 远程算力（最高优先级，compute > video > 领域）============
+  # ============ 远程算力（最高优先级，compute > grill > domain）============
   - id: compute
     intent: 远程算力
     agent: core
@@ -20,6 +20,32 @@ routes:
       - 渲染服务器
     pipeline:
       - sera-compute-control
+    finalize: []
+
+  # ============ Grill：目标/范围/取舍澄清 ============
+  - id: grill-clarify
+    intent: 目标/范围/决策澄清
+    agent: core
+    keywords:
+      - grill me
+      - grillme
+      - greenme
+      - sera_grill
+      - 盘问我
+      - 追问我
+      - 帮我想清楚
+      - 需求澄清
+      - 目标澄清
+      - 范围澄清
+      - 需求不清
+      - 方向不清
+      - 新架构
+      - 架构方案
+      - 技术选型
+      - 复杂工作流
+      - 我想做一个
+    pipeline:
+      - sera-grill
     finalize: []
 
   # ============ CEO Agent：最高决策层 ============
@@ -41,7 +67,7 @@ routes:
       - sera-knowledge-sync
       - portfolio/registry/projects.json 更新
 
-  # ============ 完整产品发布流水线（CEO → Factory）============
+  # ============ 完整产品发布流水线（Grill → CEO → Factory）============
   - id: company-product-launch
     intent: 完整产品发布
     agent: multi
@@ -52,6 +78,7 @@ routes:
       - 新产品发布
       - 完整发布
     pipeline:
+      - sera-grill
       - sera-ceo-agent:sera-decision-framework
       - product-agent:sera-project-profile
       - product-agent:sera-product-analysis
@@ -145,6 +172,7 @@ routes:
       - 发布计划
       - 启动项目
     pipeline:
+      - sera-grill                        # 先澄清目标/范围/取舍
       - sera-project-profile              # 项目初始化
       - sera-product-analysis             # 产品理解
       - sera-market-research              # 市场研究
@@ -170,6 +198,7 @@ routes:
       - 产品发布页
       - 产品官网
     pipeline:
+      - sera-grill                              # Scope 未清时先收敛；清晰 Spec 可跳过
       - product-agent:sera-project-profile    # 产品定义
       - product-agent:sera-market-research    # 市场研究
       - product-agent:sera-positioning        # 定位

@@ -95,6 +95,39 @@ routes:
       - sera-knowledge-sync
       - sera-context-system
 
+  # ============ Creator Intelligence（内容研究/学习，必须先于视频生产）============
+  - id: creator-intelligence
+    intent: Creator/频道内容研究与知识沉淀
+    agent: core
+    keywords:
+      - creator intelligence
+      - creator analysis
+      - youtube channel
+      - youtube 知识库
+      - youtube知识库
+      - 频道分析
+      - 分析频道
+      - 分析博主
+      - 博主分析
+      - 自媒体分析
+      - 视频总结
+      - 视频拆解
+      - 视频文字稿
+      - 文字稿
+      - transcript
+      - 哪些视频最值得看
+      - 值得看的视频
+      - 论点论据
+      - 内容分布
+      - 内容沉淀
+      - 博主知识库
+      - 监控博主
+    pipeline:
+      - sera-creator-intelligence
+    finalize:
+      - sera-knowledge-sync
+      - sera-context-system
+
   # ============ 内容生产（video-agent）============
   - id: video-produce
     intent: 视频/素材生产
@@ -110,12 +143,12 @@ routes:
       - 官网素材
       - 生成视频
     pipeline:
-      - sera-content-factory        # 官网素材 → 5s B-roll
-      - sera-video-pipeline         # 口播 → 知识短视频合成
-      - sera-asset-manager          # 入库 Eagle
-      - sera-compute-control        # serawin 远程渲染（重活）
+      - sera-content-factory
+      - sera-video-pipeline
+      - sera-asset-manager
+      - sera-compute-control
     finalize:
-      - sera-knowledge-sync         # 归档 Obsidian
+      - sera-knowledge-sync
 
   # ============ PropFirm 情报（propfirm-agent）============
   - id: propfirm-intel
@@ -144,9 +177,9 @@ routes:
       - lucid
       - fff
     pipeline:
-      - sera-intelligence-monitor    # 采集→过滤→门禁→推送
-      - sera-browser-automation      # 官网抓取/交互截图
-      - sera-content-factory         # 素材生产
+      - sera-intelligence-monitor
+      - sera-browser-automation
+      - sera-content-factory
     finalize:
       - sera-knowledge-sync
 
@@ -172,14 +205,14 @@ routes:
       - 发布计划
       - 启动项目
     pipeline:
-      - sera-grill                        # 先澄清目标/范围/取舍
-      - sera-project-profile              # 项目初始化
-      - sera-product-analysis             # 产品理解
-      - sera-market-research              # 市场研究
-      - sera-user-persona                 # 用户画像
-      - sera-positioning                  # 产品定位
-      - sera-copywriting                  # 文案撰写
-      - sera-product-manual               # 产品手册
+      - sera-grill
+      - sera-project-profile
+      - sera-product-analysis
+      - sera-market-research
+      - sera-user-persona
+      - sera-positioning
+      - sera-copywriting
+      - sera-product-manual
     finalize:
       - sera-knowledge-sync
       - sera-context-system
@@ -198,18 +231,18 @@ routes:
       - 产品发布页
       - 产品官网
     pipeline:
-      - sera-grill                              # Scope 未清时先收敛；清晰 Spec 可跳过
-      - product-agent:sera-project-profile    # 产品定义
-      - product-agent:sera-market-research    # 市场研究
-      - product-agent:sera-positioning        # 定位
-      - product-agent:sera-copywriting        # 文案
-      - design-agent:sera-design-studio       # 品牌+视觉设计
-      - design-agent:sera-asset-manager       # 素材管理
-      - video-agent:sera-video-pipeline       # 视频内容
-      - design-agent:sera-design-intelligence  # 设计智能分析
-      - figma-review                          # 设计审查（代码级）
-      - ux-conversion-agent:sera-design-intelligence  # UX 转化审查⭐
-      - design-critic-agent:sera-design-intelligence  # 设计总监审查（设计级）⭐
+      - sera-grill
+      - product-agent:sera-project-profile
+      - product-agent:sera-market-research
+      - product-agent:sera-positioning
+      - product-agent:sera-copywriting
+      - design-agent:sera-design-studio
+      - design-agent:sera-asset-manager
+      - video-agent:sera-video-pipeline
+      - design-agent:sera-design-intelligence
+      - figma-review
+      - ux-conversion-agent:sera-design-intelligence
+      - design-critic-agent:sera-design-intelligence
     finalize:
       - sera-knowledge-sync
       - sera-context-system
@@ -226,13 +259,13 @@ routes:
       - 生成设计
       - 设计方案
     pipeline:
-      - design-director-agent:sera-design-intelligence       # 设计战略
-      - design-extraction-agent:sera-design-intelligence     # 知识提取
-      - design-system-agent:sera-design-studio               # 系统生成
-      - design-generator-agent:sera-design-studio            # 页面生成
-      - ux-conversion-agent:sera-design-intelligence         # 转化审查
-      - design-critic-agent:sera-design-intelligence         # 设计审查
-      - asset-manager-agent:sera-asset-manager               # 资产生成
+      - design-director-agent:sera-design-intelligence
+      - design-extraction-agent:sera-design-intelligence
+      - design-system-agent:sera-design-studio
+      - design-generator-agent:sera-design-studio
+      - ux-conversion-agent:sera-design-intelligence
+      - design-critic-agent:sera-design-intelligence
+      - asset-manager-agent:sera-asset-manager
     finalize:
       - sera-knowledge-sync
       - sera-context-system
@@ -304,11 +337,11 @@ routes:
       - 参考设计
       - 保存设计
     pipeline:
-      - design-research-agent:sera-browser-automation    # 捕获
-      - design-extraction-agent:sera-design-intelligence  # 提取
-      - design-system-agent:sera-design-studio            # 生成规范
-      - asset-manager-agent:sera-asset-manager            # 入库
-      - design-review-agent:figma-review                  # 审查
+      - design-research-agent:sera-browser-automation
+      - design-extraction-agent:sera-design-intelligence
+      - design-system-agent:sera-design-studio
+      - asset-manager-agent:sera-asset-manager
+      - design-review-agent:figma-review
     finalize:
       - sera-knowledge-sync
 
@@ -330,8 +363,8 @@ routes:
       - 视觉
       - 发布页
     pipeline:
-      - sera-design-studio           # 设计产出
-      - figma-review                 # 审查门禁
+      - sera-design-studio
+      - figma-review
     finalize:
       - sera-knowledge-sync
 
@@ -352,9 +385,9 @@ routes:
       - 市场结构
       - 量化
     pipeline:
-      - trading-analysis             # 复盘/回测/订单流
-      - sera-finance-suite           # 行情/数据辅助
-      - sera-knowledge-reader        # 历史研究检索
+      - trading-analysis
+      - sera-finance-suite
+      - sera-knowledge-reader
     finalize:
       - sera-knowledge-sync
 
@@ -373,9 +406,9 @@ routes:
       - 回复
       - 交易对手
     pipeline:
-      - sera-crm-adapter             # 客户档案/跟进
-      - sera-mail-hub                # 邮件沟通
-      - sera-memory-system           # 决策记忆
+      - sera-crm-adapter
+      - sera-mail-hub
+      - sera-memory-system
     finalize:
       - sera-knowledge-sync
 
@@ -394,9 +427,9 @@ routes:
       - 状态
       - 上次做到
     pipeline:
-      - sera-context-system          # 上下文读写
-      - sera-state-manager           # 状态查询/更新
-      - sera-knowledge-sync          # 归档
+      - sera-context-system
+      - sera-state-manager
+      - sera-knowledge-sync
     finalize: []
 
   # ============ 兜底 ============
@@ -405,5 +438,5 @@ routes:
     agent: sera-agent-orchestrator
     keywords: []
     pipeline:
-      - sera-agent-orchestrator      # 人工/LLM 判定
+      - sera-agent-orchestrator
     finalize: []

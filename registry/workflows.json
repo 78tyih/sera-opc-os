@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "updated": "2026-08-21",
+  "updated": "2026-08-31",
   "description": "Sera OPC OS — 工作流注册表",
   "workflows": [
     {
@@ -47,6 +47,15 @@
       "steps": 4,
       "source": "core/sera-agent-router/workflows/propfirm-video.yaml",
       "agent": "video-agent"
+    },
+    {
+      "id": "creator-intelligence",
+      "name": "Creator Intelligence Workflow",
+      "description": "Creator/Channel 内容采集→单内容分析→论点论据→评分→跨内容聚合→知识沉淀",
+      "trigger": "博主/频道分析/YouTube知识库/视频拆解",
+      "steps": 3,
+      "source": "core/sera-agent-router/workflows/creator-intelligence.yaml",
+      "agent": "core"
     }
   ]
 }

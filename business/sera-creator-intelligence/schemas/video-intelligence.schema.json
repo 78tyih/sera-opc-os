@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sera.local/schemas/video-intelligence.schema.json",
+  "title": "Sera Video Intelligence",
+  "type": "object",
+  "required": ["schema_version", "video", "summary", "main_thesis", "claims", "scores", "watch_verdict", "provenance"],
+  "properties": {
+    "schema_version": {"type": "string", "const": "0.1.0"},
+    "video": {
+      "type": "object",
+      "required": ["video_id", "title", "url"],
+      "properties": {
+        "video_id": {"type": "string", "minLength": 1},
+        "title": {"type": "string", "minLength": 1},
+        "url": {"type": "string", "minLength": 1},
+        "creator": {"type": "string"},
+        "published_at": {"type": ["string", "null"]},
+        "duration_seconds": {"type": ["number", "null"], "minimum": 0},
+        "content_type": {"enum": ["video", "short", "live", "podcast", "article", "other"]}
+      },
+      "additionalProperties": true
+    },
+    "transcript": {
+      "type": "object",
+      "properties": {
+        "status": {"enum": ["available", "unavailable", "partial"]},
+        "source_type": {"type": ["string", "null"]},
+        "language": {"type": ["string", "null"]},
+        "path": {"type": ["string", "null"]},
+        "quality_warning": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "summary": {
+      "type": "object",
+      "required": ["tldr", "key_takeaways"],
+      "properties": {
+        "tldr": {"type": "string", "minLength": 1},
+        "key_takeaways": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "topic_timeline": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["topic"],
+            "properties": {
+              "start_seconds": {"type": ["number", "null"], "minimum": 0},
+              "topic": {"type": "string"},
+              "summary": {"type": "string"}
+            }
+          }
+        },
+        "best_segments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "start_seconds": {"type": ["number", "null"], "minimum": 0},
+              "end_seconds": {"type": ["number", "null"], "minimum": 0},
+              "reason": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "main_thesis": {"type": "string", "minLength": 1},
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["claim_id", "text", "type", "evidence"],
+        "properties": {
+          "claim_id": {"type": "string"},
+          "text": {"type": "string", "minLength": 1},
+          "type": {"enum": ["fact", "interpretation", "opinion", "prediction", "recommendation", "hypothesis"]},
+          "importance": {"type": "number", "minimum": 0, "maximum": 1},
+          "timestamp_seconds": {"type": ["number", "null"], "minimum": 0},
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["evidence_type"],
+              "properties": {
+                "evidence_type": {"enum": ["quantitative_data", "financial_data", "policy", "research", "news", "historical_event", "case_study", "expert_authority", "anecdote", "visual_chart", "analogy", "none"]},
+                "text": {"type": "string"},
+                "timestamp_seconds": {"type": ["number", "null"], "minimum": 0},
+                "source": {"type": ["string", "null"]}
+              }
+            }
+          },
+          "reasoning": {"type": "string"},
+          "assumptions": {"type": "array", "items": {"type": "string"}},
+          "verification_status": {"enum": ["verified", "partially_verified", "unverified", "not_applicable", "pending"]}
+        }
+      }
+    },
+    "critical_analysis": {
+      "type": "object",
+      "properties": {
+        "evidence_strength": {"enum": ["strong", "medium", "weak", "unknown"]},
+        "hidden_assumptions": {"type": "array", "items": {"type": "string"}},
+        "counterarguments": {"type": "array", "items": {"type": "string"}},
+        "verification_needed": {"type": "array", "items": {"type": "string"}},
+        "internal_consistency": {"type": "string"}
+      }
+    },
+    "concepts": {"type": "array", "items": {"type": "string"}},
+    "entities": {"type": "array", "items": {"type": "string"}},
+    "predictions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {"type": "string"},
+          "timestamp_seconds": {"type": ["number", "null"]},
+          "time_horizon": {"type": ["string", "null"]},
+          "status": {"enum": ["pending", "confirmed", "partially_confirmed", "failed", "unverifiable"]}
+        }
+      }
+    },
+    "visual_dependency": {"enum": ["low", "medium", "high"]},
+    "scores": {
+      "type": "object",
+      "required": ["insight", "evidence", "evergreen", "novelty", "argument_quality", "density", "knowledge_total", "personal_relevance"],
+      "properties": {
+        "insight": {"type": "number", "minimum": 0, "maximum": 20},
+        "evidence": {"type": "number", "minimum": 0, "maximum": 15},
+        "evergreen": {"type": "number", "minimum": 0, "maximum": 20},
+        "novelty": {"type": "number", "minimum": 0, "maximum": 15},
+        "argument_quality": {"type": "number", "minimum": 0, "maximum": 15},
+        "density": {"type": "number", "minimum": 0, "maximum": 15},
+        "knowledge_total": {"type": "number", "minimum": 0, "maximum": 100},
+        "personal_relevance": {"type": "number", "minimum": 0, "maximum": 10}
+      }
+    },
+    "watch_verdict": {
+      "type": "object",
+      "required": ["verdict", "confidence", "reason"],
+      "properties": {
+        "verdict": {"enum": ["must_watch", "worth_watching", "skim", "note_only", "skip"]},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["generated_at", "analysis_model"],
+      "properties": {
+        "generated_at": {"type": "string"},
+        "analysis_model": {"type": "string"},
+        "transcript_hash": {"type": ["string", "null"]},
+        "source_url": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

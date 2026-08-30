@@ -1,12 +1,12 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Sera Style DNA Schema V4",
+  "title": "Sera Style DNA Schema V4.1",
   "type": "object",
   "required": ["name", "industry", "emotion", "brand_personality", "color_system", "typography"],
   "properties": {
-    "name": {"type": "string", "description": "品牌/产品名称"},
-    "industry": {"type": "string", "description": "所属行业"},
-    "emotion": {"type": "string", "description": "核心情感关键词"},
+    "name": {"type": "string"},
+    "industry": {"type": "string"},
+    "emotion": {"type": "string"},
     "brand_personality": {"type": "array", "items": {"type": "string"}},
     "color_system": {
       "type": "object",
@@ -22,6 +22,7 @@
       "type": "object",
       "properties": {
         "primary_font": {"type": "string"},
+        "mono_font": {"type": "string"},
         "heading_style": {"type": "object"},
         "body_style": {"type": "object"}
       }
@@ -35,6 +36,21 @@
       }
     },
     "component_patterns": {"type": "array", "items": {"type": "string"}},
+    "design_patterns": {
+      "type": "array",
+      "description": "Evidence-backed semantic/structural abstractions; preferred input for cross-site Pattern promotion.",
+      "items": {
+        "type": "object",
+        "required": ["name", "category"],
+        "properties": {
+          "name": {"type": "string"},
+          "category": {"type": "string"},
+          "abstraction": {"type": "string", "enum": ["structural", "semantic", "behavioral"]},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+          "evidence_refs": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
     "responsive_behavior": {"type": "array", "items": {"type": "object"}},
     "interaction_states": {"type": "array", "items": {"type": "object"}},
     "motion_language": {
@@ -51,15 +67,7 @@
     "css_health": {"type": "object"},
     "conversion_patterns": {"type": "array", "items": {"type": "string"}},
     "recommended_usage": {"type": "array", "items": {"type": "string"}},
-    "provenance": {
-      "type": "object",
-      "properties": {
-        "source_url": {"type": "string"},
-        "extraction_backend": {"type": "string"},
-        "extraction_manifest": {"type": "string"},
-        "captured_at": {"type": "string"}
-      }
-    },
+    "provenance": {"type": "object"},
     "evidence": {
       "type": "array",
       "items": {

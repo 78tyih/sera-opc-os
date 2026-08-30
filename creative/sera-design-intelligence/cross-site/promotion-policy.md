@@ -1,65 +1,72 @@
-# Cross-site Pattern Promotion Policy
+# Cross-site Pattern Promotion Policy V1.1
 
 ## Core Rule
 
 **重复 ≠ 真理；重复只是值得审查的证据。**
 
-### Case-local
+- 1 independent domain → `case_local`
+- 2 → `candidate`
+- 3+ → `strong_candidate`
+- same domain never counts twice
+- no candidate becomes canonical without Review
 
-只有一个独立域名支持：保留在 Case Study。不得写进全局 Pattern Registry。
+## Promotion Lanes
 
-### Candidate
+Cross-site overlap 必须先按类型分流：
 
-至少 2 个独立域名支持相同语义 Pattern：进入 Review Queue，但仍不能自动成为 canonical rule。
+| Type | Lane | 可直接进入 Pattern Library Review？ |
+|---|---|---|
+| `semantic` | `pattern_review` | 是 |
+| `layout` / `motion` / `conversion` | 对应 Pattern Review | 是 |
+| `brand` | `brand_voice_review` | 否，进入品牌/文案记忆 |
+| `component_presence` | `component_coverage` | 否，只说明组件覆盖 |
+| `layout_class` | `taxonomy_only` | 否，只是页面分类 |
 
-Review 必须回答：
+所以“三个优秀网站都有按钮”不会成为“高级设计原则”。
 
-1. 两个站的 Pattern 是否真的处于同一抽象层？
-2. 是否由相似业务场景造成，而不是通用规律？
-3. 是否存在反例或明显 trade-off？
-4. 是否能在不复制品牌资产的前提下复用？
-5. 对 Sera 当前产品类型是否有价值？
+## Semantic Pattern Requirement
 
-### Strong Candidate
+V4.1 的 `STYLE_DNA.design_patterns[]` 用于表达 Evidence-backed abstraction：
 
-至少 3 个独立域名支持，或 2 个独立域名 + 明确 outcome / experiment evidence。
+```json
+{
+  "name": "flex-dominant layout with grid support",
+  "category": "layout",
+  "abstraction": "semantic",
+  "confidence": 0.92,
+  "evidence_refs": ["..."]
+}
+```
 
-Strong Candidate 只代表优先审查，不代表自动晋升。
+它必须由 observed facts 推导，不能为了凑跨站重复而人为统一命名。
 
 ## Raw Token Rule
 
-以下默认不是跨站 Pattern：
+相同 HEX、font family、px 数字、品牌图形、文案默认都不是跨站 Pattern。它们是 Evidence。
 
-- 相同 HEX
-- 相同 font family
-- 相同 px 数字
-- 相同品牌图形
-- 相同文案
+## Review Questions
 
-可抽象成 Pattern 的例子：
-
-- low-contrast secondary navigation
-- single dominant CTA above the fold
-- product-in-context demo instead of decorative hero art
-- compact information density with strong alignment
-- subtle motion used for state explanation rather than decoration
-
-## Independence
-
-计票单位是独立 domain / product，不是 page。`linear.app/homepage` 与 `linear.app/plan` 不能算 2 个独立来源。
+1. 多站 Pattern 是否真的处于同一抽象层？
+2. 是否只是相似业务场景造成？
+3. 是否存在反例 / trade-off？
+4. 是否能不复制品牌资产地复用？
+5. 对 Sera 的目标产品是否有价值？
+6. Evidence 是否足够新？历史快照是否需要 live revalidation？
 
 ## Canonical Promotion
 
 ```text
 Cross-site Candidate
       ↓
+Promotion Lane
+      ↓
 Design Strategy Review
       ↓
 Design Critic Review
       ↓
-(optional) Product Test / User Feedback
+Freshness Gate / optional Product Test
       ↓
-Pattern Registry
+Canonical Memory
 ```
 
-所有晋升后的 Pattern 必须保留：来源、支持数量、适用场景、不适用场景、evidence refs、最近复核时间。
+所有晋升条目必须保留来源、独立支持数、适用/不适用场景、evidence refs、最近复核时间。

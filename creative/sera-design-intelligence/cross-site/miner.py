@@ -2,8 +2,8 @@
 """Cross-site Pattern Miner for Sera Design Intelligence V4.1.
 
 Consumes case-local STYLE_DNA.json files and produces a deterministic comparison
-report. It only promotes semantic patterns repeated across independent sites.
-No network access and no LLM inference are performed here.
+report. It counts repeated patterns across independent sites; no network access
+and no LLM inference are performed here.
 """
 
 from __future__ import annotations
@@ -18,12 +18,24 @@ from urllib.parse import urlparse
 
 FIELDS = {
     "brand_personality": ("brand", "brand_personality"),
-    "component_patterns": ("component", "component_patterns"),
+    "component_patterns": ("component_presence", "component_patterns"),
+    "design_patterns": ("semantic", "design_patterns"),
     "conversion_patterns": ("conversion", "conversion_patterns"),
     "recommended_usage": ("usage", "recommended_usage"),
-    "layout.section_style": ("layout", "layout_language.section_style"),
+    "layout.section_style": ("layout_class", "layout_language.section_style"),
     "layout.grid": ("layout", "layout_language.grid"),
     "motion.hover_effect": ("motion", "motion_language.hover_effect"),
+}
+
+PROMOTION_LANES = {
+    "semantic": "pattern_review",
+    "brand": "brand_voice_review",
+    "component_presence": "component_coverage",
+    "layout_class": "taxonomy_only",
+    "layout": "pattern_review",
+    "motion": "pattern_review",
+    "conversion": "conversion_pattern_review",
+    "usage": "usage_prior_review",
 }
 
 
@@ -46,10 +58,8 @@ def nested_get(data: dict[str, Any], dotted: str) -> Any:
 
 
 def normalize_text(value: str) -> str:
-    value = value.strip().lower()
-    value = re.sub(r"\s+", " ", value)
-    value = re.sub(r"[–—]", "-", value)
-    return value
+    value = re.sub(r"\s+", " ", value.strip().lower())
+    return re.sub(r"[–—]", "-", value)
 
 
 def to_values(value: Any) -> list[str]:
@@ -114,7 +124,8 @@ def collect_patterns(cases: list[Case]) -> dict[tuple[str, str], dict[str, Any]]
 def candidate_from_record(record: dict[str, Any], minimum_sites: int) -> dict[str, Any]:
     independent_domains = sorted({v["domain"] for v in record["sites"].values()})
     support_count = len(independent_domains)
-    if support_count >= max(3, minimum_sites + 1):
+    strong_threshold = max(3, minimum_sites)
+    if support_count >= strong_threshold:
         status = "strong_candidate"
         confidence = min(0.95, 0.62 + 0.08 * support_count)
     elif support_count >= minimum_sites:
@@ -124,8 +135,11 @@ def candidate_from_record(record: dict[str, Any], minimum_sites: int) -> dict[st
         status = "case_local"
         confidence = 0.40
 
+    pattern_type = record["pattern_type"]
+    lane = PROMOTION_LANES.get(pattern_type, "pattern_review")
+    eligible = pattern_type in {"semantic", "layout", "motion", "conversion"} and status != "case_local"
     return {
-        "pattern_type": record["pattern_type"],
+        "pattern_type": pattern_type,
         "pattern": record["pattern"],
         "normalized_pattern": record["normalized_pattern"],
         "support_count": support_count,
@@ -135,91 +149,72 @@ def candidate_from_record(record: dict[str, Any], minimum_sites: int) -> dict[st
         "evidence_refs": [record["sites"][k]["evidence_ref"] for k in sorted(record["sites"])],
         "confidence": round(confidence, 2),
         "status": status,
+        "promotion_lane": lane,
+        "eligible_for_pattern_library": eligible,
         "requires_human_review": status != "case_local",
     }
 
 
 def build_report(cases: list[Case], minimum_sites: int) -> dict[str, Any]:
-    records = collect_patterns(cases)
-    candidates = [candidate_from_record(r, minimum_sites) for r in records.values()]
+    candidates = [candidate_from_record(r, minimum_sites) for r in collect_patterns(cases).values()]
     candidates.sort(key=lambda x: (-x["support_count"], x["pattern_type"], x["normalized_pattern"]))
-
     return {
-        "schema_version": "1.0.0",
+        "schema_version": "1.1.0",
         "study": {
             "case_count": len(cases),
             "independent_domain_count": len({c.domain for c in cases}),
             "minimum_independent_sites": minimum_sites,
-            "cases": [
-                {"id": c.case_id, "source_url": c.source_url, "domain": c.domain, "path": str(c.root)}
-                for c in cases
-            ],
+            "cases": [{"id": c.case_id, "source_url": c.source_url, "domain": c.domain, "path": str(c.root)} for c in cases],
         },
         "summary": {
             "strong_candidates": sum(c["status"] == "strong_candidate" for c in candidates),
             "candidates": sum(c["status"] == "candidate" for c in candidates),
             "case_local": sum(c["status"] == "case_local" for c in candidates),
+            "pattern_library_eligible": sum(c["eligible_for_pattern_library"] for c in candidates),
         },
         "patterns": candidates,
-        "promotion_note": "Candidates are not canonical memory until Design Review approves them.",
+        "promotion_note": "Cross-site support is evidence, not automatic truth. Component presence and taxonomy overlaps are routed away from Pattern Library.",
     }
 
 
 def write_markdown(report: dict[str, Any], path: Path) -> None:
     lines = [
-        "# Cross-site Pattern Mining Result",
-        "",
+        "# Cross-site Pattern Mining Result", "",
         f"- Cases: {report['study']['case_count']}",
         f"- Independent domains: {report['study']['independent_domain_count']}",
-        f"- Minimum support: {report['study']['minimum_independent_sites']}",
-        "",
-        "## Promotion Candidates",
-        "",
-        "| Status | Type | Pattern | Support | Confidence |",
-        "|---|---|---|---:|---:|",
+        f"- Pattern-library eligible: {report['summary']['pattern_library_eligible']}", "",
+        "| Status | Lane | Type | Pattern | Support | Eligible |",
+        "|---|---|---|---|---:|---|",
     ]
-    promoted = [p for p in report["patterns"] if p["status"] != "case_local"]
-    if not promoted:
-        lines.append("| — | — | No cross-site candidates yet | 0 | — |")
-    else:
-        for p in promoted:
-            pattern = p["pattern"].replace("|", "\\|")
-            lines.append(f"| {p['status']} | {p['pattern_type']} | {pattern} | {p['support_count']} | {p['confidence']:.2f} |")
-    lines += [
-        "",
-        "> Deterministic overlap only. Design Strategy / Review must decide whether the overlap is meaningful and reusable.",
-        "",
-    ]
+    for p in [x for x in report["patterns"] if x["status"] != "case_local"]:
+        pattern = p["pattern"].replace("|", "\\|")
+        lines.append(f"| {p['status']} | {p['promotion_lane']} | {p['pattern_type']} | {pattern} | {p['support_count']} | {'yes' if p['eligible_for_pattern_library'] else 'no'} |")
+    lines += ["", "> Deterministic overlap only. Design Strategy / Review decides whether the overlap is meaningful and reusable.", ""]
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Mine repeated semantic design patterns across Sera case studies.")
-    parser.add_argument("--case", action="append", required=True, help="Case in id=/path/to/case format; repeat at least twice")
-    parser.add_argument("--out", required=True, help="Output JSON path")
-    parser.add_argument("--markdown", help="Optional Markdown summary path")
+    parser = argparse.ArgumentParser(description="Mine repeated design patterns across Sera case studies.")
+    parser.add_argument("--case", action="append", required=True, help="id=/path/to/case; repeat at least twice")
+    parser.add_argument("--out", required=True)
+    parser.add_argument("--markdown")
     parser.add_argument("--minimum-sites", type=int, default=2)
     args = parser.parse_args()
-
     if len(args.case) < 2:
         parser.error("At least two --case inputs are required")
     if args.minimum_sites < 2:
         parser.error("--minimum-sites must be >= 2")
-
     cases = [load_case(spec) for spec in args.case]
     if len({c.domain for c in cases}) < 2:
         parser.error("Cross-site mining requires at least two independent domains")
-
     report = build_report(cases, args.minimum_sites)
     out = Path(args.out).expanduser().resolve()
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-
     if args.markdown:
         md = Path(args.markdown).expanduser().resolve()
         md.parent.mkdir(parents=True, exist_ok=True)
         write_markdown(report, md)
-
     print(json.dumps(report["summary"], ensure_ascii=False))
     return 0
 

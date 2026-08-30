@@ -14,7 +14,7 @@ spec.loader.exec_module(miner)
 
 
 class MinerTests(unittest.TestCase):
-    def _case(self, root: Path, case_id: str, url: str, component: str, conversion: str):
+    def _case(self, root: Path, case_id: str, url: str, component: str, semantic: str):
         case = root / case_id
         dna_dir = case / "dna"
         dna_dir.mkdir(parents=True)
@@ -26,43 +26,40 @@ class MinerTests(unittest.TestCase):
             "color_system": {"primary": "#000"},
             "typography": {"primary_font": "Inter"},
             "component_patterns": [component],
-            "conversion_patterns": [conversion],
+            "design_patterns": [{"name": semantic, "category": "layout"}],
             "provenance": {"source_url": url}
         }
         (dna_dir / "STYLE_DNA.json").write_text(json.dumps(dna), encoding="utf-8")
         return f"{case_id}={case}"
 
-    def test_repeated_pattern_becomes_candidate(self):
+    def test_semantic_pattern_becomes_strong_candidate(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             specs = [
-                self._case(root, "linear", "https://linear.app", "product demo", "single primary CTA"),
-                self._case(root, "stripe", "https://stripe.com", "product demo", "single primary CTA"),
-                self._case(root, "vercel", "https://vercel.com", "product demo", "dual CTA"),
+                self._case(root, "linear", "https://linear.app", "buttons", "flex-dominant layout"),
+                self._case(root, "stripe", "https://stripe.com", "buttons", "flex-dominant layout"),
+                self._case(root, "vercel", "https://vercel.com", "buttons", "flex-dominant layout"),
             ]
-            cases = [miner.load_case(s) for s in specs]
-            report = miner.build_report(cases, minimum_sites=2)
-
-            product_demo = next(p for p in report["patterns"] if p["normalized_pattern"] == "product demo")
-            self.assertEqual(product_demo["status"], "strong_candidate")
-            self.assertEqual(product_demo["support_count"], 3)
-
-            single_cta = next(p for p in report["patterns"] if p["normalized_pattern"] == "single primary cta")
-            self.assertEqual(single_cta["status"], "candidate")
-            self.assertEqual(single_cta["support_count"], 2)
+            report = miner.build_report([miner.load_case(s) for s in specs], minimum_sites=2)
+            semantic = next(p for p in report["patterns"] if p["pattern_type"] == "semantic")
+            self.assertEqual(semantic["status"], "strong_candidate")
+            self.assertTrue(semantic["eligible_for_pattern_library"])
+            buttons = next(p for p in report["patterns"] if p["normalized_pattern"] == "buttons")
+            self.assertEqual(buttons["status"], "strong_candidate")
+            self.assertFalse(buttons["eligible_for_pattern_library"])
+            self.assertEqual(buttons["promotion_lane"], "component_coverage")
 
     def test_same_domain_does_not_count_twice(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             specs = [
-                self._case(root, "a", "https://example.com/a", "glass card", "cta"),
-                self._case(root, "b", "https://example.com/b", "glass card", "cta"),
+                self._case(root, "a", "https://example.com/a", "cards", "quiet borders"),
+                self._case(root, "b", "https://example.com/b", "cards", "quiet borders"),
             ]
-            cases = [miner.load_case(s) for s in specs]
-            report = miner.build_report(cases, minimum_sites=2)
-            glass = next(p for p in report["patterns"] if p["normalized_pattern"] == "glass card")
-            self.assertEqual(glass["support_count"], 1)
-            self.assertEqual(glass["status"], "case_local")
+            report = miner.build_report([miner.load_case(s) for s in specs], minimum_sites=2)
+            semantic = next(p for p in report["patterns"] if p["pattern_type"] == "semantic")
+            self.assertEqual(semantic["support_count"], 1)
+            self.assertEqual(semantic["status"], "case_local")
 
 
 if __name__ == "__main__":

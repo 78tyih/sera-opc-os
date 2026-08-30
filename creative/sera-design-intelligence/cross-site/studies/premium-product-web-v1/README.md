@@ -10,30 +10,49 @@
 
 Panda AI：queued，等待 canonical URL 确认后加入第二轮，不生成伪结果。
 
-## Execution
+## One-command Runner
+
+从 `creative/sera-design-intelligence/` 执行：
 
 ```bash
-# 1. Extract
-python3 ../../../extraction-engine/adapter.py https://linear.app/ --out ../../../case-studies/linear/raw/designlang
-python3 ../../../extraction-engine/adapter.py https://stripe.com/ --out ../../../case-studies/stripe/raw/designlang
-python3 ../../../extraction-engine/adapter.py https://vercel.com/ --out ../../../case-studies/vercel/raw/designlang
-
-# 2. Design Extraction Agent synthesizes evidence-backed STYLE_DNA.json for each case
-
-# 3. Mine overlaps
-python3 ../../miner.py \
-  --case linear=../../../case-studies/linear \
-  --case stripe=../../../case-studies/stripe \
-  --case vercel=../../../case-studies/vercel \
-  --out result.json \
-  --markdown result.md
+python3 cross-site/run_study.py \
+  cross-site/studies/premium-product-web-v1/study.json \
+  --continue-on-error
 ```
+
+Runner 会：
+
+- 只执行 `status=ready` 的 anchors
+- 调用 V4 Extraction Adapter
+- 写 `execution.json`
+- 不伪造语义 Style DNA
+
+Extraction 完成后，由 `design-extraction-agent` 生成各站 evidence-backed `STYLE_DNA.json`，再执行：
+
+```bash
+python3 cross-site/run_study.py \
+  cross-site/studies/premium-product-web-v1/study.json \
+  --skip-extraction \
+  --mine-if-ready
+```
+
+## Optional Native Designlang Evidence
+
+Designlang 自身已经能多站比较：
+
+```bash
+npx designlang brands linear.app stripe.com vercel.com
+npx designlang diff linear.app stripe.com
+```
+
+这些产物属于 measured comparison evidence；Sera 的 `miner.py` 负责长期 Memory 的 support count / promotion governance，不与 Designlang 重复造轮子。
 
 ## Expected Outputs
 
 - 3 immutable raw extraction sets
 - 3 normalized manifests
 - 3 evidence-backed STYLE_DNA files
+- `execution.json`
 - `result.json` deterministic overlap report
 - `result.md` human review queue
 - reviewed Pattern Candidates

@@ -1,6 +1,6 @@
 name: cross-site-learning
-version: 1.0.0
-description: 多站设计提取 → DNA → 确定性交叉挖掘 → 人工/Agent Review → Pattern Memory
+version: 1.1.0
+description: Designlang 多站测量 + Sera DNA/Pattern Governance → Canonical Design Memory
 
 triggers:
   - "对比这些网站的设计 [URLS]"
@@ -14,6 +14,16 @@ requirements:
   evidence_required: true
 
 steps:
+  - id: native-multi-site-measurement
+    condition: urls.length >= 2
+    backend: designlang
+    description: 优先利用 Designlang 自带 brands/diff/site 做多站事实比较；这是 evidence，不是 Sera Memory 结论
+    tools:
+      - "designlang brands <urls...>"
+      - "designlang diff <url-a> <url-b>"
+      - "designlang site <url>"
+    outputs: [native_multi_site_evidence]
+
   - id: extract-each-site
     foreach: urls
     workflow: design-extraction
@@ -22,13 +32,14 @@ steps:
   - id: deterministic-overlap
     skill: sera-design-intelligence
     tool: cross-site/miner.py
-    inputs: [STYLE_DNA.json]
+    description: 只从 Sera STYLE_DNA 中计算独立域名支持度，不重复实现浏览器级 diff
+    inputs: [STYLE_DNA.json, native_multi_site_evidence]
     outputs: [cross_site_result_json, cross_site_result_md]
 
   - id: semantic-review
     agent: design-strategy-agent
-    description: 判断相同字符串/标签是否真的属于同一语义 Pattern，补充适用/不适用场景与 trade-off
-    inputs: [cross_site_result_json, case_studies]
+    description: 判断重复项是否真的是同一抽象 Pattern，补充适用/不适用场景与 trade-off
+    inputs: [cross_site_result_json, case_studies, native_multi_site_evidence]
     outputs: [reviewed_pattern_candidates]
 
   - id: critic-gate

@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Sera Cross-site Pattern Mining Result",
+  "type": "object",
+  "required": ["schema_version", "study", "summary", "patterns"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "study": {
+      "type": "object",
+      "required": ["case_count", "independent_domain_count", "minimum_independent_sites", "cases"],
+      "properties": {
+        "case_count": {"type": "integer", "minimum": 2},
+        "independent_domain_count": {"type": "integer", "minimum": 2},
+        "minimum_independent_sites": {"type": "integer", "minimum": 2},
+        "cases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "domain"],
+            "properties": {
+              "id": {"type": "string"},
+              "source_url": {"type": ["string", "null"]},
+              "domain": {"type": "string"},
+              "path": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["strong_candidates", "candidates", "case_local"],
+      "properties": {
+        "strong_candidates": {"type": "integer"},
+        "candidates": {"type": "integer"},
+        "case_local": {"type": "integer"}
+      }
+    },
+    "patterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["pattern_type", "pattern", "support_count", "support_sites", "support_domains", "evidence_refs", "confidence", "status"],
+        "properties": {
+          "pattern_type": {"type": "string"},
+          "pattern": {"type": "string"},
+          "normalized_pattern": {"type": "string"},
+          "support_count": {"type": "integer", "minimum": 1},
+          "support_sites": {"type": "array", "items": {"type": "string"}},
+          "support_domains": {"type": "array", "items": {"type": "string"}},
+          "fields": {"type": "array", "items": {"type": "string"}},
+          "evidence_refs": {"type": "array", "items": {"type": "string"}},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+          "status": {"type": "string", "enum": ["case_local", "candidate", "strong_candidate"]},
+          "requires_human_review": {"type": "boolean"}
+        }
+      }
+    },
+    "promotion_note": {"type": "string"}
+  }
+}

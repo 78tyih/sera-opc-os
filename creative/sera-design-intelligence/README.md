@@ -1,14 +1,12 @@
 # Sera Design Intelligence System
 
-> 版本：4.0.0 · 2026-08-31
+> 版本：4.1.0 · 2026-08-31
 > 定位：Sera OPC OS 的 **Evidence-first Design Intelligence System**
-> 核心闭环：**Measure → Understand → Remember → Create → Review → Learn**
+> 核心闭环：**Measure → Understand → Compare → Remember → Create → Review → Learn**
 
 ## 核心定位
 
 Sera Design Intelligence 不负责“照着某个网站抄一遍”。它负责把优秀产品的设计转化为可验证、可解释、可检索、可组合、可学习的长期设计能力。
-
-V4.0 将 URL 事实提取与设计推理正式分层：
 
 ```text
 URL / Figma / Local Code
@@ -19,6 +17,8 @@ L1 Evidence & Provenance
         ↓
 L2 Design DNA & Understanding
         ↓
+L2.5 Cross-site Learning
+        ↓
 L3 Design Memory
         ↓
 L4 Style Router / Design System / Generation
@@ -26,18 +26,23 @@ L4 Style Router / Design System / Generation
 L5 Review & Learning
 ```
 
-**默认 URL Extraction Backend：Designlang。** 它负责读取 rendered DOM / computed styles 并输出机器可读设计事实；Sera 负责判断为什么有效、是否值得记忆、如何复用以及如何组合成新的产品设计。
+**默认 URL Extraction Backend：Designlang。** Designlang 负责读取 rendered DOM / computed styles 并输出机器可读设计事实；Sera 负责判断为什么有效、跨站是否重复、是否值得记忆、如何复用以及如何组合成新的产品设计。
 
-## V4 架构
+## V4.1 架构
 
 ```text
 sera-design-intelligence/
-├── extraction-engine/             # L0/L1：机器事实层
-│   ├── README.md
+├── extraction-engine/             # 机器事实层
 │   ├── adapter.py
 │   ├── designlang-adapter.yaml
 │   └── extraction-contract.schema.json
-├── dna-engine/                    # L2：Evidence → Style DNA
+├── dna-engine/                    # Evidence → Style DNA
+├── cross-site/                    # V4.1：多站 Pattern Learning
+│   ├── miner.py
+│   ├── comparison.schema.json
+│   ├── promotion-policy.md
+│   ├── tests/
+│   └── studies/
 ├── design-direction/              # 产品 × 风格决策
 ├── benchmark/                     # 设计基准
 ├── patterns/                      # Pattern Library
@@ -46,87 +51,100 @@ sera-design-intelligence/
 ├── style-router/                  # 风格路由
 ├── case-studies/                  # 已分析案例
 ├── assets/                        # 资产索引
-├── memory/design-feedback/        # 实验 / 转化 / 用户反馈 / 规则进化
-├── workflows/                     # Extraction / Design Intelligence 流水线
-└── interfaces/                    # Product Factory 输入输出协议
+├── memory/design-feedback/        # 实验 / 转化 / 用户反馈
+├── workflows/                     # Extraction / Cross-site / Design Pipeline
+└── interfaces/                    # Product Factory 协议
 ```
 
-## URL 快速提取
+## 单站提取
 
 ```bash
-cd creative/sera-design-intelligence
-
 python3 extraction-engine/adapter.py https://linear.app \
   --out case-studies/linear/raw/designlang
 ```
 
-Canonical case structure：
+Canonical Case：
 
 ```text
 case-studies/linear/
-├── raw/designlang/                 # 上游原始证据，immutable
-├── normalized/
-│   └── extraction-manifest.json    # Sera 稳定接口
-├── dna/
-│   └── STYLE_DNA.json              # Evidence-backed DNA
-├── analysis.md                     # 为什么有效
-├── extracted-rules.md              # 可复用规则
-└── reproduction-prompt.md          # AI 实现约束
+├── raw/designlang/
+├── normalized/extraction-manifest.json
+├── dna/STYLE_DNA.json
+├── analysis.md
+├── extracted-rules.md
+└── reproduction-prompt.md
 ```
 
-环境检查：
+## 跨站学习
 
 ```bash
-npx -y designlang doctor
+python3 cross-site/miner.py \
+  --case linear=case-studies/linear \
+  --case stripe=case-studies/stripe \
+  --case vercel=case-studies/vercel \
+  --out cross-site/studies/premium-product-web-v1/result.json \
+  --markdown cross-site/studies/premium-product-web-v1/result.md
 ```
 
-MCP 模式：
+Promotion：
 
-```bash
-npx -y designlang mcp --output-dir ./case-studies/<case>/raw/designlang
+```text
+1 independent site  → case_local
+2 independent sites → candidate
+3+ independent sites → strong_candidate
+                   ↓
+             Design Review
+                   ↓
+           Canonical Pattern
 ```
+
+同一 domain 的多个页面不重复计票。Raw HEX / font / px 默认不算跨站 Pattern；优先挖组件、布局、转化、动效和品牌语义模式。
 
 ## Evidence Model
 
 | 类型 | 含义 | 示例 |
 |---|---|---|
 | `observed` | 机器直接测量 | CSS 变量、字体、圆角、breakpoint |
-| `derived` | 可重复计算/归纳 | 主要 spacing 落在 8px scale |
-| `inferred` | Agent 对设计意图的解释 | 高留白强化 premium 感 |
-| `recommended` | 面向新产品的建议 | 某 Hero pattern 适合当前产品 |
+| `derived` | 可重复计算/归纳 | spacing 呈现统一 scale |
+| `inferred` | Agent 解释设计意图 | 弱化侧栏提高主内容聚焦 |
+| `recommended` | 面向新产品的建议 | 当前 Hero 可采用 product-in-context demo |
 
-任何关键 Style DNA / Case Study 结论都应能追溯到 `extraction-manifest.json`、截图或其他证据。禁止把 `inferred` / `recommended` 冒充 `observed`。
+禁止把 `inferred` / `recommended` 冒充 `observed`。
+
+## First Cross-site Smoke Test
+
+Ready anchors：
+
+- Linear
+- Stripe
+- Vercel
+
+Panda AI 已保留为 queued target；`pandaai.com` 的 intended product canonical URL 在确认前不生成伪 Extraction / DNA。
 
 ## 当前能力
 
-- URL 设计系统逆向：Designlang + Browser fallback
-- Design Tokens / Typography / Spacing / Radius / Shadow / Components
+- Designlang URL 逆向 + Browser fallback
+- Evidence / Provenance Contract
+- Evidence-backed Style DNA
 - Responsive / Interaction / Dark Mode / Motion
-- Design DNA 提炼与 provenance
 - Design Benchmark / Pattern Library
-- Design Strategy / Design Direction
-- Style Router
+- Cross-site deterministic Pattern Mining
+- Design Strategy / Style Router
 - Component / Asset Library
-- UX Conversion Review / Design Critic Review
+- UX Conversion / Design Critic Gate
 - Experiment / Conversion / Feedback Learning Loop
 
-## 版本路线
+## 路线
 
 ```text
-V1.0  Design Memory 起步
-V1.1  Knowledge + Case Study + Registry
-V3.2  Cyber Design Intelligence Engine
-V3.3  Design Director / Direction Matching
-V3.4  Benchmark + Pattern Library
-V3.5  Evolution Loop
-V4.0  Evidence-first Extraction Architecture  ← 当前
-V4.1  Drift Monitor + scheduled re-extraction
-V4.2  Cross-site Pattern Mining
-V4.3  Component retrieval + style composition
+V4.0  Evidence-first Extraction Architecture
+V4.1  Cross-site Learning + Promotion Policy       ← 当前
+V4.2  Drift Monitor + scheduled re-extraction
+V4.3  Component Retrieval + Style Composition
 ```
 
 ## 上游边界
 
 Designlang upstream：`Manavarya09/design-extract`（MIT）。
 
-Sera 只把它作为可替换 Extraction Backend；Style DNA、Design Memory、商业判断、Style Router、生成与 Review 继续保持 Sera-native。
+Designlang 是可替换 Extraction Backend；Sera 的 Design DNA、Cross-site Learning、Memory、商业判断、Style Router、生成和 Review 保持 Sera-native。

@@ -1,0 +1,51 @@
+name: cross-site-learning
+version: 1.0.0
+description: 多站设计提取 → DNA → 确定性交叉挖掘 → 人工/Agent Review → Pattern Memory
+
+triggers:
+  - "对比这些网站的设计 [URLS]"
+  - "提炼多个网站共同的设计模式"
+  - "cross-site design analysis"
+  - "从这些参考网站提取可复用 pattern"
+
+requirements:
+  minimum_independent_sites: 2
+  recommended_sites: 3
+  evidence_required: true
+
+steps:
+  - id: extract-each-site
+    foreach: urls
+    workflow: design-extraction
+    outputs: [case_study, extraction_manifest, STYLE_DNA.json]
+
+  - id: deterministic-overlap
+    skill: sera-design-intelligence
+    tool: cross-site/miner.py
+    inputs: [STYLE_DNA.json]
+    outputs: [cross_site_result_json, cross_site_result_md]
+
+  - id: semantic-review
+    agent: design-strategy-agent
+    description: 判断相同字符串/标签是否真的属于同一语义 Pattern，补充适用/不适用场景与 trade-off
+    inputs: [cross_site_result_json, case_studies]
+    outputs: [reviewed_pattern_candidates]
+
+  - id: critic-gate
+    agent: design-critic-agent
+    description: 防止抄袭、过度抽象、单行业偏差与装饰性伪规律
+    inputs: [reviewed_pattern_candidates]
+    outputs: [critic_result]
+    gate:
+      pass: critic_result.approved == true
+      fail_behavior: keep_as_study_only
+
+  - id: promote
+    skill: sera-design-intelligence
+    description: 通过审核的 Pattern Candidate 才进入 canonical Pattern Library / Style Memory
+    inputs: [critic_result, reviewed_pattern_candidates]
+    outputs: [pattern_registry_update]
+
+finalize:
+  - sera-knowledge-sync
+  - sera-context-system

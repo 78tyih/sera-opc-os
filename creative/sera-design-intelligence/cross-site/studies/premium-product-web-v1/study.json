@@ -1,0 +1,46 @@
+{
+  "study_id": "premium-product-web-v1",
+  "version": "1.0.0",
+  "goal": "Extract reusable cross-site patterns from high-craft product websites without copying any single source.",
+  "execution_status": "configured_not_run",
+  "minimum_independent_sites": 2,
+  "anchors": [
+    {
+      "id": "linear",
+      "url": "https://linear.app/",
+      "case_path": "case-studies/linear",
+      "status": "ready",
+      "role": "product-craft / information-density / motion"
+    },
+    {
+      "id": "stripe",
+      "url": "https://stripe.com/",
+      "case_path": "case-studies/stripe",
+      "status": "ready",
+      "role": "fintech-trust / conversion / visual-storytelling"
+    },
+    {
+      "id": "vercel",
+      "url": "https://vercel.com/",
+      "case_path": "case-studies/vercel",
+      "status": "ready",
+      "role": "developer-saas / typography / product-demo"
+    }
+  ],
+  "queued_targets": [
+    {
+      "id": "panda-ai",
+      "url": "https://pandaai.com/",
+      "case_path": "case-studies/panda-ai",
+      "status": "needs_url_verification",
+      "reason": "Public lookup did not reliably resolve to the intended Panda AI product; do not extract until canonical URL is verified."
+    }
+  ],
+  "promotion_policy": {
+    "candidate_min_sites": 2,
+    "strong_candidate_min_sites": 3,
+    "requires_review": true,
+    "single_site_insight": "case_local_only",
+    "raw_tokens_are_patterns": false
+  }
+}

@@ -1,0 +1,45 @@
+name: creator-intelligence
+version: 0.1.0
+description: Creator/Channel 内容采集、单视频论证拆解、质量评分、跨视频聚合与知识沉淀。
+
+triggers:
+  - 分析这个博主/频道
+  - 把这个 YouTube 频道做成知识库
+  - 哪些视频最值得看
+  - 拆解每个视频的论点和论据
+  - 监控这个 Creator 的新内容
+
+steps:
+  - skill: sera-creator-intelligence
+    inputs:
+      - source
+      - mode=inventory
+    outputs:
+      - catalog
+      - coverage_report
+
+  - skill: sera-creator-intelligence
+    inputs:
+      - catalog
+      - mode=video-or-channel
+    outputs:
+      - raw_transcripts
+      - video_intelligence_json
+      - video_notes
+
+  - skill: sera-creator-intelligence
+    inputs:
+      - video_intelligence_json
+      - mode=channel
+    outputs:
+      - creator_report_json
+      - creator_report_md
+      - canonical_knowledge
+
+finalize:
+  - sera-knowledge-sync
+  - sera-context-system
+
+on_error:
+  retry: true
+  fallback_skill: sera-creator-intelligence

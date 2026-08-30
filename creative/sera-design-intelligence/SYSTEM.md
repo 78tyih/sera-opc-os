@@ -1,300 +1,270 @@
-# Sera Design Intelligence System
+# Sera Design Intelligence System V4
 
-> 架构版本：3.2.0 · 2026-08-21
-> 定位：Sera OPC OS 的 Cyber Design Intelligence Engine
-> 目标：学习优秀设计 → 提炼 Design DNA → 自动驱动产品设计 → 持续反馈优化
+> 架构版本：4.0.0 · 2026-08-31
+> 定位：Sera OPC OS 的 **Evidence-first Design Intelligence System**
+> 目标：把外部优秀设计转化为可验证、可解释、可检索、可组合、可学习的长期设计能力。
 
----
+## 1. V4 架构修正
 
-## 1. 系统定位
+V3.x 已具备 Design Director、Benchmark、DNA Engine、Style Router、Pattern Library 与 Evolution Loop，但 URL 逆向仍把“观察事实 + 推断规律 + 审美判断”混在同一个 Agent 中。
 
+V4 改为：
+
+```text
+Machine Extraction
+      ↓
+Normalized Evidence
+      ↓
+Design DNA
+      ↓
+Design Reasoning
+      ↓
+Design Memory
 ```
-Sera OPC OS
+
+核心原则：**Machine measures. Agent reasons. Memory learns.**
+
+## 2. 六层模型
+
+```text
+Sera Design Intelligence V4
 │
-├── Project System       ← 项目管理
-├── Agent System         ← Agent 编排
-├── Skill System         ← 技能体系
-├── Memory System        ← 记忆系统
-└── Design Intelligence System  ← 设计智能 ⭐
+├── L0 Capture & Extraction
+│   ├── Designlang URL backend
+│   ├── Browser capture
+│   └── Figma / local code adapters
+├── L1 Evidence & Provenance
+│   ├── raw artefacts
+│   ├── extraction-manifest.json
+│   ├── evidence type
+│   └── confidence / conflicts
+├── L2 Understanding
+│   ├── DNA Engine
+│   ├── Design Strategy
+│   ├── Psychology
+│   ├── Benchmark
+│   └── Pattern Mining
+├── L3 Memory
+│   ├── Case Studies
+│   ├── Style Registry
+│   ├── Pattern Library
+│   ├── Component Library
+│   └── Asset Index
+├── L4 Create
+│   ├── Design Direction
+│   ├── Style Router
+│   ├── Design System
+│   └── Generator
+└── L5 Review & Learn
+    ├── UX Conversion Gate
+    ├── Design Critic Gate
+    ├── Experiments
+    ├── Conversion Feedback
+    └── Rules Engine
 ```
 
-### 解决的问题
+## 3. Extraction Layer
 
-| 层 | 问题 | 答案 |
-|---|---|---|
-| 知识层 | 设计为什么有效？ | Knowledge Architecture |
-| 审美层 | 这个网站有多好？ | Design Benchmark |
-| 资产层 | 它由什么组成？ | Asset Library |
-| 规则层 | 它遵循什么规律？ | Design Skill |
-| DNA层 | 它的设计基因是什么？ | DNA Engine |
-| 复用层 | 怎么复用？ | Template Library |
-| 决策层 | 什么产品适合什么风格？ | Style Router |
-| 记忆层 | 上次怎么做？结果如何？ | Design Memory |
+### Default Backend: Designlang
 
----
+Designlang 负责 rendered DOM / computed style 等机器事实。Sera 不依赖其“观点”，只依赖机器可读 artefacts。
 
-## 2. 子系统架构
-
-```
-Design Intelligence System V3.2
-│
-├── 01 Knowledge Architecture (V3.2)
-│   ├── principles/      ← 5 个设计原则
-│   ├── psychology/      ← 6 个设计心理学
-│   ├── patterns/        ← 6 个 UI 模式
-│   └── business/        ← 3 个商业设计框架
-│
-├── 02 Design Benchmark (V3.2)
-│   ├── scoring-system.md       ← 6 维度评分标准
-│   ├── benchmark-index.json    ← 排名榜
-│   └── <category>/             ← 分类案例
-│
-├── 03 DNA Engine (V3.2)
-│   ├── extraction-schema.json  ← 提取 Schema
-│   ├── dna-template.json       ← DNA 模板
-│   └── examples/               ← 示例
-│
-├── 04 Case Study Engine
-│   ├── design-case-study-template.md  ← 标准模板
-│   ├── htx-otc-v1/                    ← 已入库
-│   ├── propfirm-tv/                   ← ⏳
-│   └── tradespan/                     ← ⏳
-│
-├── 05 Asset Library
-│   ├── library-index.md               ← 资产索引
-│   └── <case-name>/assets/
-│
-├── 06 Style Registry
-│   ├── registry.json                  ← 风格 DNA 注册表 V3.0
-│   └── <style-name>.json              ← 单风格定义
-│
-├── 07 Style Router (V3.2)
-│   ├── router.py                      ← 路由引擎（Python）
-│   ├── rules.yaml                     ← 8 条路由规则
-│   └── style-selection.json           ← 选择结果
-│
-├── 08 Design Memory (V3.2)
-│   └── design-feedback/
-│       ├── experiments/               ← 实验记录
-│       ├── user-feedback/             ← 用户反馈
-│       ├── conversion-results/        ← 转化数据
-│       └── iteration-log.md           ← 迭代日志
-│
-├── 09 Design Skill
-│   ├── SKILL.md                       ← 技能定义
-│   ├── awesome-design.md              ← 核心视觉语言
-│   ├── design-system.md               ← 设计系统规范
-│   ├── component-library.md           ← 组件库
-│   ├── motion-guidelines.md           ← 动效指南
-│   └── references/                    ← 详细规则
-│
-├── 10 Template Library
-│   ├── index.md                       ← 模板索引
-│   ├── fintech-landing/               ← 金融着陆页模板
-│   └── dashboard/                     ← Dashboard 模板
-│
-├── 11 Product Factory Interfaces (V3.2)
-│   ├── design-input.schema.json       ← 输入接口
-│   └── design-output.schema.json      ← 输出接口
-│
-└── 12 Design Department
-    ├── Design Director Agent          ← 设计战略决策（战略层）⭐
-    ├── Design Research Agent          ← 发现优秀设计
-    ├── Design Extraction Agent        ← 拆解网站
-    ├── Design System Agent            ← 生成规范
-    ├── Design Generator Agent         ← 生成页面
-    ├── UX Conversion Agent            ← 商业转化审查（转化层）⭐
-    ├── Design Critic Agent            ← 高级设计审查
-    ├── Design Reviewer Agent          ← 审查
-    └── Asset Manager Agent            ← 资产管理
+```text
+URL → designlang → raw/designlang/* → Sera Adapter → normalized/extraction-manifest.json
 ```
 
----
+### Backend 可替换
 
-## 3. 工作流
+上层只依赖 `extraction-contract.schema.json`。未来可接自研 Playwright Extractor、Figma Variables Extractor、Browser MCP、Chrome DevTools Protocol 或其他 Design Token 工具。
 
-### 3.1 发现 → 入库
+只要输出：
 
-```
-发现优秀网站
-    ↓
-URL / 截图 / Figma
-    ↓
-Capture（截图 + 提取资源）
-    ↓
-Extract（颜色 + 字体 + 组件 + 动效）
-    ↓
-Analyze（品牌 + 布局 + 转化）
-    ↓
-Generate Case Study
-    ↓
-Create Asset Library
-    ↓
-Register Style
-    ↓
-存入 Eagle / 本地
+```text
+Extraction Manifest + Artefact Index + Provenance + Capture Flags + Quality State
 ```
 
-### 3.2 设计 → 产出
+DNA / Case / Memory 层不需要修改。
 
-```
-产品需求
-    ↓
-Style Router（判断适合风格）
-    ↓
-Load Design Skill（读取规则）
-    ↓
-Load Asset Library（引用资源）
-    ↓
-Load Template（选择模板）
-    ↓
-Design Generator（生成页面）
-    ↓
-Design Reviewer（审查）
-    ↓
-产出
+### Fallback
+
+```text
+designlang fail
+   ↓
+sera-browser-automation
+   ↓
+DOM / CSS / screenshot capture
+   ↓
+manual normalized manifest
 ```
 
-### 3.3 设计智能流水线（V3.2）
+Fallback 必须记录 `fallback_used: true`。
 
-```
-Product Input
-    ↓
-Design Director（确定设计方向）
-    ↓
-Psychology Analysis（市场心理学分析）
-    ↓
-Style Router（风格路由匹配）
-    ↓
-DNA Match（Design DNA 匹配）
-    ↓
-Design System Generate（设计系统生成）
-    ↓
-Page Generate（页面生成）
-    ↓
-UX Conversion Review（转化审查门禁）
-    ↓
-Design Critic（设计总监审查门禁）
-    ↓
-Asset Generation（资产生成）
-    ↓
-Memory Update（设计记忆更新）
-    ↓
-Output
+## 4. Evidence Model
+
+- `observed`：机器直接观察到
+- `derived`：由 observed facts 可重复计算
+- `inferred`：Agent 对设计意图、品牌、心理和体验的解释
+- `recommended`：面向当前产品的设计建议
+
+规则：
+
+```text
+observed → 可直接进入 evidence
+derived → 必须引用 observed
+inferred → 必须声明 confidence
+recommended → 必须声明目标产品/场景
 ```
 
-### 3.4 设计记忆循环
+任何关键 Style DNA 字段必须拥有 evidence ref。
 
-```
-Design → Deploy → Data Feedback → Optimization → New Rule → Knowledge Update
-```
+## 5. Raw / Normalized / Intelligence
 
----
-
-## 4. 与外部系统的连接
-
-### 4.1 Eagle 资产管理
-
-```
-Sera Design Intelligence
-    ↓
-Asset Manager Agent
-    ↓
-Eagle（本地素材管理）
-    ↓
-Local Asset Library
+```text
+case-studies/<case>/raw/                              # immutable upstream evidence
+case-studies/<case>/normalized/extraction-manifest.json
+case-studies/<case>/dna/STYLE_DNA.json
+case-studies/<case>/analysis.md
+case-studies/<case>/extracted-rules.md
 ```
 
-### 4.2 Vercel 部署
+`normalized` 是 Sera 自己的稳定接口，用来隔离上游工具未来的文件名/Schema 变化。
 
-```
-Design Generator Agent
-    ↓
-HTML/CSS 产出
-    ↓
-Vercel API
-    ↓
-预览 / 部署
+## 6. DNA Engine V4
+
+DNA Engine 不再负责爬网页，而负责：
+
+```text
+Normalized Evidence → Feature Synthesis → Design DNA → Evidence Mapping
 ```
 
-### 4.3 Figma 设计稿
+STYLE_DNA 可包含 brand personality、color system、typography、layout、components、responsive、interaction states、motion、dark mode、accessibility、CSS health、conversion patterns、provenance、evidence 与 confidence。
 
-```
-Figma URL
-    ↓
-Design Extraction Agent
-    ↓
-颜色 / 字体 / 组件提取
-    ↓
-Case Study
-```
+## 7. Design Understanding
 
----
+Extraction 结束后才进入“为什么”。Design Strategy / Analyst 负责判断信息层级、品牌语气、第一印象、信任、CTA / Conversion、motion、跨项目 pattern、适用/不适用场景。
 
-## 5. Design Registry 注册表
+## 8. Memory Promotion
 
-### 5.1 注册表结构
-
-```json
-{
-  "version": "1.0.0",
-  "styles": [
-    {
-      "id": "sera-fintech-premium",
-      "name": "Sera FinTech Premium",
-      "type": "visual-style",
-      "based_on": ["HTX OTC", "Stripe", "Linear"],
-      "best_for": ["finance", "SaaS", "AI products"],
-      "assets": "eagle://sera-fintech",
-      "skill_ref": "sera-design-intelligence",
-      "case_studies": ["htx-otc-v1"],
-      "version": "1.0.0"
-    }
-  ]
-}
+```text
+External Website
+      ↓
+Raw Evidence
+      ↓
+Normalized Evidence
+      ↓
+Case-local Analysis
+      ↓
+Design Review
+      ↓
+Candidate Pattern / Component / Style
+      ↓
+Benchmark / User Feedback / Outcome
+      ↓
+Canonical Design Memory
 ```
 
-### 5.2 注册字段
+Promotion 至少要求 provenance、evidence、跨项目复用价值、第三方资产边界清晰、Reviewer 通过。
 
-| 字段 | 说明 |
+## 9. Design Drift
+
+V4 预留 Drift Layer：
+
+```text
+Extraction A → Canonical Snapshot → Re-extraction B → Token/Component/Motion Diff → Meaningful Change Classifier → Update Candidate
+```
+
+上游 drift / visual diff 只负责发现变化；Sera 负责判断变化是否值得进入 Design Memory。计划在 V4.1 接入定时监控。
+
+## 10. 生产流水线
+
+```text
+Product Brief
+    ↓
+Design Director
+    ↓
+Reference Set
+    ↓
+[URL exists?] yes → Evidence Extraction / no → Existing Memory
+    ↓
+Psychology / Strategy
+    ↓
+Style Router
+    ↓
+DNA / Pattern Match
+    ↓
+Design System
+    ↓
+Page Generator
+    ↓
+UX Conversion Gate
+    ↓
+Design Critic Gate
+    ↓
+Assets → Design Memory
+```
+
+## 11. Design Department V4
+
+| Agent | 主要职责 |
 |---|---|
-| `id` | 风格唯一标识 |
-| `name` | 风格名称 |
-| `type` | 类型：visual-style / layout / component-set |
-| `based_on` | 参考案例 |
-| `best_for` | 适用场景 |
-| `assets` | 资产库路径 |
-| `skill_ref` | 关联 Design Skill |
-| `case_studies` | 关联案例 |
-| `version` | 版本号 |
+| Design Director | 设计方向最终决策 |
+| Design Strategy | 市场 / 竞品 / 差异化策略 |
+| Design Research | 发现参考与 Reference Set |
+| Design Extraction | 机器提取编排、归一化、证据质量 |
+| Design System | 生成可执行系统规范 |
+| Design Generator | 页面/组件产出 |
+| UX Conversion | 商业转化门禁 |
+| Design Critic | 视觉/品牌高级审查 |
+| Design Reviewer | 实现一致性审查 |
+| Asset Manager | 资产索引与入库 |
 
----
+V4 最大变化：Design Extraction Agent 从“视觉猜测者”改为 **Extraction Orchestrator + Evidence Curator**。
 
-## 6. Design Case Study 模板
+## 12. Security / Legal Boundary
 
-详见 `design-case-study-template.md`。
+- 不把 cookie / token / session 写入 Git。
+- `cookie-file` 只作为运行时输入，manifest 只记录 authenticated true/false。
+- 不默认复制第三方源代码。
+- 不默认把第三方 Logo / Illustration / Photo 当作生产资产。
+- 对自有项目可执行更深的 code-level extraction。
 
-每个 Case Study 必须包含：
+## 13. Failure Semantics
 
+| 情况 | 行为 |
+|---|---|
+| Designlang 未安装 | `npx` 临时运行；失败则 fallback |
+| Chromium / Playwright 异常 | doctor fail，记录 quality |
+| SPA 未加载完整 | 增加 wait / interaction capture |
+| Auth 页面 | runtime cookie-file，不持久化秘密 |
+| Screenshot 与 token 冲突 | 记录 conflict，不静默覆盖 |
+| 某字段缺失 | unknown / omit，不让 LLM 填假值 |
+| Backend 输出变化 | Adapter 重映射，DNA 层保持不变 |
+
+## 14. V4 文件
+
+```text
+extraction-engine/
+├── README.md
+├── adapter.py
+├── designlang-adapter.yaml
+└── extraction-contract.schema.json
+
+workflows/
+├── design-extraction.yaml
+└── design-intelligence-pipeline.yaml
+
+dna-engine/
+└── extraction-schema.json
 ```
-00. Metadata
-01. Design Overview
-02. Brand DNA
-03. Visual System
-04. Layout Architecture
-05. Component Library
-06. Motion Language
-07. Copywriting Pattern
-08. Reproduction Prompt
-09. Assets
-```
 
----
-
-## 7. 版本记录
+## 15. 版本记录
 
 | 版本 | 日期 | 变更 |
 |---|---|---|
-| 1.0.0 | 2026-08-21 | 初始架构，基于 HTX OTC 双案例建立 |
-| 1.1.0 | 2026-08-21 | Knowledge Engine：知识库 + 逆向工程 + DNA Registry |
-| 3.2.0 | 2026-08-21 | Cyber Design Intelligence Engine：9 Agents + Pipeline + Memory Loop |
+| 1.0 | 2026-08-21 | Design Memory 初版 |
+| 1.1 | 2026-08-21 | Knowledge Engine |
+| 3.2 | 2026-08-21 | Cyber Design Intelligence |
+| 3.3 | 2026-08-21 | Design Direction / Director |
+| 3.4 | 2026-08-21 | Benchmark / Pattern Intelligence |
+| 3.5 | 2026-08-21 | Evolution Loop |
+| **4.0** | **2026-08-31** | **Evidence-first + Designlang Extraction Backend** |

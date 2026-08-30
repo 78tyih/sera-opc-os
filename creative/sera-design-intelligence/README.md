@@ -1,89 +1,132 @@
 # Sera Design Intelligence System
 
-> 版本：3.2.0
-> 定位：Sera OPC OS 的 Cyber Design Intelligence Engine
-> 核心理念：**学习优秀设计 → 提炼 Design DNA → 自动驱动产品设计 → 持续反馈优化**
+> 版本：4.0.0 · 2026-08-31
+> 定位：Sera OPC OS 的 **Evidence-first Design Intelligence System**
+> 核心闭环：**Measure → Understand → Remember → Create → Review → Learn**
 
----
+## 核心定位
 
-## 系统架构
+Sera Design Intelligence 不负责“照着某个网站抄一遍”。它负责把优秀产品的设计转化为可验证、可解释、可检索、可组合、可学习的长期设计能力。
 
+V4.0 将 URL 事实提取与设计推理正式分层：
+
+```text
+URL / Figma / Local Code
+        ↓
+L0 Capture & Extraction
+        ↓
+L1 Evidence & Provenance
+        ↓
+L2 Design DNA & Understanding
+        ↓
+L3 Design Memory
+        ↓
+L4 Style Router / Design System / Generation
+        ↓
+L5 Review & Learning
 ```
-Design Intelligence Engine V3.2
-│
-├── 01 Knowledge Architecture  ← 设计知识库（原则/心理/模式/商业）
-├── 02 Design Benchmark        ← 设计基准评分系统
-├── 03 DNA Engine              ← 设计 DNA 提取器
-├── 04 Style Registry          ← 风格 DNA 注册表
-├── 05 Style Router            ← 风格路由引擎
-├── 06 Design Memory           ← 设计记忆循环
-├── 07 Design Department       ← 9 个 Agent 编排
-├── 08 Product Factory SDK     ← 产品线接口
-└── 09 Workflow Pipeline       ← 全自动流水线
+
+**默认 URL Extraction Backend：Designlang。** 它负责读取 rendered DOM / computed styles 并输出机器可读设计事实；Sera 负责判断为什么有效、是否值得记忆、如何复用以及如何组合成新的产品设计。
+
+## V4 架构
+
+```text
+sera-design-intelligence/
+├── extraction-engine/             # L0/L1：机器事实层
+│   ├── README.md
+│   ├── adapter.py
+│   ├── designlang-adapter.yaml
+│   └── extraction-contract.schema.json
+├── dna-engine/                    # L2：Evidence → Style DNA
+├── design-direction/              # 产品 × 风格决策
+├── benchmark/                     # 设计基准
+├── patterns/                      # Pattern Library
+├── knowledge/                     # 原则 / 心理 / 商业知识
+├── styles/                        # Style Registry
+├── style-router/                  # 风格路由
+├── case-studies/                  # 已分析案例
+├── assets/                        # 资产索引
+├── memory/design-feedback/        # 实验 / 转化 / 用户反馈 / 规则进化
+├── workflows/                     # Extraction / Design Intelligence 流水线
+└── interfaces/                    # Product Factory 输入输出协议
 ```
 
-## 目录
-
-| 目录 | 说明 |
-|---|---|
-| `SKILL.md` | Design Intelligence Skill 定义 |
-| `SYSTEM.md` | 系统架构文档 |
-| `knowledge/` | 设计知识库（原则/心理/模式/商业） |
-| `benchmark/` | 设计基准评分系统 |
-| `dna-engine/` | 设计 DNA 提取器 |
-| `styles/` | 风格 DNA 注册表 |
-| `style-router/` | 风格路由引擎 |
-| `memory/` | 设计记忆循环 |
-| `interfaces/` | 产品线接口定义 |
-| `workflows/` | 工作流定义 |
-| `docs/` | 项目文档 |
-| `case-studies/` | 设计案例研究 |
-| `templates/` | 模板库 |
-| `assets/` | 资产库索引 |
-| `references/` | 详细设计规则 |
-
-## 核心能力
-
-1. **学习优秀网站设计** — Design Benchmark + DNA Extractor
-2. **提炼 Design DNA** — 自动生成 STYLE_DNA.json
-3. **建立视觉知识库** — 4 个知识维度，19 个知识文件
-4. **自动选择设计方向** — Style Router 8 条路由规则
-5. **自动生成设计系统** — 完整流水线 10 步
-6. **持续优化** — Design Memory 反馈循环
-
-## 快速开始
+## URL 快速提取
 
 ```bash
-# 1. 分析产品需求
-python style-router/router.py --industry ai --audience trader --goal sales
+cd creative/sera-design-intelligence
 
-# 2. 查看基准评分
-cat benchmark/benchmark-index.json
-
-# 3. 查看 Design DNA 示例
-cat dna-engine/examples/htx-otc-dna.json
-
-# 4. 设计新产品的完整流程
-→ 触发 design-intelligence-pipeline 工作流
+python3 extraction-engine/adapter.py https://linear.app \
+  --out case-studies/linear/raw/designlang
 ```
 
-## 已注册风格
+Canonical case structure：
 
-| 风格 ID | 行业 | 信任分 | 科技分 | 适用场景 |
-|---|---|---|---|---|
-| `sera-fintech-premium` | finance | 10 | 8 | 金融/高端 |
-| `sera-ai-future` | ai | 7 | 10 | AI 产品 |
-| `sera-saas-landing` | saas | 7 | 9 | SaaS 产品 |
-| `sera-operations-dashboard` | operations | 6 | 7 | Dashboard |
-| `sera-content-platform` | media | 8 | 6 | 内容平台 |
-
-## 设计经验积累路线
-
+```text
+case-studies/linear/
+├── raw/designlang/                 # 上游原始证据，immutable
+├── normalized/
+│   └── extraction-manifest.json    # Sera 稳定接口
+├── dna/
+│   └── STYLE_DNA.json              # Evidence-backed DNA
+├── analysis.md                     # 为什么有效
+├── extracted-rules.md              # 可复用规则
+└── reproduction-prompt.md          # AI 实现约束
 ```
-V1.0: HTX OTC          ✅ 金融产品 + Dashboard
-V1.1: Knowledge Engine  ✅ 知识库 + 逆向工程 + DNA Registry
-V3.2: Cyber Engine      ✅ 9 Agents + Pipeline + Memory Loop  ← 当前
-V3.3: 自动化增强        ⏳ DNA 自动提取 + 评分自动化
-V3.4: 智能学习          ⏳ 趋势分析 + 竞品监控
-V3.5: 全自动化          ⏳ 端到端设计流水线
+
+环境检查：
+
+```bash
+npx -y designlang doctor
 ```
+
+MCP 模式：
+
+```bash
+npx -y designlang mcp --output-dir ./case-studies/<case>/raw/designlang
+```
+
+## Evidence Model
+
+| 类型 | 含义 | 示例 |
+|---|---|---|
+| `observed` | 机器直接测量 | CSS 变量、字体、圆角、breakpoint |
+| `derived` | 可重复计算/归纳 | 主要 spacing 落在 8px scale |
+| `inferred` | Agent 对设计意图的解释 | 高留白强化 premium 感 |
+| `recommended` | 面向新产品的建议 | 某 Hero pattern 适合当前产品 |
+
+任何关键 Style DNA / Case Study 结论都应能追溯到 `extraction-manifest.json`、截图或其他证据。禁止把 `inferred` / `recommended` 冒充 `observed`。
+
+## 当前能力
+
+- URL 设计系统逆向：Designlang + Browser fallback
+- Design Tokens / Typography / Spacing / Radius / Shadow / Components
+- Responsive / Interaction / Dark Mode / Motion
+- Design DNA 提炼与 provenance
+- Design Benchmark / Pattern Library
+- Design Strategy / Design Direction
+- Style Router
+- Component / Asset Library
+- UX Conversion Review / Design Critic Review
+- Experiment / Conversion / Feedback Learning Loop
+
+## 版本路线
+
+```text
+V1.0  Design Memory 起步
+V1.1  Knowledge + Case Study + Registry
+V3.2  Cyber Design Intelligence Engine
+V3.3  Design Director / Direction Matching
+V3.4  Benchmark + Pattern Library
+V3.5  Evolution Loop
+V4.0  Evidence-first Extraction Architecture  ← 当前
+V4.1  Drift Monitor + scheduled re-extraction
+V4.2  Cross-site Pattern Mining
+V4.3  Component retrieval + style composition
+```
+
+## 上游边界
+
+Designlang upstream：`Manavarya09/design-extract`（MIT）。
+
+Sera 只把它作为可替换 Extraction Backend；Style DNA、Design Memory、商业判断、Style Router、生成与 Review 继续保持 Sera-native。

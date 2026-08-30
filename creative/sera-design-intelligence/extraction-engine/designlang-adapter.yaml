@@ -1,0 +1,64 @@
+version: 1.0.0
+name: designlang
+type: extraction-backend
+status: primary
+
+upstream:
+  repo: Manavarya09/design-extract
+  license: MIT
+  package: designlang
+
+runtime:
+  launcher: [npx, -y, designlang]
+  preflight:
+    - npx -y designlang doctor
+
+capabilities:
+  rendered_dom: true
+  computed_styles: true
+  dtcg_tokens: true
+  typography: true
+  spacing: true
+  radius: true
+  shadows: true
+  components: true
+  responsive: true
+  interactions: true
+  motion: true
+  dark_mode: true
+  accessibility: true
+  css_health: true
+  agent_rules: true
+  mcp: true
+  drift: true
+  visual_diff: true
+
+default_capture:
+  full: true
+  dark: true
+  emit_agent_rules: true
+  screenshots: true
+  responsive: true
+  interactions: true
+
+commands:
+  extract: "npx -y designlang <url> --out <raw_dir> --full --dark --emit-agent-rules"
+  doctor: "npx -y designlang doctor"
+  mcp: "npx -y designlang mcp --output-dir <raw_dir>"
+  drift: "npx -y designlang drift <url> --tokens <tokens_file>"
+  visual_diff: "npx -y designlang visual-diff <before> <after>"
+
+security:
+  persist_credentials: false
+  allow_inline_cookie_values: false
+  authenticated_input: cookie_file_only
+  redact_runtime_secrets: true
+
+normalization:
+  contract: extraction-contract.schema.json
+  raw_is_immutable: true
+  adapter: adapter.py
+
+fallback:
+  backend: sera-browser-automation
+  required_output: extraction-manifest.json

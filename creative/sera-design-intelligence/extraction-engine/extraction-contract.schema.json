@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Sera Design Extraction Manifest",
+  "type": "object",
+  "required": ["schema_version", "source", "capture", "artifacts", "provenance", "quality"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "source": {
+      "type": "object",
+      "required": ["url", "captured_at", "backend"],
+      "properties": {
+        "url": {"type": "string"},
+        "captured_at": {"type": "string"},
+        "backend": {"type": "string"},
+        "backend_version": {"type": ["string", "null"]}
+      }
+    },
+    "capture": {
+      "type": "object",
+      "properties": {
+        "full": {"type": "boolean"},
+        "dark": {"type": "boolean"},
+        "responsive": {"type": "boolean"},
+        "interactions": {"type": "boolean"},
+        "screenshots": {"type": "boolean"},
+        "authenticated": {"type": "boolean"}
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "category", "format"],
+        "properties": {
+          "path": {"type": "string"},
+          "category": {
+            "type": "string",
+            "enum": ["tokens", "typography", "components", "motion", "responsive", "accessibility", "brand", "agent_rules", "screenshots", "platform", "report", "other"]
+          },
+          "format": {"type": "string"},
+          "size_bytes": {"type": "integer", "minimum": 0},
+          "sha256": {"type": "string"}
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["adapter", "raw_output_dir"],
+      "properties": {
+        "adapter": {"type": "string"},
+        "raw_output_dir": {"type": "string"},
+        "command": {"type": "array", "items": {"type": "string"}},
+        "doctor_command": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "quality": {
+      "type": "object",
+      "required": ["complete", "doctor_passed", "fallback_used"],
+      "properties": {
+        "complete": {"type": "boolean"},
+        "doctor_passed": {"type": "boolean"},
+        "fallback_used": {"type": "boolean"},
+        "exit_code": {"type": ["integer", "null"]},
+        "notes": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

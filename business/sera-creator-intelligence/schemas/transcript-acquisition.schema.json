@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sera.local/schemas/transcript-acquisition.schema.json",
+  "title": "Sera Transcript Acquisition Result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "content_id",
+    "canonical_url",
+    "status",
+    "provider",
+    "source_kind",
+    "retrieved_at",
+    "segments",
+    "quality",
+    "attempts"
+  ],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "content_id": {"type": "string", "minLength": 1},
+    "canonical_url": {"type": "string", "format": "uri"},
+    "status": {"enum": ["success", "partial", "failed"]},
+    "provider": {"type": "string", "minLength": 1},
+    "provider_version": {"type": ["string", "null"]},
+    "source_kind": {
+      "enum": [
+        "manual_caption",
+        "auto_caption",
+        "provider_transcript",
+        "web_transcript",
+        "provider_asr",
+        "local_asr"
+      ]
+    },
+    "language": {"type": ["string", "null"]},
+    "segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["start", "end", "text"],
+        "properties": {
+          "start": {"type": "number", "minimum": 0},
+          "end": {"type": "number", "minimum": 0},
+          "text": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "full_text": {"type": ["string", "null"]},
+    "timestamp_coverage": {"type": "number", "minimum": 0, "maximum": 1},
+    "retrieved_at": {"type": "string"},
+    "audio": {
+      "type": "object",
+      "properties": {
+        "used": {"type": "boolean"},
+        "temporary": {"type": "boolean"},
+        "provider": {"type": ["string", "null"]},
+        "asr_model": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "quality": {
+      "type": "object",
+      "required": ["coverage", "language_match", "timestamp_quality", "suspected_mismatch"],
+      "properties": {
+        "coverage": {"type": "number", "minimum": 0, "maximum": 1},
+        "language_match": {"type": "boolean"},
+        "timestamp_quality": {"enum": ["full", "partial", "none"]},
+        "suspected_mismatch": {"type": "boolean"}
+      },
+      "additionalProperties": true
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "provider_response_id": {"type": ["string", "null"]},
+        "notes": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": true
+    },
+    "attempts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["provider", "status"],
+        "properties": {
+          "provider": {"type": "string"},
+          "started_at": {"type": ["string", "null"]},
+          "finished_at": {"type": ["string", "null"]},
+          "status": {
+            "enum": [
+              "success",
+              "empty",
+              "blocked",
+              "rate_limited",
+              "auth_error",
+              "provider_error",
+              "mismatch",
+              "timeout",
+              "not_configured"
+            ]
+          },
+          "http_status": {"type": ["integer", "null"]},
+          "latency_ms": {"type": ["number", "null"], "minimum": 0},
+          "cost_units": {"type": ["number", "null"], "minimum": 0},
+          "error_code": {"type": ["string", "null"]},
+          "error_message": {"type": ["string", "null"]}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

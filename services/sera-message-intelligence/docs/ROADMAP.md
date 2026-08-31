@@ -70,12 +70,13 @@
 - [x] candidate ID -> durable object ID remapping before linked Commitment upsert
 - [x] preserve conflicting Commitment due dates as explicit inference instead of silent overwrite
 - [x] optional `--persist` path from daily extraction CLI into durable graph upsert
+- [x] deterministic Opportunity Radar with fit / urgency / probability / freshness / evidence scoring
+- [x] deterministic Commitment Tracker with due pressure / confidence / evidence / conflict scoring
+- [x] `generate_context_radar.py` JSON + Markdown output
 - [ ] conservative cross-platform Person entity resolution
 - [ ] semantic/fuzzy Opportunity / Commitment resolution beyond exact signatures
 - [ ] full temporal supersede / contradict / rejected state semantics
-- [ ] Opportunity Radar
 - [ ] People / Relationship Radar
-- [ ] Commitment tracker
 - [ ] Risk monitor
 - [ ] Topic momentum / project-context updates
 - [ ] Self Intelligence weekly synthesis

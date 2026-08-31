@@ -110,7 +110,7 @@ class AutomaticEvolutionLoopTests(unittest.TestCase):
             with open(os.path.join(pattern_dir, pattern_files[0]), "r", encoding="utf-8") as fh:
                 content = fh.read()
             self.assertIn("generated_from_runtime: true", content)
-            self.assertIn("Production Skill write", content)
+            self.assertIn("production Skill write", content)
 
 
 if __name__ == "__main__":

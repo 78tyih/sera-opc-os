@@ -1,0 +1,112 @@
+{
+  "schema_version": "1.0",
+  "updated_at": "2026-08-31",
+  "providers": [
+    {
+      "id": "supadata",
+      "enabled_if_env": "SUPADATA_API_KEY",
+      "role": "transcript_candidate",
+      "capabilities": {
+        "transcript": true,
+        "timestamps": true,
+        "audio": false,
+        "provider_asr_fallback": true,
+        "batch": true
+      },
+      "priority_hint": 10,
+      "notes": "Structured timestamped YouTube transcript API. Provider may use AI transcription fallback; preserve source_kind/provenance."
+    },
+    {
+      "id": "scrapecreators",
+      "enabled_if_env": "SCRAPECREATORS_API_KEY",
+      "role": "transcript_candidate",
+      "capabilities": {
+        "transcript": true,
+        "timestamps": true,
+        "audio": false,
+        "provider_asr_fallback": false,
+        "batch": false
+      },
+      "priority_hint": 20,
+      "notes": "Dedicated /v1/youtube/video/transcript endpoint. Validate Video ID and transcript mismatch before acceptance."
+    },
+    {
+      "id": "apify",
+      "enabled_if_env": "APIFY_API_TOKEN",
+      "role": "transcript_candidate",
+      "capabilities": {
+        "transcript": true,
+        "timestamps": true,
+        "audio": "actor_dependent",
+        "provider_asr_fallback": "actor_dependent",
+        "batch": true
+      },
+      "priority_hint": 30,
+      "notes": "Use an explicitly configured transcript Actor and record Actor ID/version in provenance."
+    },
+    {
+      "id": "firecrawl_transcript",
+      "enabled_if_env": "FIRECRAWL_API_KEY",
+      "role": "web_transcript_candidate",
+      "capabilities": {
+        "transcript": true,
+        "timestamps": "page_dependent",
+        "audio": false,
+        "provider_asr_fallback": false,
+        "batch": true
+      },
+      "priority_hint": 40,
+      "notes": "Use rendered/page extraction only when transcript content can be exposed. Classify as web_transcript."
+    },
+    {
+      "id": "jina",
+      "enabled_if_env": "JINA_API_KEY",
+      "allow_without_key": true,
+      "role": "web_transcript_candidate",
+      "capabilities": {
+        "transcript": true,
+        "timestamps": "page_dependent",
+        "audio": false,
+        "provider_asr_fallback": false,
+        "batch": false
+      },
+      "priority_hint": 50,
+      "notes": "Browser DOM fallback; click YouTube Show transcript via page script when available."
+    },
+    {
+      "id": "firecrawl_audio",
+      "enabled_if_env": "FIRECRAWL_API_KEY",
+      "role": "managed_audio_fallback",
+      "capabilities": {
+        "transcript": false,
+        "timestamps": false,
+        "audio": true,
+        "provider_asr_fallback": false,
+        "batch": true
+      },
+      "priority_hint": 60,
+      "notes": "Firecrawl audio extraction returns a temporary signed MP3 URL. Download immediately, ASR, then delete temporary media."
+    },
+    {
+      "id": "local_residential",
+      "enabled_if_env": null,
+      "role": "final_fallback",
+      "capabilities": {
+        "transcript": true,
+        "timestamps": true,
+        "audio": true,
+        "provider_asr_fallback": true,
+        "batch": true
+      },
+      "priority_hint": 100,
+      "notes": "Mac/SeraWin/residential-network runner using native captions, yt-dlp and temporary audio ASR."
+    }
+  ],
+  "selection": {
+    "stop_on_first_acceptable": true,
+    "minimum_coverage": 0.9,
+    "reject_mismatch": true,
+    "prefer_timestamped": true,
+    "require_independent_backup": true
+  }
+}

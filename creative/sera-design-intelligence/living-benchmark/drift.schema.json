@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sera.local/schemas/design-drift.schema.json",
+  "title": "Sera Design Drift Report",
+  "type": "object",
+  "required": ["schema_version", "target_id", "summary", "changes"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "target_id": {"type": "string"},
+    "source_url": {"type": ["string", "null"]},
+    "baseline": {"type": "object"},
+    "current": {"type": "object"},
+    "summary": {
+      "type": "object",
+      "required": ["change_count", "meaningful_score", "severity", "meaningful_change", "memory_action"],
+      "properties": {
+        "change_count": {"type": "integer", "minimum": 0},
+        "meaningful_score": {"type": "integer", "minimum": 0},
+        "severity": {"enum": ["none", "minor", "moderate", "major"]},
+        "meaningful_change": {"type": "boolean"},
+        "memory_action": {"type": "string"}
+      }
+    },
+    "changes": {"type": "array", "items": {"type": "object", "required": ["field", "weight", "strategy", "delta"]}},
+    "policy_note": {"type": "string"}
+  },
+  "additionalProperties": false
+}

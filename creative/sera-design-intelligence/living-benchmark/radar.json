@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0.0",
+  "updated": "2026-08-31",
+  "purpose": "Longitudinal benchmark targets for Sera Design Intelligence.",
+  "recommended_cadence": {
+    "default": "monthly",
+    "high_change_targets": "biweekly",
+    "note": "Configuration only; no scheduler is created by this file."
+  },
+  "baseline_policy": "Historical baseline is allowed for drift bootstrapping but must remain live_revalidation_pending until a current extraction exists.",
+  "targets": [
+    {"id":"linear","name":"Linear","url":"https://linear.app/","category":"product-development-saas","priority":"P0","baseline":"snapshots/linear/2026-05-21.json","status":"live_revalidation_pending","signals":["layout","typography","motion","product-marketing","component-system"]},
+    {"id":"stripe","name":"Stripe","url":"https://stripe.com/","category":"fintech","priority":"P0","baseline":"snapshots/stripe/2026-05-21.json","status":"live_revalidation_pending","signals":["conversion","brand-system","layout","typography","developer-marketing"]},
+    {"id":"vercel","name":"Vercel","url":"https://vercel.com/","category":"developer-platform","priority":"P0","baseline":"snapshots/vercel/2026-05-21.json","status":"live_revalidation_pending","signals":["developer-marketing","component-system","layout","typography","interaction"]},
+    {"id":"apple","name":"Apple","url":"https://apple.com/","category":"consumer-technology","priority":"P1","baseline":"snapshots/apple/2026-05-21.json","status":"live_revalidation_pending","signals":["premium-brand","product-storytelling","typography","spacing","interaction"]},
+    {"id":"raycast","name":"Raycast","url":"https://raycast.com/","category":"developer-productivity","priority":"P1","baseline":"snapshots/raycast/2026-06-25.json","status":"live_revalidation_pending","signals":["dark-ui","motion","developer-brand","depth","component-system"]},
+    {"id":"figma","name":"Figma","url":"https://figma.com/","category":"design-software","priority":"P1","baseline":"snapshots/figma/2026-05-21.json","status":"live_revalidation_pending","signals":["design-brand","typography","color","product-storytelling","component-system"]}
+  ]
+}

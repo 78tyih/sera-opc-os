@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sera.local/schemas/design-snapshot.schema.json",
+  "title": "Sera Living Design Snapshot",
+  "type": "object",
+  "required": ["schema_version", "target_id", "state", "fingerprint", "evidence"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "target_id": {"type": "string", "minLength": 1},
+    "source_url": {"type": ["string", "null"]},
+    "captured_at": {"type": ["string", "null"]},
+    "freshness": {"type": "string"},
+    "backend": {"type": ["string", "null"]},
+    "coverage": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "state": {"type": "object"},
+    "fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "evidence": {"type": "object"}
+  },
+  "additionalProperties": false
+}

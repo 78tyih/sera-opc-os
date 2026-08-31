@@ -1,0 +1,79 @@
+id: design-radar-v4.2
+name: Living Design Benchmark Drift Monitor
+version: 1.0.0
+status: executable_spec
+
+purpose: >
+  Re-extract tracked benchmark targets, create immutable snapshots,
+  classify meaningful design drift, and route only material changes
+  into Design Memory review.
+
+inputs:
+  radar: ../living-benchmark/radar.json
+  extraction_backend: designlang
+  canonical_case_root: ../case-studies
+
+steps:
+  - id: select_targets
+    action: load_radar
+    rules:
+      - only targets with verified canonical URL
+      - do not infer missing targets
+
+  - id: extract_current
+    action: run_design_extraction
+    contract: ../extraction-engine/extraction-contract.schema.json
+    notes:
+      - prefer live extraction
+      - preserve backend version and captured_at
+      - failures do not overwrite previous snapshot
+
+  - id: build_style_dna
+    action: evidence_to_style_dna
+    rule: inferred and recommended claims remain distinct from observed evidence
+
+  - id: create_snapshot
+    command: >
+      python3 ../living-benchmark/snapshot.py
+      --target-id ${target.id}
+      --dna ${case.dna}
+      --manifest ${case.manifest}
+      --out ${snapshot.path}
+
+  - id: compare_baseline
+    command: >
+      python3 ../living-benchmark/drift.py
+      --before ${latest_approved_snapshot}
+      --after ${snapshot.path}
+      --out ${drift.json}
+      --markdown ${drift.md}
+
+  - id: route_change
+    branches:
+      none:
+        - archive_snapshot
+      minor:
+        - archive_snapshot
+      moderate:
+        - queue_design_memory_review
+      major:
+        - queue_semantic_review
+        - rerun_relevant_cross_site_study
+
+  - id: memory_gate
+    action: human_or_policy_review
+    rule: >
+      No changed target automatically updates Canonical Pattern Library,
+      Style Registry or Design Direction.
+
+outputs:
+  - immutable_snapshot
+  - drift_json
+  - drift_markdown
+  - review_queue_item_if_meaningful
+
+failure_policy:
+  extraction_failed: retain previous baseline and mark target stale
+  incomplete_measurement: record data-quality warning
+  changed_backend_version: do not treat newly available fields as drift
+  target_url_unverified: skip

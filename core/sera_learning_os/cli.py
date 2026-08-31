@@ -4,6 +4,8 @@ Examples:
   python -m core.sera_learning_os.cli --db memory/learning-os.db ingest signal.json
   python -m core.sera_learning_os.cli --db memory/learning-os.db maintain
   python -m core.sera_learning_os.cli --db memory/learning-os.db propose
+  python -m core.sera_learning_os.cli --db memory/learning-os.db probe --proposal SEP.x --probe-id P1 --model codex --metric task_success_rate --baseline 0.7 --candidate 0.8
+  python -m core.sera_learning_os.cli --db memory/learning-os.db assess-portability SEP.x
   python -m core.sera_learning_os.cli --db memory/learning-os.db review --out daily-learning.md
   python -m core.sera_learning_os.cli --db memory/learning-os.db export --context-hub ../SeraContextHub
 """
@@ -20,6 +22,7 @@ from .contradiction_export import export_contradictions_snapshot
 from .daily_review import build_daily_review, render_daily_review_markdown
 from .learning import init_learning_schema
 from .pipeline import process_learning_signal
+from .portability import assess_and_record_portability, assess_portability, record_portability_probe
 from .skill_proposer import propose_ready_skills
 from .wiki_export import export_context_hub_snapshot
 from .wiki_maintainer import maintain_uncompiled_signals
@@ -61,6 +64,29 @@ def cmd_propose(conn: sqlite3.Connection, args) -> int:
     result = propose_ready_skills(conn, limit=args.limit)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
+
+
+def cmd_probe(conn: sqlite3.Connection, args) -> int:
+    result = record_portability_probe(
+        conn,
+        probe_id=args.probe_id,
+        proposal_id=args.proposal,
+        model=args.model,
+        model_family=args.model_family,
+        agent_shell=args.agent_shell,
+        environment=args.environment,
+        metric_name=args.metric,
+        baseline_score=args.baseline,
+        candidate_score=args.candidate,
+    )
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 1 if result.get("error") else 0
+
+
+def cmd_assess_portability(conn: sqlite3.Connection, args) -> int:
+    result = assess_portability(conn, args.proposal) if args.dry_run else assess_and_record_portability(conn, args.proposal)
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 1 if result.get("error") else 0
 
 
 def cmd_review(conn: sqlite3.Connection, args) -> int:
@@ -109,6 +135,23 @@ def build_parser() -> argparse.ArgumentParser:
     propose = sub.add_parser("propose", help="create governed Skill proposals from verified patterns")
     propose.add_argument("--limit", type=int, default=200)
     propose.set_defaults(func=cmd_propose)
+
+    probe = sub.add_parser("probe", help="append one baseline-vs-candidate portability probe")
+    probe.add_argument("--proposal", required=True)
+    probe.add_argument("--probe-id", required=True)
+    probe.add_argument("--model", required=True)
+    probe.add_argument("--model-family", default=None)
+    probe.add_argument("--agent-shell", default=None)
+    probe.add_argument("--environment", default=None)
+    probe.add_argument("--metric", required=True)
+    probe.add_argument("--baseline", required=True, type=float)
+    probe.add_argument("--candidate", required=True, type=float)
+    probe.set_defaults(func=cmd_probe)
+
+    assess = sub.add_parser("assess-portability", help="evaluate cross-model negative transfer for a Skill proposal")
+    assess.add_argument("proposal")
+    assess.add_argument("--dry-run", action="store_true", help="calculate recommendation without recording Evaluation")
+    assess.set_defaults(func=cmd_assess_portability)
 
     review = sub.add_parser("review", help="generate Daily Learning Review")
     review.add_argument("--day", default=None, help="UTC date YYYY-MM-DD; default today")

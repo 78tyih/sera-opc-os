@@ -1,6 +1,6 @@
 $schema: "https://json-schema.org/draft/2020-12/schema"
 title: Sera Learning Signal
-version: "0.2.0"
+version: "0.3.0"
 description: >-
   Observable execution signal emitted by an Agent/Workflow at a meaningful task
   boundary. This is evidence for Learning OS, not a Rule or Skill by itself.
@@ -56,6 +56,7 @@ properties:
         - rejected_fix
         - human_feedback
         - regression
+        - contradiction
   failure_mode:
     type: [string, "null"]
   root_cause:
@@ -86,6 +87,37 @@ properties:
                 - model_specific
                 - agent_shell_specific
                 - tool_environment_specific
+  contradicts_pattern_ids:
+    type: array
+    uniqueItems: true
+    items:
+      type: string
+    description: Existing Wiki Patterns this execution provides counter-evidence against.
+  contradiction_reason:
+    type: [string, "null"]
+  contradiction_strength:
+    type: number
+    minimum: 0
+    maximum: 1
+    default: 0.7
+  contradiction_explicit:
+    type: boolean
+    default: false
+    description: True only for explicit evaluator/human/authority-backed counter-evidence, not model self-confidence.
+  contradictions:
+    type: array
+    description: Per-Pattern contradiction evidence. Prefer this when evidence differs by Pattern.
+    items:
+      type: object
+      additionalProperties: false
+      required: [pattern_id, reason]
+      properties:
+        pattern_id: {type: string, minLength: 3}
+        reason: {type: string, minLength: 1}
+        strength: {type: number, minimum: 0, maximum: 1, default: 0.7}
+        explicit: {type: boolean, default: false}
+        evidence_ref: {type: [string, "null"]}
+        task_context: {type: [string, "null"]}
   tool_events:
     type: array
     items:
@@ -139,6 +171,15 @@ allOf:
       anyOf:
         - required: [root_cause]
         - required: [failure_mode]
+  - if:
+      properties:
+        signal_types:
+          contains:
+            const: contradiction
+    then:
+      anyOf:
+        - required: [contradicts_pattern_ids, contradiction_reason]
+        - required: [contradictions]
 
 x-sera-rules:
   - "This schema MUST NOT contain private chain-of-thought/private reasoning fields."
@@ -146,3 +187,5 @@ x-sera-rules:
   - "failure_mode is symptom; Pattern promotion should prefer root_cause evidence."
   - "affected_skills metadata is advisory until the Pattern reaches verified status."
   - "A Skill proposal is not a production release; Policy/Authority Gate remains mandatory."
+  - "Contradictory evidence is append-only and may move a Pattern to contested; it must not erase prior supportive evidence."
+  - "contradiction_explicit=true is reserved for evaluator/human/authority-backed evidence, not ordinary model self-confidence."

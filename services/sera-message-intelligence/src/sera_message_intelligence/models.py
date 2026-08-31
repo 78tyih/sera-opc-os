@@ -69,3 +69,31 @@ class ContextGraphObject(Base):
     evidence_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
+
+
+class ContextGraphChange(Base):
+    """Append-only history of meaningful durable graph mutations.
+
+    `before_payload` / `after_payload` are snapshots of the durable object at the
+    time of the change. Rerunning the same evidence should not create a new row.
+    """
+
+    __tablename__ = "context_graph_changes"
+    __table_args__ = (
+        Index("ix_context_graph_changes_effective_at", "effective_at"),
+        Index("ix_context_graph_changes_object_effective", "object_id", "effective_at"),
+        Index("ix_context_graph_changes_batch_id", "batch_id"),
+    )
+
+    change_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    object_id: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    object_type: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    change_kind: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    changed_fields: Mapped[list[str]] = mapped_column(JSON, nullable=False, default=list)
+    semantic_changes: Mapped[list[str]] = mapped_column(JSON, nullable=False, default=list)
+    evidence_ids: Mapped[list[str]] = mapped_column(JSON, nullable=False, default=list)
+    before_payload: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+    after_payload: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False, default=dict)
+    batch_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    effective_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    recorded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))

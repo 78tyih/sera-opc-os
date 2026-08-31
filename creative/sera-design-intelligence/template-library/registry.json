@@ -1,0 +1,34 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-08-31",
+  "description": "Reusable design template registry generated from validated Sera projects.",
+  "templates": [
+    {
+      "id": "regulated-deal-desk",
+      "name": "Regulated Deal Desk",
+      "category": "high-trust-service",
+      "source_project": "HTX OTC Landing Page",
+      "source_repo": "78tyih/htx-otc-landing",
+      "style_ref": "sera-fintech-premium",
+      "case_study_ref": "case-studies/htx-otc-v1",
+      "target_users": ["fintech teams", "OTC desks", "regulated service providers", "high-value B2B services"],
+      "problems_solved": ["trust building", "service explanation", "compliance communication", "lead conversion"],
+      "core_modules": ["hero", "service routes", "trust/compliance", "process", "FAQ", "lead capture"],
+      "commercial_formats": ["style-pack", "template-pack", "skill-pack", "solution-pack"],
+      "status": "ready"
+    },
+    {
+      "id": "execution-command-center",
+      "name": "Execution Command Center",
+      "category": "management-dashboard",
+      "source_project": "HTX OTC Progress Hub",
+      "source_repo": "78tyih/htx-otc-progress-hub",
+      "style_ref": "sera-operations-dashboard",
+      "target_users": ["founders", "project managers", "sales leaders", "agencies", "AI teams"],
+      "problems_solved": ["project visibility", "executive reporting", "blocker discovery", "cross-workstream alignment"],
+      "core_modules": ["executive summary", "KPI", "workstreams", "pipeline", "timeline", "dependency map", "review", "resources"],
+      "commercial_formats": ["style-pack", "template-pack", "skill-pack", "solution-pack"],
+      "status": "ready"
+    }
+  ]
+}

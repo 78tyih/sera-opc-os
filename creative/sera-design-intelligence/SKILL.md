@@ -1,6 +1,6 @@
 ---
 name: sera-design-intelligence
-version: 4.2.0
+version: 4.3.0
 type: design-intelligence
 author: Sera
 category: creative
@@ -17,7 +17,7 @@ status: active
 
 > Sera OPC OS 的 Evidence-first Design Intelligence System。
 > **不是复制网站的 Skill，也不是 Designlang 的包装器。**
-> V4.2 在 Cross-site Learning 之上增加 Living Design Benchmark：既学习“多个优秀产品共同做什么”，也长期追踪“优秀产品后来改变了什么”。
+> V4.3 在 Living Design Benchmark 之上增加 Productization Layer：把经过真实项目验证的设计，不只记住，还进一步沉淀为 Style / Component / Template / Skill，可再次调用、展示和商品化。
 
 ## Purpose
 
@@ -30,6 +30,7 @@ status: active
 7. **Create** — 驱动 Design System / Page Generator
 8. **Review** — UX / Design Critic 门禁
 9. **Learn** — 实验、转化、反馈与长期 drift 更新规则
+10. **Productize** — 把真实项目沉淀为可复用 Component / Template / Skill / Solution Pack
 
 ## Architecture
 
@@ -57,6 +58,12 @@ Design System / Generator
          ↓
 UX Gate + Critic Gate
          ↓
+Productization Layer
+  ├─ Component Library
+  ├─ Template Library
+  ├─ Agent Skill
+  └─ Solution Pack
+         ↓
 Evolution Loop
 ```
 
@@ -71,6 +78,9 @@ Evolution Loop
 - 为 AI Coding Agent 输出可复用设计约束
 - 根据行业、用户、品牌目标选择设计方向
 - 审查页面是否符合 Sera Design Memory
+- 用户要求“把这个页面 / 项目打包成模板、Skill、可复用零件”
+- 一个真实项目完成后，需要判断哪些设计资产值得进入长期库
+- 希望把已有设计资产包装成可展示、可交付或可出售的产品
 
 ## Evidence Model
 
@@ -135,6 +145,94 @@ Drift Severity
 - `living-benchmark/meaningful-change-policy.md`
 - `workflows/design-radar.yaml`
 
+## Productization Workflow
+
+### 核心模型
+
+```text
+Real Project
+   ↓
+Case Study
+   ↓
+Style / Design DNA
+   ↓
+Composite Components
+   ↓
+Reusable Template
+   ↓
+Agent Skill
+   ↓
+Demo / Solution Pack / Commercial Asset
+```
+
+### 触发条件
+
+以下任一情况出现时，Agent 应主动检查 Productization Candidate：
+
+- 项目已经上线或通过真实业务验证；
+- 某个页面结构明显可跨品牌复用；
+- 某个组合组件解决了重复出现的业务问题；
+- 用户认为设计“可以给别人直接抄作业”；
+- 用户希望沉淀成模板、Skill、Design System 或出售。
+
+### Productization 输出层
+
+#### 1. Case Study
+保存项目事实、设计决策、结果与证据。
+
+#### 2. Style DNA
+提炼视觉语言：颜色、字体、密度、圆角、阴影、动效、布局规律与情绪。
+
+#### 3. Component Library
+只保存**有业务意图的组合组件**，例如：
+
+- High-Trust Hero
+- Executive Summary Card
+- KPI Metric Card
+- Process Stepper
+- Multi-Step Lead Form
+- Status Pipeline Board
+- Dependency Map
+
+不要为了数量重复制造 Button / Input / Badge 等低价值 primitive。
+
+机器可读索引：`component-library/registry.json`。
+
+#### 4. Template Library
+把多个组件组合成完整任务解决方案，例如：
+
+- Regulated Deal Desk
+- Execution Command Center
+
+机器可读索引：`template-library/registry.json`。
+
+#### 5. Skill
+写明 Agent 在什么用户、任务、行业、信任等级和信息密度下应该选择该 Style / Component / Template。
+
+#### 6. Demo / Solution Pack
+必须使用通用假数据和脱敏品牌，证明资产可以脱离原项目独立成立。
+
+### 组件选择顺序
+
+```text
+Intent
+→ Audience
+→ Trust Level
+→ Information Density
+→ Style DNA
+→ Component Selection
+→ Template Composition
+→ Data / Content Binding
+→ UX Review
+```
+
+### Productization Workflows
+
+- `workflows/package-project-as-template.md`
+- `workflows/component-productization.md`
+- `component-library/README.md`
+- `template-library/README.md`
+
 ## Iron Rules
 
 1. **Measure before reason**：可测量事实不先靠截图猜。
@@ -155,6 +253,10 @@ Drift Severity
 16. **No automatic memory overwrite**：moderate/major drift 先 Review。
 17. **Conflict visible**：Extraction 与截图冲突必须记录。
 18. **Learning needs outcome**：长期规则优先结合实验、转化和用户反馈。
+19. **Composite value over primitive volume**：Component Library 优先保存有业务意图的组合组件，不为数量重复造基础控件。
+20. **De-brand before reuse**：真实项目进入 Template / Component 公共层前必须删除品牌专属与敏感业务数据。
+21. **Relationship required**：Productized asset 必须关联 Case / Style / Component / Template / Skill 中至少两个对象，避免孤岛资产。
+22. **Generic demo required**：可出售模板必须证明脱离原品牌、原数据后仍能独立成立。
 
 ## Failure Handling
 
@@ -166,6 +268,8 @@ Ambiguous reference URL 标记 `needs_url_verification`，不生成伪 Extractio
 
 Drift extraction 失败时保留上一版 baseline，不用失败/缺失结果覆盖 canonical snapshot。
 
+Productization 时无法确认某内容是否敏感，则默认不进入公共 Demo / Template，只保留结构性抽象。
+
 ## Design Philosophy
 
 Sera 的默认 prior：
@@ -176,6 +280,10 @@ Trust + Technology + Premium + Conversion
 
 它是路由起点，不是所有产品的硬编码答案。
 
+Productization 的长期目标：
+
+> 不让优秀项目在交付结束后失效，而是把每一次真实设计工作继续转化为下一次可调用的设计能力。
+
 ## Version History
 
 | Version | Date | Change |
@@ -185,4 +293,5 @@ Trust + Technology + Premium + Conversion
 | 3.5 | 2026-08-21 | Evolution / Feedback Loop |
 | 4.0 | 2026-08-31 | Evidence-first Extraction + Designlang Backend |
 | 4.1 | 2026-08-31 | Cross-site Learning + Pattern Promotion Policy |
-| **4.2** | **2026-08-31** | **Living Design Benchmark + Semantic Drift Monitor** |
+| 4.2 | 2026-08-31 | Living Design Benchmark + Semantic Drift Monitor |
+| **4.3** | **2026-08-31** | **Component / Template Productization Layer + Commercial Asset Pipeline** |

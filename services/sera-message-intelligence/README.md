@@ -8,6 +8,10 @@ The target user has many active conversations and groups, but should not need to
 
 P0/P1/P2 are intentionally local-first. Raw WeChat data and collector state stay on Server Win by default; Mac is the control/development client.
 
+For newer Weixin builds where the bundled webot reader is incompatible, the
+collector can use the pinned read-only WDA native source documented in
+`docs/SERVERWIN_DEPLOYMENT.md`.
+
 ## Current end-to-end shape
 
 ```text

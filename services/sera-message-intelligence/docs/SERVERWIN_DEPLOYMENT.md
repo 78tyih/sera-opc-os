@@ -46,6 +46,24 @@ It checks the local Core, WeChat process presence and current collector heartbea
 
 SMI sets `WEBOT_APP_HOME` to `SMI_WEBOT_ROOT` and `WEBOT_ENV_FILE` to the per-instance `SMI_WEBOT_ENV_FILE` before importing webot. Do not copy WCDB keys into Git.
 
+## Newer Weixin reader
+
+If the bundled webot `wcdb_api.dll` is incompatible with a newer Weixin build,
+use the read-only WDA native broker source instead of retrying the old DLL:
+
+```text
+SMI_WECHAT_SOURCE=wda_native
+SMI_WDA_ROOT=D:\Sera\deps\wda-probe
+SMI_WEBOT_ENV_FILE=D:\Sera\real-integration\.env
+SMI_WECHAT_DATA_DIR=D:\wx\xwechat_files
+SMI_WECHAT_WXID_DIR=wxid_<exact-directory>
+```
+
+The WDA runtime must be obtained from its pinned, checksum-verified release and
+kept outside the Sera repository. `wda_native` reads only the configured
+`db_storage` root, never calls WeChat send APIs, and keeps the WCDB key in the
+local webot environment; the key must not be copied into Git or chat.
+
 ## Startup model
 
 1. PostgreSQL: Docker `restart: unless-stopped`.

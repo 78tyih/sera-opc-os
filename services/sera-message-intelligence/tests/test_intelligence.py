@@ -64,8 +64,8 @@ def test_cross_group_brief_and_renderers():
     assert brief.risks[0].sources[0].conversation_id == "b"
     md = render_markdown(brief)
     html = render_html(brief)
-    assert "Evidence" in md and "Group a:1" in md
-    assert "Intelligence Brief" in html and "Watch risk" in html
+    assert "证据" in md and "Group a：1" in md
+    assert "个人情报简报" in html and "Watch risk" in html
 
 
 class ExistingButUnvalidatedIdLLM:

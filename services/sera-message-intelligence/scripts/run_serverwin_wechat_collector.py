@@ -7,6 +7,7 @@ from pathlib import Path
 
 from sera_message_intelligence.collectors.wechat_local.backends.jsonl_tail import JsonlTailSource
 from sera_message_intelligence.collectors.wechat_local.backends.webot_capture import WebotCaptureSource
+from sera_message_intelligence.collectors.wechat_local.backends.wda_native import WdaNativeSource
 from sera_message_intelligence.collectors.wechat_local.gateway_client import MessageGatewayClient
 from sera_message_intelligence.collectors.wechat_local.runner import WechatCollectorRunner
 from sera_message_intelligence.collectors.wechat_local.spool import SqliteSpool
@@ -22,7 +23,7 @@ def load_env_file(path: Path) -> None:
     if not path.exists():
         raise FileNotFoundError(f"collector env file not found: {path}")
     for raw in path.read_text(encoding="utf-8").splitlines():
-        line = raw.strip()
+        line = raw.strip().lstrip("\ufeff")
         if not line or line.startswith("#") or "=" not in line:
             continue
         key, value = line.split("=", 1)
@@ -47,6 +48,15 @@ def main() -> None:
     source_name = os.getenv("SMI_WECHAT_SOURCE", "webot_capture")
     if source_name == "jsonl":
         source = JsonlTailSource(os.getenv("SMI_JSONL_PATH", str(here / "data" / "wechat-smoke.jsonl")))
+    elif source_name == "wda_native":
+        source = WdaNativeSource(
+            wda_root=os.environ["SMI_WDA_ROOT"],
+            webot_env_file=os.environ.get("SMI_WEBOT_ENV_FILE", ""),
+            wechat_data_dir=os.environ["SMI_WECHAT_DATA_DIR"],
+            wechat_wxid_dir=os.environ["SMI_WECHAT_WXID_DIR"],
+            groups=csv("SMI_WECHAT_GROUPS"),
+            initial_window_hours=int(os.getenv("SMI_WECHAT_INITIAL_WINDOW_HOURS", "8")),
+        )
     elif source_name == "webot_capture":
         source = WebotCaptureSource(
             webot_root=os.getenv("SMI_WEBOT_ROOT"),

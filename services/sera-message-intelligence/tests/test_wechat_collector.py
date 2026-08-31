@@ -68,6 +68,37 @@ def test_webot_capture_is_read_only_and_normalizes():
     assert batch.messages[0].external_message_id=="42"
     assert batch.messages[0].message_type=="text"
 
+def test_wda_source_drops_binary_media_content():
+    from sera_message_intelligence.collectors.wechat_local.backends.wda_native import WdaNativeSource
+    source=WdaNativeSource(wda_root="/tmp/wda",webot_env_file="/tmp/webot.env",wechat_data_dir="/tmp/wx",wechat_wxid_dir="wxid_demo")
+    source._group_names={"g@chatroom":"G"}
+    raw=source._to_raw("g@chatroom", {"local_id": 1, "server_id": 2, "create_time": 1788134400, "local_type": 3, "message_content": b"\\x28\\xb5\\x2f\\xfd"})
+    assert raw.message_type=="image"
+    assert raw.text_content is None
+
+def test_wda_source_decodes_zstd_text_content():
+    import zstandard as zstd
+    from sera_message_intelligence.collectors.wechat_local.backends.wda_native import WdaNativeSource
+    source=WdaNativeSource(wda_root="/tmp/wda",webot_env_file="/tmp/webot.env",wechat_data_dir="/tmp/wx",wechat_wxid_dir="wxid_demo")
+    source._group_names={"g@chatroom":"G"}
+    compressed=zstd.ZstdCompressor().compress("需要在周五前确认方案".encode())
+    raw=source._to_raw("g@chatroom", {"local_id": 2, "server_id": 3, "create_time": 1788134400, "local_type": 1, "message_content": compressed})
+    assert raw.message_type=="text"
+    assert raw.text_content=="需要在周五前确认方案"
+
+def test_wda_source_pages_active_group_window():
+    from sera_message_intelligence.collectors.wechat_local.backends.wda_native import WdaNativeSource
+    source=WdaNativeSource(wda_root="/tmp/wda",webot_env_file="/tmp/webot.env",wechat_data_dir="/tmp/wx",wechat_wxid_dir="wxid_demo",poll_limit=2)
+    source._native=type("Native", (), {})()
+    source._handle=1
+    pages=[
+        [{"local_id": 3, "create_time": 1000}, {"local_id": 2, "create_time": 999}],
+        [{"local_id": 1, "create_time": 998}],
+    ]
+    source._native.get_messages=lambda _handle, _group, limit, offset: pages[0] if offset == 0 else pages[1]
+    rows=source._recent_messages("g@chatroom", 998)
+    assert [row["local_id"] for row in rows]==[3,2,1]
+
 def test_exact_wxid_pin_requires_expected_session_db(tmp_path:Path):
     base=tmp_path/"xwechat_files"
     target=base/"wxid_alpha_1234"

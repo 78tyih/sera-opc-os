@@ -3,6 +3,7 @@
 from .contradiction_export import export_contradictions_snapshot, render_contradictions_markdown
 from .contradictions import init_contradiction_schema, list_contradictions, record_pattern_contradiction
 from .daily_review import build_daily_review, render_daily_review_markdown
+from .github_release_adapter import build_github_action_plan, validate_github_materialization_receipt
 from .learning import (
     get_pattern,
     init_learning_schema,
@@ -62,5 +63,6 @@ __all__ = [
     "record_regression_check", "list_regression_checks", "assess_release_readiness",
     "record_release_readiness", "init_release_schema", "build_pr_payload",
     "prepare_release_request", "record_release_event", "get_release_request",
-    "list_release_events", "current_release_state",
+    "list_release_events", "current_release_state", "build_github_action_plan",
+    "validate_github_materialization_receipt",
 ]

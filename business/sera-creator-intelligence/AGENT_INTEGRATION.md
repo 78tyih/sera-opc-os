@@ -19,9 +19,10 @@ If the runtime has repository/file access but no native Skill loader:
    - `schemas/video-intelligence.schema.json`
    - `schemas/creator-intelligence.schema.json`
 3. Read only the template needed for the requested output.
-4. Execute the requested mode exactly as defined in the Skill.
-5. Write JSON source-of-truth first; render Markdown second.
-6. Run `scripts/validate_bundle.py <creator-root>` before reporting completion.
+4. If the user requests Notion/cloud publishing, also read `NOTION_PUBLISHER.md`.
+5. Execute the requested mode exactly as defined in the Skill.
+6. Write JSON source-of-truth first; render Markdown second.
+7. Run `scripts/validate_bundle.py <creator-root>` before reporting completion or publishing validated analysis as reviewed knowledge.
 
 Do not translate the Skill into a provider-specific permanent format. Keep the shared contract canonical in this directory.
 
@@ -52,9 +53,25 @@ Minimum invocation object:
   "source": "channel/video/playlist/local-corpus",
   "output_root": "optional path",
   "analysis_focus": "optional",
-  "max_items": null
+  "max_items": null,
+  "publish_targets": ["markdown", "notion"]
 }
 ```
+
+`publish_targets` is optional. JSON/JSONL remains the mandatory machine source-of-truth even when Notion publishing is enabled.
+
+## Notion Publishing
+
+When `notion` is requested as a publish target:
+
+1. Read `NOTION_PUBLISHER.md`.
+2. Discover the exact Notion databases by title through the connected Notion MCP/API; do not hardcode public-repo IDs.
+3. Cache resolved IDs only in local non-Git runtime state.
+4. Dedupe videos by `Video ID` and creators by `Channel ID`/canonical URL.
+5. Create when missing; update when existing.
+6. Publish video pages first, recompute creator aggregates second, then update the Creator page/report.
+7. Record a local publish audit log.
+8. If Notion is unavailable, emit `publish/notion_publish_queue.jsonl` and continue the analysis instead of failing the whole run.
 
 ## Completion Contract
 
@@ -66,7 +83,8 @@ An agent may claim completion only when:
 - claims are grounded to source/timestamp where available;
 - Fact / Interpretation / Prediction are separated;
 - Watch Verdict contains reason and confidence;
-- bundle validator passes, or the agent explicitly reports why validation cannot run.
+- bundle validator passes, or the agent explicitly reports why validation cannot run;
+- if Notion publishing was requested, every item has a publish status (`create/update/skip/fail/queued`) in the audit log or publish queue.
 
 ## Smoke Test
 

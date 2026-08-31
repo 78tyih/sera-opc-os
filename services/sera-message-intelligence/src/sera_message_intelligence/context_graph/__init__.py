@@ -37,12 +37,19 @@ from .schemas import (
     SelfSignal,
     Topic,
 )
+from .self_intelligence import (
+    SelfIntelligenceResult,
+    SelfIntelligenceSynthesizer,
+    SelfSignalCandidate,
+)
+from .self_renderer import render_self_intelligence_markdown
 from .store import (
     GraphUpsertSummary,
     canonical_key_for,
     list_graph_objects,
     upsert_context_result,
     upsert_graph_object,
+    upsert_self_signals,
 )
 
 __all__ = [
@@ -63,7 +70,10 @@ __all__ = [
     "Relationship",
     "RelationshipRadarItem",
     "Risk",
+    "SelfIntelligenceResult",
+    "SelfIntelligenceSynthesizer",
     "SelfSignal",
+    "SelfSignalCandidate",
     "Topic",
     "WorldChangeBrief",
     "WorldChangeItem",
@@ -78,7 +88,9 @@ __all__ = [
     "list_graph_objects",
     "render_context_radar_markdown",
     "render_people_radar_markdown",
+    "render_self_intelligence_markdown",
     "render_world_change_markdown",
     "upsert_context_result",
     "upsert_graph_object",
+    "upsert_self_signals",
 ]

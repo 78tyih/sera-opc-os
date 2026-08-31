@@ -11,6 +11,7 @@ from .learning import (
     upsert_pattern,
 )
 from .skill_proposer import propose_from_pattern, propose_ready_skills
+from .wiki_export import export_context_hub_snapshot, render_pattern_markdown, render_proposal_markdown
 from .wiki_maintainer import compile_signal_to_wiki, maintain_uncompiled_signals
 
 __all__ = [
@@ -27,4 +28,7 @@ __all__ = [
     "propose_ready_skills",
     "build_daily_review",
     "render_daily_review_markdown",
+    "render_pattern_markdown",
+    "render_proposal_markdown",
+    "export_context_hub_snapshot",
 ]

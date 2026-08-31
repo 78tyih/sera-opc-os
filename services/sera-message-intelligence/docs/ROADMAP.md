@@ -73,10 +73,12 @@
 - [x] deterministic Opportunity Radar with fit / urgency / probability / freshness / evidence scoring
 - [x] deterministic Commitment Tracker with due pressure / confidence / evidence / conflict scoring
 - [x] `generate_context_radar.py` JSON + Markdown output
+- [x] People Radar prioritizes opportunity / commitment / recency over raw interaction volume
+- [x] Relationship Radar creates edges only from explicit shared Opportunity or Commitment context, never mere group co-presence
+- [x] `generate_people_radar.py` JSON + Markdown output
 - [ ] conservative cross-platform Person entity resolution
 - [ ] semantic/fuzzy Opportunity / Commitment resolution beyond exact signatures
 - [ ] full temporal supersede / contradict / rejected state semantics
-- [ ] People / Relationship Radar
 - [ ] Risk monitor
 - [ ] Topic momentum / project-context updates
 - [ ] Self Intelligence weekly synthesis

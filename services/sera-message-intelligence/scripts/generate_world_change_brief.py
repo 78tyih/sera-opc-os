@@ -71,6 +71,7 @@ def main() -> None:
                 "opportunity_changes": len(brief.opportunity_changes),
                 "commitment_changes": len(brief.commitment_changes),
                 "people_changes": len(brief.people_changes),
+                "self_changes": len(brief.self_changes),
                 "event_changes": len(brief.event_changes),
                 "json": str(json_path),
                 "markdown": str(markdown_path),

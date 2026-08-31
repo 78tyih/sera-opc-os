@@ -1,5 +1,6 @@
 """Sera Learning OS runtime API."""
 
+from .contradiction_export import export_contradictions_snapshot, render_contradictions_markdown
 from .contradictions import (
     init_contradiction_schema,
     list_contradictions,
@@ -15,6 +16,7 @@ from .learning import (
     record_raw_signal,
     upsert_pattern,
 )
+from .pipeline import process_learning_signal
 from .skill_proposer import propose_from_pattern, propose_ready_skills
 from .wiki_export import export_context_hub_snapshot, render_pattern_markdown, render_proposal_markdown
 from .wiki_maintainer import compile_signal_to_wiki, maintain_uncompiled_signals
@@ -29,6 +31,7 @@ __all__ = [
     "list_patterns",
     "compile_signal_to_wiki",
     "maintain_uncompiled_signals",
+    "process_learning_signal",
     "propose_from_pattern",
     "propose_ready_skills",
     "build_daily_review",
@@ -39,4 +42,6 @@ __all__ = [
     "init_contradiction_schema",
     "record_pattern_contradiction",
     "list_contradictions",
+    "render_contradictions_markdown",
+    "export_contradictions_snapshot",
 ]

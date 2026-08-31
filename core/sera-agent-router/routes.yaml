@@ -391,6 +391,27 @@ routes:
     finalize:
       - sera-knowledge-sync
 
+  # ============ 闲鱼卖家运营（sera-xianyu-suite）============
+  - id: xianyu-seller
+    intent: 闲鱼卖家运营/客服/议价
+    agent: core
+    keywords:
+      - 闲鱼
+      - 咸鱼
+      - xianyu
+      - goofish
+      - 闲鱼客服
+      - 闲鱼卖货
+      - 闲鱼上架
+      - 二手上架
+      - 自动议价
+    pipeline:
+      - sera-xianyu-suite
+      - sera-crm-adapter
+      - sera-memory-system
+    finalize:
+      - sera-knowledge-sync
+
   # ============ OTC 商务（otc-agent）============
   - id: otc-bd
     intent: OTC 商务/客户

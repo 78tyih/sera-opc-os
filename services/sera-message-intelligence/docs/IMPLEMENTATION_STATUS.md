@@ -4,7 +4,9 @@ Updated: 2026-08-31
 
 ## Executive status
 
-The software foundation for Message Core, the Server Win collector runtime, the evidence-backed intelligence pipeline, the durable Personal Context Graph and the first deterministic action Radars is implemented on branch `feat/sera-message-intelligence-p0` / PR #4. The main remaining risk is no longer core architecture; it is **live Server Win validation of the external WeChat capture dependency and multi-account runtime**.
+The software foundation for Message Core, Server Win collector runtime, evidence-backed message intelligence, the durable Personal Context Graph, deterministic action Radars, Graph Change History and the first evidence-gated Self Intelligence layer is implemented on branch `feat/sera-message-intelligence-p0` / PR #4.
+
+The main remaining risk is no longer core architecture. It is **live Server Win validation of the external WeChat capture dependency, first real data flow and multi-account runtime**.
 
 ## P0 — Message Core
 
@@ -47,7 +49,7 @@ Live validation gates:
 6. reboot/log back in and verify process recovery;
 7. stop Message Core, verify per-account spool growth, restore Core and verify drain without duplicates.
 
-## P2 — Intelligence Pipeline
+## P2 — Message Intelligence Pipeline
 
 Status: **implemented / first live report pending**
 
@@ -60,7 +62,7 @@ Completed:
 - final items restricted to validated-claim IDs;
 - source metadata rebuilt from database rows;
 - deterministic importance scoring;
-- Personal Intelligence Brief schema;
+- Personal Intelligence Brief V1 schema;
 - OpenAI-compatible LLM adapter;
 - JSON, Markdown and standalone HTML outputs;
 - Server Win daily-report task installer.
@@ -84,79 +86,103 @@ Planned:
 
 ## P4 — Personal Context Graph / Intelligence OS
 
-Status: **object model + extraction + durable upsert + action Radars implemented**
+Status: **durable graph + change history + three intelligence views implemented as foundations**
+
+### Durable graph
 
 Completed:
-- durable object schemas for `ContextEvent`, `Person`, `Relationship`, `Opportunity`, `Commitment`, `Risk`, `Topic`, `ProjectContext`, `SelfSignal`;
-- observation vs inference separation with evidence references and confidence;
-- Self Intelligence evidence ladder and user-confirmation invariants;
-- bounded message-chunk extraction into Person / Event / Opportunity / Commitment candidates;
-- deterministic Person creation from observed senders only;
-- sender identity namespaced by `platform + account_id + sender_id`, preventing two WeChat accounts from silently merging the same sender ID;
-- fail-closed rejection when model output cites unknown message IDs or unknown sender refs;
-- model-derived Event / Opportunity / Commitment output stays `hypothesis` rather than becoming confirmed memory;
-- deterministic Person evidence merge across conversation chunks;
-- daily CLI: `scripts/extract_context_candidates.py`;
-- durable PostgreSQL `context_graph_objects` store;
-- conservative exact Opportunity resolution by normalized title + related people;
-- conservative exact Commitment resolution by owner + beneficiaries + normalized summary;
-- candidate Opportunity IDs remapped to durable IDs before linked Commitments are persisted;
-- conflicting Commitment due dates preserved as explicit conflict inference rather than silently overwritten;
-- `--persist` CLI path for extraction -> resolution -> durable graph upsert;
-- **Opportunity Radar** with deterministic fit / urgency / probability / freshness / evidence scoring;
-- **Commitment Tracker** with deterministic due-pressure / confidence / evidence / conflict attention scoring;
-- **People Radar** where active opportunity / commitment / recency signals dominate raw interaction volume;
-- **Relationship Radar** where an edge requires an explicit shared active Opportunity or owner↔beneficiary Commitment context; group co-presence alone is not sufficient;
-- JSON + Markdown CLI outputs for Context Radar and People / Relationship Radar;
-- regression tests across extraction, persistence, conflict preservation, opportunity ranking, commitment ranking and evidence-grounded relationship edges.
+- object schemas for `ContextEvent`, `Person`, `Relationship`, `Opportunity`, `Commitment`, `Risk`, `Topic`, `ProjectContext`, `SelfSignal`;
+- observation vs inference separation with evidence refs and confidence;
+- bounded message extraction into Person / Event / Opportunity / Commitment candidates;
+- Person identity from observed senders only;
+- sender namespace = `platform + account_id + sender_id`;
+- fail-closed rejection of unknown message IDs / sender refs;
+- durable PostgreSQL `context_graph_objects`;
+- conservative exact Opportunity and Commitment resolution;
+- linked transient Opportunity ID -> durable ID remapping;
+- explicit conflict inference instead of silent Commitment due-date overwrite;
+- `extract_context_candidates.py --persist`.
 
-Current operational path:
+### Opportunity / Commitment / Relationship Intelligence
 
-```text
-PostgreSQL messages
-→ bounded Context Extraction
-→ context-candidates.json
-→ conservative exact resolution
-→ temporal merge
-→ context_graph_objects
-→ Opportunity Radar / Commitment Tracker / People & Relationship Radar
-```
+Completed:
+- **Opportunity Radar**: deterministic fit / urgency / probability / freshness / evidence score;
+- **Commitment Tracker**: due pressure / confidence / evidence / conflict score;
+- **People Radar**: active opportunities, commitments and recency dominate raw message volume;
+- **Relationship Radar**: edges require explicit Opportunity or Commitment context; mere WeChat group co-presence never creates a relationship edge;
+- JSON + Markdown CLI outputs.
 
-The resolver intentionally favors false negatives over false-positive merges. Cross-platform Person resolution and fuzzy semantic Opportunity/Commitment resolution are still deferred.
+### Graph Change History
 
-Current deterministic read models:
+Completed:
+- append-only PostgreSQL `context_graph_changes`;
+- before/after durable object snapshots;
+- changed-field list;
+- semantic labels such as `new_evidence`, `opportunity_stage_changed`, `commitment_status_changed`, `conflict_added`, `meaningful_interaction`;
+- extraction batch IDs for traceability;
+- rerunning identical evidence does **not** create history noise;
+- daily query by effective-time window;
+- deterministic `generate_world_change_brief.py`.
+
+Current V2 change path:
 
 ```text
-Opportunity Radar
-→ What should I pursue now?
-
-Commitment Tracker
-→ What must not be forgotten?
-
-People / Relationship Radar
-→ Who deserves attention now, and what concrete context connects us?
-```
-
-Next P4 target:
-
-```text
-Graph Change History
-→ Created / Updated / Conflict / Superseded / Resolved
+Durable Graph state
+→ append-only Graph Change History
+→ semantic change classification
+→ World Change Brief
 → "What changed in my world today?"
-→ Personal Intelligence Brief V2
 ```
 
-Planned after that:
-- Risk monitor;
-- project/topic momentum;
-- conservative cross-platform Person resolution;
-- explicit supersede / contradict / rejected lifecycle semantics;
-- evidence-gated weekly Self Intelligence;
-- policy-scoped agent access;
-- plugin/capability API;
-- long-term learning from resolved actions and decisions.
+### Self Intelligence
 
-## Current blocker: WeBot key onboarding
+Completed foundation:
+- model may propose only time-bounded SelfSignal candidates;
+- exact graph Change IDs are mandatory evidence;
+- unknown Change IDs fail closed;
+- `preference / behavior_pattern / decision_style / interest_shift` require repeated evidence rather than one isolated event;
+- source diversity is calculated by application code from real evidence contexts, not accepted from model output;
+- L2 = evidence-backed hypothesis;
+- L3 = repeated cross-source supported pattern;
+- L4 = explicit user-confirmed knowledge only;
+- confidence caps depend on actual evidence count/diversity;
+- sensitive/clinical identity or psychiatric inference is rejected;
+- durable SelfSignal persistence is time-window scoped so separate weeks do not silently collapse into a permanent personality trait;
+- later model output cannot downgrade a user-confirmed SelfSignal;
+- `generate_self_intelligence.py --days 7|30 --persist` produces JSON + Markdown and optionally writes validated SelfSignals into the graph.
+
+The intended distinction is:
+
+```text
+Message summary
+= what people said
+
+Graph state
+= what currently appears true
+
+Graph history
+= what changed
+
+Self Intelligence
+= what repeated evidence suggests about the user's current attention, goals, concerns, transitions and behavior patterns
+
+User confirmation
+= what may become durable self-knowledge
+```
+
+### Remaining P4 work
+
+- real-data calibration of Radar weights and Self Intelligence thresholds;
+- conservative cross-platform Person entity resolution;
+- semantic/fuzzy Opportunity / Commitment resolution beyond exact signatures;
+- full supersede / contradict / reject lifecycle for all graph object types;
+- Risk monitor;
+- Topic / Project momentum;
+- user-facing SelfSignal Confirm / Reject / Supersede actions;
+- polished Personal Intelligence Brief V2 that fuses World Changes + Radars + Self Intelligence;
+- policy-scoped agent access and query API.
+
+## Current blocker — WeBot key onboarding
 
 The external webot extractor first tries an already-running WeChat process, then asks for a full exit/re-login and waits for a valid 64-character WCDB key. A long spinner generally means the hook phase is running but no valid key has been observed yet.
 
@@ -167,12 +193,14 @@ Before multi-account runtime is enabled, key onboarding must be performed **sequ
 ```text
 real WeChat message
 → PostgreSQL
-→ Personal Intelligence Brief
+→ Personal Intelligence Brief V1
 → context-candidates.json
 → --persist
 → durable Person / Opportunity / Commitment objects
-→ Context Radar
-→ People / Relationship Radar
+→ Opportunity / Commitment / People Radars
+→ context_graph_changes
+→ World Change Brief V2
+→ 7-day Self Intelligence
 ```
 
-After this proof, the next architectural layer should be Graph Change History / Brief V2 rather than another rewrite of ingestion, extraction or ranking.
+This is now the critical validation path. The next priority should be running this exact chain on real Server Win WeChat data rather than adding another architecture layer.

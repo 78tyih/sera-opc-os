@@ -37,6 +37,10 @@ from .schemas import (
     SelfSignal,
     Topic,
 )
+from .self_actions import (
+    SelfSignalDecisionResult,
+    apply_self_signal_decision,
+)
 from .self_intelligence import (
     SelfIntelligenceResult,
     SelfIntelligenceSynthesizer,
@@ -74,10 +78,12 @@ __all__ = [
     "SelfIntelligenceSynthesizer",
     "SelfSignal",
     "SelfSignalCandidate",
+    "SelfSignalDecisionResult",
     "Topic",
     "WorldChangeBrief",
     "WorldChangeItem",
     "append_graph_change",
+    "apply_self_signal_decision",
     "build_context_radar",
     "build_people_relationship_radar",
     "build_world_change_brief",

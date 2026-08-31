@@ -1,0 +1,44 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-08-31",
+  "description": "Internal or restricted-access design-skill references used as benchmark inputs. Restricted source documents are never mirrored into this public repository.",
+  "evidence_policy": {
+    "metadata_only_until_access": true,
+    "no_private_doc_mirroring": true,
+    "no_rule_promotion_without_review": true,
+    "allowed_evidence_levels": ["user_reported", "document_observed", "derived", "recommended"]
+  },
+  "skills": [
+    {
+      "id": "hx-skill",
+      "name": "hx-skill",
+      "alias": "火效",
+      "source_org": "HTX internal",
+      "source_access": "restricted-intranet",
+      "source_document": "internal wiki; URL intentionally omitted from public repository",
+      "latest_reported_release": "2026-08-31",
+      "reported_coverage": "approximately 80% of daily work",
+      "coverage_evidence": "user_reported",
+      "status": "registered-metadata-only",
+      "extraction_status": "pending-authenticated-document-access",
+      "benchmark_role": ["design-skill-reference", "workflow-skill-reference"],
+      "canonical_merge_status": "not-merged",
+      "notes": "Re-register and re-review because the author announced a substantially updated version. Do not infer detailed capabilities before the restricted documentation is available."
+    },
+    {
+      "id": "marketui-skill",
+      "name": "MarketUI skill",
+      "source_org": "HTX internal",
+      "source_access": "restricted-intranet",
+      "source_document": "internal wiki; URL intentionally omitted from public repository",
+      "latest_reported_release": "2026-08-31",
+      "reported_coverage": "approximately 80% of daily work",
+      "coverage_evidence": "user_reported",
+      "status": "registered-metadata-only",
+      "extraction_status": "pending-authenticated-document-access",
+      "benchmark_role": ["design-skill-reference", "market-ui-reference"],
+      "canonical_merge_status": "not-merged",
+      "notes": "Treat as an internal benchmark candidate. Extract concrete rules, components, workflow and safety constraints only after authenticated documentation access."
+    }
+  ]
+}

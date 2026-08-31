@@ -1,13 +1,30 @@
 # Smoke Test — 一个狠人
 
-目标：验证 `sera-creator-intelligence` 在真实 Creator Corpus 上能稳定完成 Transcript → Video Intelligence → Argument Analysis → Score → Sample Creator Report → Notion Publish。
+目标：在 Source Acquisition V2 已选出可用生产链路后，验证 `sera-creator-intelligence` 能完成 Transcript → Video Intelligence → Argument Analysis → Score → Sample Creator Report → Notion Publish。
+
+## Precondition — Acquisition Gate
+
+如果尚未选出 Production Source Stack，先执行：
+
+`ACQUISITION_BENCHMARK.md`
+
+并得到：
+
+```text
+Primary Transcript Provider
+Backup Transcript Provider
+Managed Audio Fallback
+Local / Residential Fallback
+```
+
+没有达到 `ACQUISITION_BENCHMARK.md` 的 Promotion Gate 时，本 Smoke Test 不得继续生成完整 Intelligence。
 
 ## Source
 
 - Creator：一个狠人
 - Handle：@henren778
 - Channel ID：UCJAPsTtcJJWGk8e-_CJL8TQ
-- 已有 Phase 1 Inventory：755 条可枚举内容（若本机已有 `videos.json`，必须复用，不要重抓全频道）
+- 已有 Phase 1 Inventory：755 条可枚举内容（若已有 `videos.json`，必须复用）
 
 ## Test Scope
 
@@ -28,74 +45,104 @@
 
 ## Required Run
 
-1. 读取本目录 `SKILL.md`、两个 Schema、模板与 `NOTION_PUBLISHER.md`。
+1. 读取：
+   - `SKILL.md`
+   - `SOURCE_ACQUISITION_V2.md`
+   - `ACQUISITION_BENCHMARK.md`
+   - `schemas/transcript-acquisition.schema.json`
+   - 两个 Intelligence Schema
+   - 模板
+   - `NOTION_PUBLISHER.md`
 2. 检查已有 Phase 1 catalog；已有则复用。
-3. 对 10 条逐条获取 Transcript，记录来源与失败原因。
-4. 对每条生成：
+3. 按已晋升的 Provider Stack 获取 10 条 Transcript。
+4. 每条 acquisition 必须写标准化 Transcript JSON；失败必须保留 attempts/failure class。
+5. 只有通过 Acquisition Gate 的条目才进入 Video Intelligence。
+6. 对成功条目生成：
    - `intelligence/videos/<video_id>.json`
    - 对应 Markdown 阅读笔记
-5. 每条必须拆：Main Thesis / Claims / Evidence / Reasoning / Assumptions / Fact vs Interpretation vs Prediction。
-6. 计算 6 维 Knowledge Score + Personal Relevance + Watch Verdict。
-7. 基于 10 条样本生成 sample `reports/creator-intelligence.json` 与 `CREATOR_INTELLIGENCE_REPORT.md`。
-8. 运行：
+7. 每条必须拆：Main Thesis / Claims / Evidence / Reasoning / Assumptions / Fact vs Interpretation vs Prediction。
+8. 计算 6 维 Knowledge Score + Personal Relevance + Watch Verdict。
+9. 基于成功样本生成 sample Creator Report；不得把失败条目当作已分析内容。
+10. 运行：
 
 ```bash
 python3 scripts/validate_bundle.py <creator-root>
 ```
 
-9. validator 必须 PASS；若 FAIL，先修复再报告。
-10. validator PASS 后执行 Notion 发布：
-   - 如果当前 Agent 有 Notion MCP/API：按 `NOTION_PUBLISHER.md` 发现并写入 `Creator Video Knowledge Base` 与 `Creator Intelligence Index`。
-   - 如果当前 Agent 没有 Notion 连接：生成 `publish/notion_publish_queue.jsonl`，不要因缺少 Notion 连接而让整个 Smoke Test 失败。
-11. 发布顺序：10 条视频页面 → 重新计算样本 Creator 聚合 → 更新“一个狠人” Creator 页面。
+11. Validator PASS 后按 `NOTION_PUBLISHER.md` 幂等发布。
 12. 完成后立即停止，不得继续全量 Backfill。
+
+## Acquisition Rules
+
+- Provider 原始响应不可直接成为下游真相源，必须先 normalize。
+- `content_mismatch` 是硬失败。
+- `partial` Transcript 可以做受限分析，但必须明确 Coverage。
+- 标题/Description/搜索摘要不能替代 Transcript。
+- Firecrawl Audio 等临时媒体完成 ASR 后默认删除。
+- Cloud Provider 全失败时转 Local/Residential Runner，不重复无意义撞同一 YouTube Gate。
 
 ## Notion Expected State
 
-成功直写 Notion 时：
+成功分析并直写 Notion时：
 
-- `Creator Video Knowledge Base` 中应有这 10 条样本（按 Video ID 幂等更新）。
-- `Creator Intelligence Index` 中“一个狠人”仍然只有 1 条 Creator 记录。
-- Creator 记录应更新：
-  - `Analyzed Items = 10`
-  - `Must Watch = <10 条中 must_watch 数量>`
-  - `Average Score = <10 条 Knowledge Score 均值>`
-  - `Report Version = v0.1-smoke-test` 或当前 schema version
-- Creator 页面正文写入本次 sample Creator Intelligence Report。
-- Smoke Test 结果不得自动标记为 `reviewed`；默认保持 `analyzed` / Creator `active`，等待人工审查。
+- 10 条样本按 Video ID 幂等更新；不得重复创建。
+- 只有真正完成 Intelligence 的条目进入 `analyzed`。
+- Acquire 失败条目保留失败/待处理状态，不填伪 Score。
+- Creator `Analyzed Items` = 实际完成 Intelligence 的数量，而不是固定写 10。
+- `Must Watch` / `Average Score` 只从成功分析条目计算。
+- Smoke Test 不自动标记为 `reviewed`。
 
 ## Acceptance Criteria
 
-- 10 条目标内容全部有明确状态；单条失败不得中断批次。
-- 可获得 Transcript 的条目必须保留 Source + Timestamp。
-- 所有 Video Intelligence JSON 可解析并符合核心字段约束。
-- 事实、作者判断、未来预测不能混写。
-- 每个 Watch Verdict 有 confidence + reason。
-- Sample Creator Report 至少包含：Coverage、Topic Distribution、Top Videos、Recurring Ideas、Best Video by Topic、Redundancy/Contradiction 初步观察。
-- 最终列出最值得优先看的 Top 3，并解释原因。
-- Notion 目标被请求时，每个条目都有 publish action/status；没有直连时必须有 queue。
-- 完成 10 条后停止；不要自动跑剩余 745 条。
+- 10 条目标均有明确 acquisition status。
+- 每个 Provider attempt 可审计。
+- 成功 Transcript 有正确 Video ID / URL / Language / Provenance。
+- 无未解决 `content_mismatch`。
+- Timestamp Coverage 被记录。
+- 进入 Intelligence 的条目符合核心 Schema。
+- Fact / Interpretation / Prediction 分离。
+- Watch Verdict 有 confidence + reason。
+- Creator Report 明确 sample coverage 与失败数量。
+- Notion 每个条目都有 publish action/status。
+- 完成 10 条后停止。
 
 ## Failure Report
 
-失败必须写入 `state/failures.jsonl`，至少包含：video_id、stage、error、retryable、timestamp。
+处理失败写入：
 
-Notion 发布日志写入：
+`state/failures.jsonl`
+
+至少包含：video_id、stage、provider、error_class、error、retryable、timestamp。
+
+Notion 发布日志：
 
 `publish/notion_publish_log.jsonl`
-
-至少记录：entity_type、dedupe_key、action、notion_page（若有）、timestamp、error（若有）。
 
 ## Final Response
 
 向用户报告：
 
-- Transcript 成功率与来源分布
-- 10 条评分表
-- Top 3 Must Watch
-- 主要 Topic/Recurring Ideas
-- Argument Analysis 中发现的质量问题
-- validator 结果
-- Notion publish：created / updated / queued / failed 数量
-- Creator Index 是否成功更新
-- 是否建议进入全量 Backfill
+### Acquisition
+- Primary / Backup / Audio / Local stack
+- 10 条成功/partial/失败数量
+- Provider 来源分布
+- Native Caption vs Provider Transcript vs ASR 数量
+- Timestamp coverage
+- Mismatch count
+
+### Intelligence
+- 实际分析数量 / 10
+- 成功条目评分表
+- Top 3（仅从已分析条目产生）
+- 主要 Topic / Recurring Ideas
+- Argument Analysis 质量问题
+
+### Validation / Publish
+- Validator PASS / FAIL
+- Notion created / updated / queued / failed
+- Creator Index 是否正确按实际分析数量更新
+- 是否建议进入 30–50 条 Phase 3
+
+## STOP
+
+禁止自动进入剩余 745 条 Full Backfill。

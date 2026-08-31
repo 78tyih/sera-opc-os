@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from sera_message_intelligence.context_graph.extraction import ContextGraphExtractor
+from sera_message_intelligence.context_graph.pipeline import extract_context_candidates
 from sera_message_intelligence.intelligence.schemas import IntelligenceMessage
 
 
@@ -219,6 +220,22 @@ def test_same_sender_id_on_two_accounts_does_not_merge_people() -> None:
     assert result.persons[0].id != result.persons[1].id
     evidence_accounts = {person.evidence_refs[0].account_id for person in result.persons}
     assert evidence_accounts == {"acct-a", "acct-b"}
+
+
+def test_pipeline_merges_same_person_across_bounded_chunks() -> None:
+    messages = [
+        message(101, "alice", "Alice", "first message is long enough to force a chunk", 1),
+        message(102, "alice", "Alice A.", "second message is also long enough to force a chunk", 2),
+    ]
+    empty_llm = FakeLLM({"events": [], "opportunities": [], "commitments": []})
+
+    result = extract_context_candidates(messages=messages, llm=empty_llm, max_chars=100)
+
+    assert len(result.persons) == 1
+    person = result.persons[0]
+    assert person.display_name == "Alice A."
+    assert [ref.message_id for ref in person.evidence_refs] == [101, 102]
+    assert "Alice" in person.aliases
 
 
 def test_empty_batch_does_not_call_llm() -> None:

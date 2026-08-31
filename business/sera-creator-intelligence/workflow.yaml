@@ -1,6 +1,6 @@
 name: creator-intelligence
-version: 0.1.0
-description: Creator/Channel 内容采集、单视频论证拆解、质量评分、跨视频聚合与知识沉淀。
+version: 0.2.0
+description: Creator/Channel 内容采集、单视频论证拆解、质量评分、跨视频聚合与知识沉淀；支持 Cloud → Local/Residential Source Execution Router。
 
 triggers:
   - 分析这个博主/频道
@@ -11,14 +11,33 @@ triggers:
 
 steps:
   - skill: sera-creator-intelligence
+    task: inventory
     inputs: [source, mode=inventory]
     outputs: [catalog, coverage_report]
 
   - skill: sera-creator-intelligence
-    inputs: [catalog, mode=video-or-channel]
-    outputs: [raw_transcripts, video_intelligence_json, video_notes]
+    task: acquire-source
+    inputs: [catalog, source_execution_router=SOURCE_EXECUTION_ROUTER.md]
+    outputs: [raw_transcripts, acquisition_state, failures]
+    routing:
+      preferred: cloud
+      on_caption_blocked: web-fallback
+      on_web_fallback_insufficient: local-residential
+      on_cloud_ip_blocked: local-residential
+      local_targets: [local-mac, serawin, other-authorized-residential]
+    hard_rules:
+      - no-cloud-account-cookies
+      - no-fabricated-transcript
+      - ephemeral-audio-only
 
   - skill: sera-creator-intelligence
+    task: analyze
+    inputs: [validated_transcripts, mode=video-or-channel]
+    gate: transcript_validated
+    outputs: [video_intelligence_json, video_notes]
+
+  - skill: sera-creator-intelligence
+    task: synthesize
     inputs: [video_intelligence_json, mode=channel]
     outputs: [creator_report_json, creator_report_md, canonical_knowledge]
 
@@ -27,5 +46,18 @@ finalize:
   - sera-context-system
 
 on_error:
-  retry: true
+  retry: classified
+  rules:
+    - when: youtube_cloud_ip_blocked
+      action: route-local-residential
+    - when: youtube_login_gate
+      action: route-local-residential
+    - when: caption_unavailable
+      action: try-next-source
+    - when: member_only
+      action: record-and-skip
+    - when: private_or_deleted
+      action: record-and-skip
+    - when: deterministic-source-gate
+      action: do-not-loop-cloud-retries
   fallback_skill: sera-creator-intelligence

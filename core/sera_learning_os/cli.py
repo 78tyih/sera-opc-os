@@ -16,11 +16,13 @@ import os
 import sqlite3
 import sys
 
+from .contradiction_export import export_contradictions_snapshot
 from .daily_review import build_daily_review, render_daily_review_markdown
 from .learning import init_learning_schema
+from .pipeline import process_learning_signal
 from .skill_proposer import propose_ready_skills
 from .wiki_export import export_context_hub_snapshot
-from .wiki_maintainer import compile_signal_to_wiki, maintain_uncompiled_signals
+from .wiki_maintainer import maintain_uncompiled_signals
 
 
 def _connect(path: str) -> sqlite3.Connection:
@@ -44,7 +46,7 @@ def _load_json(path: str) -> dict:
 
 def cmd_ingest(conn: sqlite3.Connection, args) -> int:
     signal = _load_json(args.signal)
-    result = compile_signal_to_wiki(conn, signal)
+    result = process_learning_signal(conn, signal, auto_propose=not args.no_propose)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 1 if result.get("error") else 0
 
@@ -78,7 +80,14 @@ def cmd_review(conn: sqlite3.Connection, args) -> int:
 
 
 def cmd_export(conn: sqlite3.Connection, args) -> int:
-    result = export_context_hub_snapshot(conn, args.context_hub, day=args.day)
+    wiki = export_context_hub_snapshot(conn, args.context_hub, day=args.day)
+    contradictions = export_contradictions_snapshot(conn, args.context_hub)
+    result = {
+        **wiki,
+        "contradiction_files_exported": contradictions["contradiction_files_exported"],
+        "contradiction_files": contradictions["contradiction_files"],
+        "git_commit_performed": False,
+    }
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
 
@@ -88,8 +97,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--db", default="memory/sera-learning.db", help="SQLite database path")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    ingest = sub.add_parser("ingest", help="record a Learning Signal and compile it to Wiki")
+    ingest = sub.add_parser("ingest", help="process a Learning Signal through Raw/Wiki/Contradiction/Proposal")
     ingest.add_argument("signal", help="Learning Signal JSON file")
+    ingest.add_argument("--no-propose", action="store_true", help="record learning but skip automatic proposal creation")
     ingest.set_defaults(func=cmd_ingest)
 
     maintain = sub.add_parser("maintain", help="compile raw signals not yet linked to a Wiki pattern")

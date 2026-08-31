@@ -1,15 +1,18 @@
 # Risk Register
 
-| Risk | Impact | P0/P1 mitigation |
+| Risk | Impact | Current mitigation |
 |---|---|---|
-| WeChat client version changes | Collector can stop reading | Keep WCDB/native logic behind replaceable adapter |
+| WeChat client version changes | Collector/key onboarding can stop working | Keep native/WCDB/key behavior behind replaceable external adapter; diagnose before changing core |
+| Key-onboarding PID ambiguity | Wrong account key/environment attribution when multiple WeChat processes exist | Onboard one account at a time; multi-WeChat runtime starts only after independent environments are established |
 | Native WCDB dependency | Portability / maintenance | No native imports in Message Core |
-| Account risk controls | Login interruption | P0 read-only; conservative polling; no auto-send |
-| Multi-account isolation | Cross-account contamination | Every event requires `account_id` and collector identity |
-| Message loss | Missing intelligence | Collector checkpoint + retry buffer in P1 |
+| Account risk controls | Login interruption | WeChat path is read-only; conservative polling; no SMI auto-send |
+| Windows session logout | WeChat process exits and capture stops | Dedicated user-session runtime; heartbeat aging marks effective offline; avoid policies that log disconnected users off |
+| Sandbox/multi-instance compatibility | Chat data or client behavior can change across WeChat releases | Windows user-session isolation is production default; sandbox strategy is experimental only |
+| Multi-account isolation | Cross-account contamination | Separate Windows user, env, webot env/key, `account_id`, collector ID, spool and exact `wxid_*` pin |
+| Message loss | Missing intelligence | Collector checkpoint + durable SQLite outbox |
 | Duplicate delivery | Noisy reports / wrong counts | Database-enforced external-ID + fingerprint idempotency |
-| Privacy | Sensitive personal/group content | Local-first storage, explicit downstream export policy |
-| LLM hallucination | Incorrect brief conclusions | Evidence message IDs required for report items |
+| Privacy | Sensitive personal/group content | Local-first raw storage, explicit downstream export policy, no secrets committed |
+| LLM hallucination | Incorrect brief conclusions | Level-1 evidence IDs, fail-closed validation, validated-claim-only final citation set |
 | Token cost | Expensive large-group analysis | Chunk summaries then cross-group merge |
 | Platform API changes | Adapter breakage | Stable `MessageEventV1`; replace adapters only |
 | Third-party licensing | Commercial restrictions | Copy only permissively licensed code; CipherTalk is design reference only |

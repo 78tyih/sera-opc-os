@@ -10,12 +10,13 @@
 - [x] unit tests
 - [x] CI workflow
 - [x] collector state persistence
+- [x] collector status API + stale-heartbeat effective-offline detection
 
 ## P1 — WeChat read-only collector (Server Win)
 - [x] Server Win as default production WeChat runtime
 - [x] isolate native/WCDB dependency behind external webot capture adapter
 - [x] isolate webot app home / env from SMI runtime
-- [x] one-process/one-env/one-spool multi-account instance model
+- [x] one-process/one-env/one-spool multi-account collector model
 - [x] exact `wxid_*` account pin validation
 - [x] per-instance Task Scheduler installer
 - [x] group allowlist / `*` passthrough
@@ -23,7 +24,10 @@
 - [x] SQLite retry/outbox buffer
 - [x] heartbeat/status integration
 - [x] read-only callback contract
-- [ ] install and validate vetted webot checkout on Server Win
+- [x] Windows multi-user-session runtime design
+- [x] multi-WeChat runtime manifest + status/doctor manager
+- [x] WeBot key-onboarding doctor
+- [ ] complete one real WeBot key onboarding on Server Win
 - [ ] validate two live WeChat identities without cross-account contamination
 - [ ] 5–10 group live soak test
 - [ ] reboot/login recovery test
@@ -49,6 +53,7 @@
 - [ ] Feishu adapter
 - [ ] WeCom adapter
 - [ ] search and semantic retrieval
+- [ ] report delivery sink abstraction
 
 ## P4 — Intelligence OS
 - [ ] people radar

@@ -1,3 +1,5 @@
+from .extraction import ContextExtractionResult, ContextGraphExtractor
+from .pipeline import extract_context_candidates
 from .schemas import (
     Commitment,
     ContextEvidenceRef,
@@ -15,6 +17,8 @@ __all__ = [
     "Commitment",
     "ContextEvidenceRef",
     "ContextEvent",
+    "ContextExtractionResult",
+    "ContextGraphExtractor",
     "Opportunity",
     "Person",
     "ProjectContext",
@@ -22,4 +26,5 @@ __all__ = [
     "Risk",
     "SelfSignal",
     "Topic",
+    "extract_context_candidates",
 ]

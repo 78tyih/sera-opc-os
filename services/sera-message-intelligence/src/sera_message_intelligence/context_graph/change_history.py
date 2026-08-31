@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from sera_message_intelligence.models import ContextGraphChange
 
 
-ChangeObjectType = Literal["person", "event", "opportunity", "commitment"]
+ChangeObjectType = Literal["person", "event", "opportunity", "commitment", "self_signal"]
 
 _IGNORED_PAYLOAD_FIELDS = {"created_at", "updated_at"}
 
@@ -119,6 +119,16 @@ def classify_payload_change(
         new_conflicts = _conflict_statements(after) - _conflict_statements(before)
         if new_conflicts:
             semantic.append("conflict_added")
+
+    elif object_type == "self_signal":
+        if "status" in changed_fields:
+            semantic.append("self_signal_status_changed")
+        if "evidence_level" in changed_fields or "source_diversity" in changed_fields:
+            semantic.append("self_signal_evidence_strength_changed")
+        if "confidence" in changed_fields:
+            semantic.append("self_signal_confidence_changed")
+        if "user_confirmation_ref" in changed_fields:
+            semantic.append("self_signal_user_confirmation_changed")
 
     elif object_type == "event":
         if changed_fields:

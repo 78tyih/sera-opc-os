@@ -23,6 +23,7 @@ from .daily_review import build_daily_review, render_daily_review_markdown
 from .learning import init_learning_schema
 from .pipeline import process_learning_signal
 from .portability import assess_and_record_portability, assess_portability, record_portability_probe
+from .portability_export import export_portability_snapshot
 from .skill_proposer import propose_ready_skills
 from .wiki_export import export_context_hub_snapshot
 from .wiki_maintainer import maintain_uncompiled_signals
@@ -108,10 +109,13 @@ def cmd_review(conn: sqlite3.Connection, args) -> int:
 def cmd_export(conn: sqlite3.Connection, args) -> int:
     wiki = export_context_hub_snapshot(conn, args.context_hub, day=args.day)
     contradictions = export_contradictions_snapshot(conn, args.context_hub)
+    portability = export_portability_snapshot(conn, args.context_hub)
     result = {
         **wiki,
         "contradiction_files_exported": contradictions["contradiction_files_exported"],
         "contradiction_files": contradictions["contradiction_files"],
+        "portability_files_exported": portability["portability_files_exported"],
+        "portability_files": portability["portability_files"],
         "git_commit_performed": False,
     }
     print(json.dumps(result, ensure_ascii=False, indent=2))

@@ -4,7 +4,7 @@ Updated: 2026-08-31
 
 ## Executive status
 
-The software foundation for Message Core, the Server Win collector runtime, the evidence-backed intelligence pipeline and the first durable Personal Context Graph layer is implemented on branch `feat/sera-message-intelligence-p0` / PR #4. The main remaining risk is no longer core architecture; it is **live Server Win validation of the external WeChat capture dependency and multi-account runtime**.
+The software foundation for Message Core, the Server Win collector runtime, the evidence-backed intelligence pipeline, the durable Personal Context Graph and the first deterministic action Radars is implemented on branch `feat/sera-message-intelligence-p0` / PR #4. The main remaining risk is no longer core architecture; it is **live Server Win validation of the external WeChat capture dependency and multi-account runtime**.
 
 ## P0 — Message Core
 
@@ -84,7 +84,7 @@ Planned:
 
 ## P4 — Personal Context Graph / Intelligence OS
 
-Status: **object model + extraction + conservative durable upsert implemented**
+Status: **object model + extraction + durable upsert + action Radars implemented**
 
 Completed:
 - durable object schemas for `ContextEvent`, `Person`, `Relationship`, `Opportunity`, `Commitment`, `Risk`, `Topic`, `ProjectContext`, `SelfSignal`;
@@ -97,16 +97,20 @@ Completed:
 - model-derived Event / Opportunity / Commitment output stays `hypothesis` rather than becoming confirmed memory;
 - deterministic Person evidence merge across conversation chunks;
 - daily CLI: `scripts/extract_context_candidates.py`;
-- output: `reports/YYYY-MM-DD/context-candidates.json`;
 - durable PostgreSQL `context_graph_objects` store;
 - conservative exact Opportunity resolution by normalized title + related people;
 - conservative exact Commitment resolution by owner + beneficiaries + normalized summary;
 - candidate Opportunity IDs remapped to durable IDs before linked Commitments are persisted;
 - conflicting Commitment due dates preserved as explicit conflict inference rather than silently overwritten;
 - `--persist` CLI path for extraction -> resolution -> durable graph upsert;
-- tests covering invalid evidence, invented identities, account isolation, cross-chunk Person merge, Opportunity deduplication, identity-sensitive non-merge, linked-ID remapping and due-date conflict preservation.
+- **Opportunity Radar** with deterministic fit / urgency / probability / freshness / evidence scoring;
+- **Commitment Tracker** with deterministic due-pressure / confidence / evidence / conflict attention scoring;
+- **People Radar** where active opportunity / commitment / recency signals dominate raw interaction volume;
+- **Relationship Radar** where an edge requires an explicit shared active Opportunity or owner↔beneficiary Commitment context; group co-presence alone is not sufficient;
+- JSON + Markdown CLI outputs for Context Radar and People / Relationship Radar;
+- regression tests across extraction, persistence, conflict preservation, opportunity ranking, commitment ranking and evidence-grounded relationship edges.
 
-Current durable path:
+Current operational path:
 
 ```text
 PostgreSQL messages
@@ -115,18 +119,39 @@ PostgreSQL messages
 → conservative exact resolution
 → temporal merge
 → context_graph_objects
+→ Opportunity Radar / Commitment Tracker / People & Relationship Radar
 ```
 
 The resolver intentionally favors false negatives over false-positive merges. Cross-platform Person resolution and fuzzy semantic Opportunity/Commitment resolution are still deferred.
 
-Next P4 targets:
-- Opportunity Radar built from durable graph changes;
-- People / Relationship Radar;
-- Commitment tracker;
+Current deterministic read models:
+
+```text
+Opportunity Radar
+→ What should I pursue now?
+
+Commitment Tracker
+→ What must not be forgotten?
+
+People / Relationship Radar
+→ Who deserves attention now, and what concrete context connects us?
+```
+
+Next P4 target:
+
+```text
+Graph Change History
+→ Created / Updated / Conflict / Superseded / Resolved
+→ "What changed in my world today?"
+→ Personal Intelligence Brief V2
+```
+
+Planned after that:
 - Risk monitor;
+- project/topic momentum;
+- conservative cross-platform Person resolution;
 - explicit supersede / contradict / rejected lifecycle semantics;
-- project/topic memory;
-- Personal Intelligence Brief V2 based on graph changes;
+- evidence-gated weekly Self Intelligence;
 - policy-scoped agent access;
 - plugin/capability API;
 - long-term learning from resolved actions and decisions.
@@ -146,6 +171,8 @@ real WeChat message
 → context-candidates.json
 → --persist
 → durable Person / Opportunity / Commitment objects
+→ Context Radar
+→ People / Relationship Radar
 ```
 
-After this proof, the next implementation target should be **Opportunity Radar / People Radar views over the durable graph**, not another rewrite of the ingestion or extraction architecture.
+After this proof, the next architectural layer should be Graph Change History / Brief V2 rather than another rewrite of ingestion, extraction or ranking.

@@ -1,0 +1,41 @@
+name: Creator Intelligence Smoke Source Fetch
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - business/sera-creator-intelligence/.smoke-trigger
+
+permissions:
+  contents: read
+
+jobs:
+  fetch-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install fetch dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install requests yt-dlp youtube-transcript-api
+
+      - name: Fetch 10-item smoke source bundle
+        run: |
+          python business/sera-creator-intelligence/scripts/cloud_smoke_fetch.py \
+            --output /tmp/creator-intelligence-smoke
+
+      - name: Upload short-lived source artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: creator-intelligence-smoke-source
+          path: /tmp/creator-intelligence-smoke
+          retention-days: 1
+          if-no-files-found: error

@@ -63,16 +63,21 @@ def apply_self_signal_decision(
         new_status = "confirmed_by_user"
         evidence_level = 4
         confidence = 1.0
+        # Explicit first-person confirmation is an independent evidence source from
+        # the communication/project contexts that produced the original hypothesis.
+        source_diversity = max(2, signal.source_diversity)
         statement = "User explicitly confirmed this SelfSignal as durable self-knowledge."
     elif action == "reject":
         new_status = "rejected_by_user"
         evidence_level = signal.evidence_level
         confidence = signal.confidence
+        source_diversity = signal.source_diversity
         statement = "User explicitly rejected this SelfSignal."
     else:
         new_status = "superseded"
         evidence_level = signal.evidence_level
         confidence = signal.confidence
+        source_diversity = signal.source_diversity
         statement = "User explicitly superseded this SelfSignal with newer context."
 
     if note:
@@ -102,6 +107,7 @@ def apply_self_signal_decision(
             "status": new_status,
             "evidence_level": evidence_level,
             "confidence": confidence,
+            "source_diversity": source_diversity,
             "user_confirmation_ref": decision_ref.source_id,
         }
     )

@@ -32,7 +32,7 @@ ExtractableEventType = Literal[
 class EventCandidate(BaseModel):
     event_type: ExtractableEventType
     summary: str
-    actor_sender_ids: list[str] = Field(default_factory=list)
+    actor_sender_refs: list[str] = Field(default_factory=list)
     message_ids: list[int] = Field(min_length=1)
     confidence: float = Field(ge=0, le=1)
 
@@ -49,7 +49,7 @@ class OpportunityCandidate(BaseModel):
         "introduction",
         "other",
     ]
-    person_sender_ids: list[str] = Field(default_factory=list)
+    person_sender_refs: list[str] = Field(default_factory=list)
     problem: str | None = None
     proposed_value: str | None = None
     estimated_value: float | None = Field(default=None, ge=0)
@@ -63,8 +63,8 @@ class OpportunityCandidate(BaseModel):
 
 
 class CommitmentCandidate(BaseModel):
-    owner_sender_id: str
-    beneficiary_sender_ids: list[str] = Field(default_factory=list)
+    owner_sender_ref: str
+    beneficiary_sender_refs: list[str] = Field(default_factory=list)
     summary: str
     due_at: datetime | None = None
     related_opportunity_titles: list[str] = Field(default_factory=list)
@@ -89,7 +89,7 @@ class ContextExtractionResult(BaseModel):
 SYSTEM_PROMPT = """You extract durable personal-context candidates from chat messages.
 Return JSON only. Do not invent identities, facts, deadlines, values, organizations or relationships.
 Every extracted object MUST cite one or more exact message IDs from the input.
-Only use sender IDs that appear in the input.
+Only use sender_refs that appear in the input. sender_ref is the full platform/account/sender identity.
 A candidate is a hypothesis backed by evidence, not a confirmed long-term fact.
 Extract only information materially useful for decisions, opportunities, commitments, projects or relationships.
 Do not create personality, mental-health or clinical conclusions.
@@ -100,6 +100,10 @@ def _stable_id(prefix: str, *parts: object) -> str:
     raw = "|".join(str(part) for part in parts)
     digest = hashlib.sha256(raw.encode("utf-8")).hexdigest()[:20]
     return f"{prefix}_{digest}"
+
+
+def _sender_ref(message: IntelligenceMessage) -> str:
+    return f"{message.platform}:{message.account_id}:{message.sender_id}"
 
 
 def _person_id(message: IntelligenceMessage) -> str:
@@ -141,7 +145,7 @@ def _time_bounds(messages: list[IntelligenceMessage]) -> tuple[datetime, datetim
 
 
 def _build_prompt(messages: list[IntelligenceMessage]) -> str:
-    allowed_senders = sorted({message.sender_id for message in messages})
+    allowed_sender_refs = sorted({_sender_ref(message) for message in messages})
     rows = []
     for message in messages:
         rows.append(
@@ -151,6 +155,7 @@ def _build_prompt(messages: list[IntelligenceMessage]) -> str:
                 "account_id": message.account_id,
                 "conversation_id": message.conversation_id,
                 "conversation_name": message.conversation_name,
+                "sender_ref": _sender_ref(message),
                 "sender_id": message.sender_id,
                 "sender_name": message.sender_name,
                 "sent_at": message.sent_at.isoformat(),
@@ -162,7 +167,7 @@ def _build_prompt(messages: list[IntelligenceMessage]) -> str:
             {
                 "event_type": "decision|project_change|relationship_signal|other",
                 "summary": "string",
-                "actor_sender_ids": ["existing sender_id"],
+                "actor_sender_refs": ["existing sender_ref"],
                 "message_ids": [123],
                 "confidence": 0.0,
             }
@@ -171,7 +176,7 @@ def _build_prompt(messages: list[IntelligenceMessage]) -> str:
             {
                 "title": "string",
                 "opportunity_type": "customer|partnership|product|investment|distribution|resource|introduction|other",
-                "person_sender_ids": ["existing sender_id"],
+                "person_sender_refs": ["existing sender_ref"],
                 "problem": "string or null",
                 "proposed_value": "string or null",
                 "estimated_value": None,
@@ -186,8 +191,8 @@ def _build_prompt(messages: list[IntelligenceMessage]) -> str:
         ],
         "commitments": [
             {
-                "owner_sender_id": "existing sender_id",
-                "beneficiary_sender_ids": [],
+                "owner_sender_ref": "existing sender_ref",
+                "beneficiary_sender_refs": [],
                 "summary": "string",
                 "due_at": None,
                 "related_opportunity_titles": [],
@@ -197,8 +202,8 @@ def _build_prompt(messages: list[IntelligenceMessage]) -> str:
         ],
     }
     return (
-        "Allowed sender IDs:\n"
-        + json.dumps(allowed_senders, ensure_ascii=False)
+        "Allowed sender refs:\n"
+        + json.dumps(allowed_sender_refs, ensure_ascii=False)
         + "\n\nRequired output shape:\n"
         + json.dumps(schema, ensure_ascii=False, indent=2)
         + "\n\nMessages:\n"
@@ -209,9 +214,9 @@ def _build_prompt(messages: list[IntelligenceMessage]) -> str:
 class ContextGraphExtractor:
     """Extract evidence-bound graph candidates from a bounded message batch.
 
-    Person identity creation is deterministic and based only on actual message senders.
-    LLM output may propose events, opportunities and commitments, but a proposal is
-    rejected if it cites unknown message IDs or sender IDs.
+    Person identities are deterministic and namespaced by platform + account +
+    sender ID. LLM output may propose events, opportunities and commitments, but
+    a proposal is rejected if it cites unknown message IDs or sender refs.
     """
 
     def __init__(self, llm: StructuredLLM):
@@ -224,14 +229,14 @@ class ContextGraphExtractor:
         messages_by_id = {message.id: message for message in messages}
         sender_messages: dict[str, list[IntelligenceMessage]] = defaultdict(list)
         for message in messages:
-            sender_messages[message.sender_id].append(message)
-        allowed_senders = set(sender_messages)
+            sender_messages[_sender_ref(message)].append(message)
+        allowed_sender_refs = set(sender_messages)
         now = datetime.now(timezone.utc)
 
         persons = self._build_persons(sender_messages, now)
         person_ids = {
-            sender_id: _person_id(sender_batch[-1])
-            for sender_id, sender_batch in sender_messages.items()
+            sender_ref: _person_id(sender_batch[-1])
+            for sender_ref, sender_batch in sender_messages.items()
         }
 
         raw = self.llm.generate_json(system=SYSTEM_PROMPT, prompt=_build_prompt(messages))
@@ -245,7 +250,7 @@ class ContextGraphExtractor:
             if evidence_messages is None:
                 result.rejected_candidates.append(f"event:{candidate.summary}:invalid_evidence")
                 continue
-            if any(sender_id not in allowed_senders for sender_id in candidate.actor_sender_ids):
+            if any(sender_ref not in allowed_sender_refs for sender_ref in candidate.actor_sender_refs):
                 result.rejected_candidates.append(f"event:{candidate.summary}:unknown_sender")
                 continue
             evidence_refs = [_evidence_ref(message) for message in evidence_messages]
@@ -274,7 +279,7 @@ class ContextGraphExtractor:
                     ],
                     event_type=candidate.event_type,
                     occurred_at=occurred_at,
-                    actor_person_ids=[person_ids[sender_id] for sender_id in candidate.actor_sender_ids],
+                    actor_person_ids=[person_ids[sender_ref] for sender_ref in candidate.actor_sender_refs],
                     related_object_ids=[],
                     summary=candidate.summary,
                     observed_facts=[],
@@ -288,7 +293,7 @@ class ContextGraphExtractor:
             if evidence_messages is None:
                 result.rejected_candidates.append(f"opportunity:{candidate.title}:invalid_evidence")
                 continue
-            if any(sender_id not in allowed_senders for sender_id in candidate.person_sender_ids):
+            if any(sender_ref not in allowed_sender_refs for sender_ref in candidate.person_sender_refs):
                 result.rejected_candidates.append(f"opportunity:{candidate.title}:unknown_sender")
                 continue
             first_seen_at, last_signal_at = _time_bounds(evidence_messages)
@@ -318,7 +323,7 @@ class ContextGraphExtractor:
                     title=candidate.title,
                     opportunity_type=candidate.opportunity_type,
                     stage="signal",
-                    person_ids=[person_ids[sender_id] for sender_id in candidate.person_sender_ids],
+                    person_ids=[person_ids[sender_ref] for sender_ref in candidate.person_sender_refs],
                     organization_ids=[],
                     project_ids=[],
                     problem=candidate.problem,
@@ -340,17 +345,17 @@ class ContextGraphExtractor:
             if evidence_messages is None:
                 result.rejected_candidates.append(f"commitment:{candidate.summary}:invalid_evidence")
                 continue
-            if candidate.owner_sender_id not in allowed_senders:
+            if candidate.owner_sender_ref not in allowed_sender_refs:
                 result.rejected_candidates.append(f"commitment:{candidate.summary}:unknown_owner")
                 continue
-            if any(sender_id not in allowed_senders for sender_id in candidate.beneficiary_sender_ids):
+            if any(sender_ref not in allowed_sender_refs for sender_ref in candidate.beneficiary_sender_refs):
                 result.rejected_candidates.append(f"commitment:{candidate.summary}:unknown_beneficiary")
                 continue
             evidence_refs = [_evidence_ref(message) for message in evidence_messages]
             evidence_ids = [ref.source_id for ref in evidence_refs]
             commitment_id = _stable_id(
                 "commitment",
-                candidate.owner_sender_id,
+                candidate.owner_sender_ref,
                 candidate.summary.casefold(),
                 *sorted(candidate.message_ids),
             )
@@ -374,15 +379,15 @@ class ContextGraphExtractor:
                             supporting_evidence_ids=evidence_ids,
                         )
                     ],
-                    owner_person_id=person_ids[candidate.owner_sender_id],
+                    owner_person_id=person_ids[candidate.owner_sender_ref],
                     beneficiary_person_ids=[
-                        person_ids[sender_id] for sender_id in candidate.beneficiary_sender_ids
+                        person_ids[sender_ref] for sender_ref in candidate.beneficiary_sender_refs
                     ],
                     summary=candidate.summary,
                     status="open",
                     due_at=candidate.due_at,
                     related_person_ids=[
-                        person_ids[sender_id] for sender_id in candidate.beneficiary_sender_ids
+                        person_ids[sender_ref] for sender_ref in candidate.beneficiary_sender_refs
                     ],
                     related_project_ids=[],
                     related_opportunity_ids=related_opportunity_ids,
@@ -398,7 +403,7 @@ class ContextGraphExtractor:
         now: datetime,
     ) -> list[Person]:
         persons: list[Person] = []
-        for sender_id, messages in sorted(sender_messages.items()):
+        for sender_ref, messages in sorted(sender_messages.items()):
             ordered = sorted(messages, key=lambda message: message.sent_at)
             latest = ordered[-1]
             display_name = next(
@@ -407,7 +412,7 @@ class ContextGraphExtractor:
                     for message in reversed(ordered)
                     if message.sender_name and message.sender_name.strip()
                 ),
-                sender_id,
+                latest.sender_id,
             )
             evidence_refs = [_evidence_ref(message) for message in ordered]
             persons.append(
@@ -416,11 +421,11 @@ class ContextGraphExtractor:
                     created_at=now,
                     updated_at=now,
                     evidence_refs=evidence_refs,
-                    observations=[f"Observed sender identity {sender_id}"],
+                    observations=[f"Observed sender identity {sender_ref}"],
                     inferences=[],
                     display_name=display_name,
                     aliases=[],
-                    identities={latest.platform: [sender_id]},
+                    identities={latest.platform: [latest.sender_id]},
                     organization=None,
                     roles=[],
                     locations=[],

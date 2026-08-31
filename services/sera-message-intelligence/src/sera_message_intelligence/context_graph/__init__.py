@@ -12,6 +12,13 @@ from .schemas import (
     SelfSignal,
     Topic,
 )
+from .store import (
+    GraphUpsertSummary,
+    canonical_key_for,
+    list_graph_objects,
+    upsert_context_result,
+    upsert_graph_object,
+)
 
 __all__ = [
     "Commitment",
@@ -19,6 +26,7 @@ __all__ = [
     "ContextEvent",
     "ContextExtractionResult",
     "ContextGraphExtractor",
+    "GraphUpsertSummary",
     "Opportunity",
     "Person",
     "ProjectContext",
@@ -26,5 +34,9 @@ __all__ = [
     "Risk",
     "SelfSignal",
     "Topic",
+    "canonical_key_for",
     "extract_context_candidates",
+    "list_graph_objects",
+    "upsert_context_result",
+    "upsert_graph_object",
 ]

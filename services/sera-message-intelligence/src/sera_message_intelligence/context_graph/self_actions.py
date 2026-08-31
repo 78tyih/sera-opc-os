@@ -122,7 +122,10 @@ def apply_self_signal_decision(
 
     record.payload = after
     record.evidence_count = len(updated.evidence_refs)
-    record.last_seen_at = max(record.last_seen_at, now)
+    # An explicit user decision is itself the newest meaningful observation for this signal.
+    # Assign directly instead of comparing timezone-aware Python values with SQLite values,
+    # which may be returned without tzinfo depending on the test/runtime dialect.
+    record.last_seen_at = now
     record.updated_at = now
     session.commit()
 

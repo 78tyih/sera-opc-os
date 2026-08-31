@@ -24,6 +24,7 @@ from .portability import (
     list_portability_probes,
     record_portability_probe,
 )
+from .portability_export import export_portability_snapshot, render_portability_markdown
 from .skill_proposer import propose_from_pattern, propose_ready_skills
 from .wiki_export import export_context_hub_snapshot, render_pattern_markdown, render_proposal_markdown
 from .wiki_maintainer import compile_signal_to_wiki, maintain_uncompiled_signals
@@ -56,4 +57,6 @@ __all__ = [
     "list_portability_probes",
     "assess_portability",
     "assess_and_record_portability",
+    "render_portability_markdown",
+    "export_portability_snapshot",
 ]

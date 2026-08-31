@@ -13,7 +13,7 @@ class FakeLLM:
 
     def generate_json(self, *, system: str, prompt: str) -> dict[str, Any]:
         assert "Do not invent identities" in system
-        assert "Allowed sender IDs" in prompt
+        assert "Allowed sender refs" in prompt
         return self.payload
 
 
@@ -23,11 +23,13 @@ def message(
     sender_name: str,
     text: str,
     minute: int,
+    *,
+    account_id: str = "acct-main",
 ) -> IntelligenceMessage:
     return IntelligenceMessage(
         id=message_id,
         platform="wechat",
-        account_id="acct-main",
+        account_id=account_id,
         conversation_id="group-1",
         conversation_name="Industry Group",
         sender_id=sender_id,
@@ -36,6 +38,10 @@ def message(
         message_type="text",
         text_content=text,
     )
+
+
+def sender_ref(sender_id: str, account_id: str = "acct-main") -> str:
+    return f"wechat:{account_id}:{sender_id}"
 
 
 def test_extracts_sender_backed_person_opportunity_commitment_and_event() -> None:
@@ -49,7 +55,7 @@ def test_extracts_sender_backed_person_opportunity_commitment_and_event() -> Non
                 {
                     "event_type": "relationship_signal",
                     "summary": "Alice expressed a concrete product need and Sera offered a demo.",
-                    "actor_sender_ids": ["alice", "me"],
+                    "actor_sender_refs": [sender_ref("alice"), sender_ref("me")],
                     "message_ids": [101, 102],
                     "confidence": 0.91,
                 }
@@ -58,7 +64,7 @@ def test_extracts_sender_backed_person_opportunity_commitment_and_event() -> Non
                 {
                     "title": "AI client-group intelligence demo",
                     "opportunity_type": "customer",
-                    "person_sender_ids": ["alice"],
+                    "person_sender_refs": [sender_ref("alice")],
                     "problem": "Too much client-group information to review manually.",
                     "proposed_value": "AI message intelligence demo.",
                     "estimated_value": None,
@@ -73,8 +79,8 @@ def test_extracts_sender_backed_person_opportunity_commitment_and_event() -> Non
             ],
             "commitments": [
                 {
-                    "owner_sender_id": "me",
-                    "beneficiary_sender_ids": ["alice"],
+                    "owner_sender_ref": sender_ref("me"),
+                    "beneficiary_sender_refs": [sender_ref("alice")],
                     "summary": "Send Alice a demo tomorrow.",
                     "due_at": "2026-09-01T12:00:00Z",
                     "related_opportunity_titles": ["AI client-group intelligence demo"],
@@ -114,7 +120,7 @@ def test_rejects_candidate_that_cites_unknown_message_id() -> None:
                 {
                     "title": "Invented opportunity",
                     "opportunity_type": "partnership",
-                    "person_sender_ids": ["alice"],
+                    "person_sender_refs": [sender_ref("alice")],
                     "problem": None,
                     "proposed_value": None,
                     "estimated_value": None,
@@ -146,7 +152,7 @@ def test_rejects_unknown_sender_identity_in_model_output() -> None:
                 {
                     "title": "Distribution lead",
                     "opportunity_type": "distribution",
-                    "person_sender_ids": ["bob-who-never-appeared"],
+                    "person_sender_refs": ["wechat:acct-main:bob-who-never-appeared"],
                     "problem": None,
                     "proposed_value": None,
                     "estimated_value": None,
@@ -161,8 +167,8 @@ def test_rejects_unknown_sender_identity_in_model_output() -> None:
             ],
             "commitments": [
                 {
-                    "owner_sender_id": "ghost",
-                    "beneficiary_sender_ids": [],
+                    "owner_sender_ref": "wechat:acct-main:ghost",
+                    "beneficiary_sender_refs": [],
                     "summary": "Ghost promised something.",
                     "due_at": None,
                     "related_opportunity_titles": [],
@@ -198,6 +204,21 @@ def test_person_identity_is_deterministic_and_not_model_invented() -> None:
     assert first.persons[0].organization is None
     assert first.persons[0].roles == []
     assert first.persons[0].inferences == []
+
+
+def test_same_sender_id_on_two_accounts_does_not_merge_people() -> None:
+    messages = [
+        message(101, "shared-id", "Alice on A", "hello", 1, account_id="acct-a"),
+        message(102, "shared-id", "Alice on B", "hello", 2, account_id="acct-b"),
+    ]
+    empty_llm = FakeLLM({"events": [], "opportunities": [], "commitments": []})
+
+    result = ContextGraphExtractor(empty_llm).extract(messages)
+
+    assert len(result.persons) == 2
+    assert result.persons[0].id != result.persons[1].id
+    evidence_accounts = {person.evidence_refs[0].account_id for person in result.persons}
+    assert evidence_accounts == {"acct-a", "acct-b"}
 
 
 def test_empty_batch_does_not_call_llm() -> None:

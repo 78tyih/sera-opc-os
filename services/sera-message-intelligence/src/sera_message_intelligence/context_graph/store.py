@@ -3,15 +3,17 @@ from __future__ import annotations
 import hashlib
 import re
 import unicodedata
+import uuid
 from datetime import datetime, timezone
 from typing import Literal, TypeAlias
 
 from pydantic import BaseModel, Field
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from sera_message_intelligence.models import ContextGraphObject
+from sera_message_intelligence.models import ContextGraphChange, ContextGraphObject
 
+from .change_history import append_graph_change
 from .extraction import ContextExtractionResult
 from .schemas import (
     Commitment,
@@ -30,6 +32,8 @@ ObjectType = Literal["person", "event", "opportunity", "commitment"]
 class GraphUpsertSummary(BaseModel):
     created: int = 0
     updated: int = 0
+    changes_recorded: int = 0
+    batch_id: str | None = None
     resolved_ids: dict[str, str] = Field(default_factory=dict)
 
 
@@ -294,6 +298,8 @@ def _object_bounds(obj: PersistableObject) -> tuple[datetime, datetime]:
 def upsert_graph_object(
     session: Session,
     obj: PersistableObject,
+    *,
+    batch_id: str | None = None,
 ) -> tuple[ContextGraphObject, bool]:
     object_type = object_type_for(obj)
     canonical_key = canonical_key_for(obj)
@@ -307,11 +313,12 @@ def upsert_graph_object(
     now = datetime.now(timezone.utc)
     if record is None:
         first_seen, last_seen = _object_bounds(obj)
+        after_payload = obj.model_dump(mode="json")
         record = ContextGraphObject(
             object_id=obj.id,
             object_type=object_type,
             canonical_key=canonical_key,
-            payload=obj.model_dump(mode="json"),
+            payload=after_payload,
             first_seen_at=first_seen,
             last_seen_at=last_seen,
             evidence_count=len(obj.evidence_refs),
@@ -320,13 +327,37 @@ def upsert_graph_object(
         )
         session.add(record)
         session.flush()
+        append_graph_change(
+            session,
+            object_id=record.object_id,
+            object_type=object_type,
+            before_payload=None,
+            after_payload=after_payload,
+            effective_at=last_seen,
+            batch_id=batch_id,
+        )
         return record, True
 
     existing = _model_for_record(record)
+    before_payload = existing.model_dump(mode="json")
     incoming = obj if obj.id == record.object_id else obj.model_copy(update={"id": record.object_id})
     merged = merge_graph_object(existing, incoming)
+    after_payload = merged.model_dump(mode="json")
     first_seen, last_seen = _object_bounds(merged)
-    record.payload = merged.model_dump(mode="json")
+
+    change = append_graph_change(
+        session,
+        object_id=record.object_id,
+        object_type=object_type,
+        before_payload=before_payload,
+        after_payload=after_payload,
+        effective_at=last_seen,
+        batch_id=batch_id,
+    )
+    if change is None:
+        return record, False
+
+    record.payload = after_payload
     record.first_seen_at = first_seen
     record.last_seen_at = last_seen
     record.evidence_count = len(merged.evidence_refs)
@@ -343,12 +374,14 @@ def upsert_context_result(
 
     Opportunity IDs are remapped before commitments are persisted so a commitment
     points at the durable opportunity object rather than a transient candidate ID.
+    Every call receives a batch ID so one extraction run can later be reconstructed.
     """
 
-    summary = GraphUpsertSummary()
+    batch_id = f"ctx_{uuid.uuid4().hex}"
+    summary = GraphUpsertSummary(batch_id=batch_id)
 
     for obj in [*extracted.persons, *extracted.events, *extracted.opportunities]:
-        record, created = upsert_graph_object(session, obj)
+        record, created = upsert_graph_object(session, obj, batch_id=batch_id)
         summary.resolved_ids[obj.id] = record.object_id
         if created:
             summary.created += 1
@@ -363,13 +396,21 @@ def upsert_context_result(
         candidate = commitment.model_copy(
             update={"related_opportunity_ids": remapped_opportunities}
         )
-        record, created = upsert_graph_object(session, candidate)
+        record, created = upsert_graph_object(session, candidate, batch_id=batch_id)
         summary.resolved_ids[commitment.id] = record.object_id
         if created:
             summary.created += 1
         else:
             summary.updated += 1
 
+    summary.changes_recorded = int(
+        session.scalar(
+            select(func.count())
+            .select_from(ContextGraphChange)
+            .where(ContextGraphChange.batch_id == batch_id)
+        )
+        or 0
+    )
     session.commit()
     return summary
 

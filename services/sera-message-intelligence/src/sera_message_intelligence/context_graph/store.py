@@ -22,11 +22,12 @@ from .schemas import (
     ContextInference,
     Opportunity,
     Person,
+    SelfSignal,
 )
 
 
-PersistableObject: TypeAlias = Person | ContextEvent | Opportunity | Commitment
-ObjectType = Literal["person", "event", "opportunity", "commitment"]
+PersistableObject: TypeAlias = Person | ContextEvent | Opportunity | Commitment | SelfSignal
+ObjectType = Literal["person", "event", "opportunity", "commitment", "self_signal"]
 
 
 class GraphUpsertSummary(BaseModel):
@@ -56,6 +57,8 @@ def object_type_for(obj: PersistableObject) -> ObjectType:
         return "opportunity"
     if isinstance(obj, Commitment):
         return "commitment"
+    if isinstance(obj, SelfSignal):
+        return "self_signal"
     raise TypeError(f"unsupported graph object: {type(obj)!r}")
 
 
@@ -64,6 +67,8 @@ def canonical_key_for(obj: PersistableObject) -> str:
 
     We merge only exact stable identities or exact normalized semantic signatures.
     This intentionally produces false negatives rather than false-positive merges.
+    SelfSignal IDs include their synthesis window, so separate windows remain separate
+    temporal observations instead of silently becoming permanent personality facts.
     """
 
     if isinstance(obj, Person):
@@ -82,6 +87,8 @@ def canonical_key_for(obj: PersistableObject) -> str:
             *sorted(obj.beneficiary_person_ids),
             _normalized_text(obj.summary),
         )
+    if isinstance(obj, SelfSignal):
+        return f"self_signal:{_digest(obj.id)}"
     raise TypeError(f"unsupported graph object: {type(obj)!r}")
 
 
@@ -91,6 +98,7 @@ def _model_for_record(record: ContextGraphObject) -> PersistableObject:
         "event": ContextEvent,
         "opportunity": Opportunity,
         "commitment": Commitment,
+        "self_signal": SelfSignal,
     }.get(record.object_type)
     if model_type is None:
         raise ValueError(f"unsupported stored graph object type: {record.object_type}")
@@ -128,6 +136,10 @@ def _merge_inferences(
 
 
 def _union(existing: list[str], incoming: list[str]) -> list[str]:
+    return list(dict.fromkeys([*existing, *incoming]))
+
+
+def _union_int(existing: list[int], incoming: list[int]) -> list[int]:
     return list(dict.fromkeys([*existing, *incoming]))
 
 
@@ -270,6 +282,45 @@ def _merge_commitment(existing: Commitment, incoming: Commitment) -> Commitment:
     )
 
 
+_SELF_STATUS_RANK = {
+    "hypothesis": 0,
+    "supported": 1,
+    "confirmed_by_user": 3,
+    "rejected_by_user": 3,
+    "superseded": 3,
+}
+
+
+def _merge_self_signal(existing: SelfSignal, incoming: SelfSignal) -> SelfSignal:
+    status = existing.status
+    if _SELF_STATUS_RANK[incoming.status] > _SELF_STATUS_RANK[existing.status]:
+        status = incoming.status
+    # User decisions are terminal unless a later user-authored object explicitly changes them.
+    if existing.status in {"confirmed_by_user", "rejected_by_user", "superseded"} and incoming.status in {"hypothesis", "supported"}:
+        status = existing.status
+
+    return existing.model_copy(
+        update={
+            "created_at": min(existing.created_at, incoming.created_at),
+            "updated_at": max(existing.updated_at, incoming.updated_at),
+            "evidence_refs": _merge_evidence(existing.evidence_refs, incoming.evidence_refs),
+            "observations": _union(existing.observations, incoming.observations),
+            "inferences": _merge_inferences(existing.inferences, incoming.inferences),
+            "window_start": min(existing.window_start, incoming.window_start),
+            "window_end": max(existing.window_end, incoming.window_end),
+            "supporting_event_ids": _union(existing.supporting_event_ids, incoming.supporting_event_ids),
+            "contradicting_event_ids": _union(existing.contradicting_event_ids, incoming.contradicting_event_ids),
+            "supporting_change_ids": _union_int(existing.supporting_change_ids, incoming.supporting_change_ids),
+            "contradicting_change_ids": _union_int(existing.contradicting_change_ids, incoming.contradicting_change_ids),
+            "confidence": max(existing.confidence, incoming.confidence),
+            "status": status,
+            "evidence_level": max(existing.evidence_level, incoming.evidence_level),
+            "source_diversity": max(existing.source_diversity, incoming.source_diversity),
+            "user_confirmation_ref": incoming.user_confirmation_ref or existing.user_confirmation_ref,
+        }
+    )
+
+
 def merge_graph_object(existing: PersistableObject, incoming: PersistableObject) -> PersistableObject:
     if type(existing) is not type(incoming):
         raise TypeError("cannot merge different graph object types")
@@ -281,6 +332,8 @@ def merge_graph_object(existing: PersistableObject, incoming: PersistableObject)
         return _merge_opportunity(existing, incoming)
     if isinstance(existing, Commitment) and isinstance(incoming, Commitment):
         return _merge_commitment(existing, incoming)
+    if isinstance(existing, SelfSignal) and isinstance(incoming, SelfSignal):
+        return _merge_self_signal(existing, incoming)
     raise TypeError(f"unsupported graph object: {type(existing)!r}")
 
 
@@ -289,6 +342,8 @@ def _object_bounds(obj: PersistableObject) -> tuple[datetime, datetime]:
         return obj.occurred_at, obj.occurred_at
     if isinstance(obj, Opportunity):
         return obj.first_seen_at, obj.last_signal_at
+    if isinstance(obj, SelfSignal):
+        return obj.window_start, max(obj.window_end, obj.updated_at)
     evidence_times = [ref.occurred_at for ref in obj.evidence_refs if ref.occurred_at is not None]
     if evidence_times:
         return min(evidence_times), max(evidence_times)
@@ -366,6 +421,20 @@ def upsert_graph_object(
     return record, False
 
 
+def _finish_summary(session: Session, summary: GraphUpsertSummary) -> GraphUpsertSummary:
+    if summary.batch_id:
+        summary.changes_recorded = int(
+            session.scalar(
+                select(func.count())
+                .select_from(ContextGraphChange)
+                .where(ContextGraphChange.batch_id == summary.batch_id)
+            )
+            or 0
+        )
+    session.commit()
+    return summary
+
+
 def upsert_context_result(
     session: Session,
     extracted: ContextExtractionResult,
@@ -403,16 +472,25 @@ def upsert_context_result(
         else:
             summary.updated += 1
 
-    summary.changes_recorded = int(
-        session.scalar(
-            select(func.count())
-            .select_from(ContextGraphChange)
-            .where(ContextGraphChange.batch_id == batch_id)
-        )
-        or 0
-    )
-    session.commit()
-    return summary
+    return _finish_summary(session, summary)
+
+
+def upsert_self_signals(
+    session: Session,
+    signals: list[SelfSignal],
+) -> GraphUpsertSummary:
+    """Persist time-bounded SelfSignals without merging across synthesis windows."""
+
+    batch_id = f"self_{uuid.uuid4().hex}"
+    summary = GraphUpsertSummary(batch_id=batch_id)
+    for signal in signals:
+        record, created = upsert_graph_object(session, signal, batch_id=batch_id)
+        summary.resolved_ids[signal.id] = record.object_id
+        if created:
+            summary.created += 1
+        else:
+            summary.updated += 1
+    return _finish_summary(session, summary)
 
 
 def list_graph_objects(

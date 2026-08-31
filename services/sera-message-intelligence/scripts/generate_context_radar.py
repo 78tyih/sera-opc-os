@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 
 from sqlalchemy.orm import Session
@@ -39,13 +40,20 @@ def main() -> None:
     markdown_path.write_text(render_context_radar_markdown(radar), encoding="utf-8")
 
     print(
-        radar.model_dump_json(
-            include={"generated_at", "opportunities", "commitments"},
-            indent=None,
+        json.dumps(
+            {
+                "generated_at": radar.generated_at.isoformat(),
+                "opportunities": len(radar.opportunities),
+                "active_opportunities": sum(1 for item in radar.opportunities if item.is_active),
+                "commitments": len(radar.commitments),
+                "active_commitments": sum(1 for item in radar.commitments if item.is_active),
+                "overdue_commitments": sum(1 for item in radar.commitments if item.overdue),
+                "json": str(json_path),
+                "markdown": str(markdown_path),
+            },
+            ensure_ascii=False,
         )
     )
-    print(f"json={json_path}")
-    print(f"markdown={markdown_path}")
 
 
 if __name__ == "__main__":

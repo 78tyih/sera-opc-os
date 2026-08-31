@@ -59,9 +59,14 @@
 - [x] define durable object model: Event / Person / Relationship / Opportunity / Commitment / Risk / Topic / Project / SelfSignal
 - [x] define Opportunity Intelligence / Relationship Intelligence / Self Intelligence product contracts
 - [x] define evidence ladder for self inference and user-confirmed knowledge
-- [ ] Event extraction pipeline from validated messages
-- [ ] conservative person/entity resolution
-- [ ] temporal object merge + supersede/contradict semantics
+- [x] bounded Event / Opportunity / Commitment extraction from message chunks
+- [x] deterministic Person creation from observed senders only
+- [x] namespace sender identity by platform + account + sender to prevent cross-account contamination
+- [x] fail-closed evidence validation for extracted candidates
+- [x] runnable `extract_context_candidates.py` daily candidate CLI
+- [ ] conservative cross-conversation / cross-platform person entity resolution
+- [ ] temporal Opportunity / Commitment merge + supersede/contradict semantics
+- [ ] durable graph persistence / object upsert store
 - [ ] Opportunity Radar
 - [ ] People / Relationship Radar
 - [ ] Commitment tracker

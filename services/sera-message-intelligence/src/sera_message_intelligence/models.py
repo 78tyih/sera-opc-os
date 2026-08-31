@@ -51,3 +51,21 @@ class CollectorState(Base):
     messages_received: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     errors: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
+
+
+class ContextGraphObject(Base):
+    __tablename__ = "context_graph_objects"
+    __table_args__ = (
+        UniqueConstraint("object_type", "canonical_key", name="uq_context_graph_type_key"),
+        Index("ix_context_graph_last_seen", "last_seen_at"),
+    )
+
+    object_id: Mapped[str] = mapped_column(String(128), primary_key=True)
+    object_type: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    canonical_key: Mapped[str] = mapped_column(String(128), nullable=False)
+    payload: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False, default=dict)
+    first_seen_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    last_seen_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    evidence_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))

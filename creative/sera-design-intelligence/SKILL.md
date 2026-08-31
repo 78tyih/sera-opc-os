@@ -1,6 +1,6 @@
 ---
 name: sera-design-intelligence
-version: 4.3.0
+version: 4.4.0
 type: design-intelligence
 author: Sera
 category: creative
@@ -16,8 +16,8 @@ status: active
 # Sera Design Intelligence Skill
 
 > Sera OPC OS 的 Evidence-first Design Intelligence System。
-> **不是复制网站的 Skill，也不是 Designlang 的包装器。**
-> V4.3 在 Living Design Benchmark 之上增加 Productization Layer：把经过真实项目验证的设计，不只记住，还进一步沉淀为 Style / Component / Template / Skill，可再次调用、展示和商品化。
+> **不是复制网站的 Skill，也不是 Designlang 或其他单一 Design Skill 的包装器。**
+> V4.4 在 Productization Layer 之上增加 Skill Benchmark Ingestion：能够把外部、内部、开源或受限访问的成熟设计 Skill 注册为学习对象，经过证据分层、冲突审查和可迁移性审查后再吸收进 Sera-native 设计能力。
 
 ## Purpose
 
@@ -31,40 +31,41 @@ status: active
 8. **Review** — UX / Design Critic 门禁
 9. **Learn** — 实验、转化、反馈与长期 drift 更新规则
 10. **Productize** — 把真实项目沉淀为可复用 Component / Template / Skill / Solution Pack
+11. **Benchmark Skills** — 学习其他成熟 Design Skill，但不盲目复制或覆盖 Sera 规则
 
 ## Architecture
 
 ```text
-Capture
+Capture / Reference Intake
   ↓
 Extraction Backend (Designlang primary)
   ↓
 Evidence Normalizer
   ↓
 Evidence-backed Design DNA
-  ├──────────────┐
-  ↓              ↓
-Cross-site       Living Benchmark
-Pattern Miner    Snapshot → Drift
-  ↓              ↓
-Pattern Review   Meaningful Change Gate
-  └──────┬───────┘
-         ↓
-Case + Pattern + Component + Style Memory
-         ↓
-Style Router / Design Direction
-         ↓
-Design System / Generator
-         ↓
-UX Gate + Critic Gate
-         ↓
-Productization Layer
-  ├─ Component Library
-  ├─ Template Library
-  ├─ Agent Skill
-  └─ Solution Pack
-         ↓
-Evolution Loop
+  ├──────────────┬─────────────────────┐
+  ↓              ↓                     ↓
+Cross-site       Living Benchmark      Skill Benchmark Intake
+Pattern Miner    Snapshot → Drift      Public / Internal / Restricted
+  ↓              ↓                     ↓
+Pattern Review   Meaningful Gate       Extract → Compare → Review
+  └──────────────┴──────────┬──────────┘
+                            ↓
+              Case + Pattern + Component + Style Memory
+                            ↓
+              Style Router / Design Direction
+                            ↓
+              Design System / Generator
+                            ↓
+              UX Gate + Critic Gate
+                            ↓
+              Productization Layer
+                ├─ Component Library
+                ├─ Template Library
+                ├─ Agent Skill
+                └─ Solution Pack
+                            ↓
+                     Evolution Loop
 ```
 
 ## When to Use
@@ -81,17 +82,20 @@ Evolution Loop
 - 用户要求“把这个页面 / 项目打包成模板、Skill、可复用零件”
 - 一个真实项目完成后，需要判断哪些设计资产值得进入长期库
 - 希望把已有设计资产包装成可展示、可交付或可出售的产品
+- 用户提供其他成熟 Design Skill、内部 Skill 或使用文档，希望“收录、学习、对比、吸收”
 
 ## Evidence Model
 
 每个重要结论属于：
 
 - `observed`：机器直接测得
-- `derived`：从 observed facts 可重复计算
+- `document_observed`：授权文档中直接出现的规则或能力
+- `user_reported`：用户、作者公告或发布说明提供，尚未独立核验
+- `derived`：从 observed facts 可重复计算或归纳
 - `inferred`：Agent 对设计意图/心理/策略的解释
-- `recommended`：面向新产品的建议
+- `recommended`：面向新产品或 Sera 的适配建议
 
-**禁止 inferred / recommended 冒充 observed。**
+**禁止 inferred / recommended / user_reported 冒充 observed。**
 
 ## Single-site Workflow
 
@@ -144,6 +148,56 @@ Drift Severity
 - `living-benchmark/drift.py`
 - `living-benchmark/meaningful-change-policy.md`
 - `workflows/design-radar.yaml`
+
+## Skill Benchmark Ingestion
+
+### 目标
+
+其他成熟 Skill 可以作为 **Benchmark / Learning Source**，但不能直接当作 Sera canonical rule。
+
+```text
+Skill / Docs / Release Announcement
+        ↓
+Access Classification
+        ↓
+Metadata Registration
+        ↓
+Authorized Source Review
+        ↓
+Capability + Rule Extraction
+        ↓
+Normalize to Sera Evidence Model
+        ↓
+Compare with Existing Sera Rules
+        ↓
+Conflict / Portability / Privacy Review
+        ↓
+Adopt / Adapt / Reject
+        ↓
+Generic Test
+        ↓
+Promote to Sera-native Memory
+```
+
+### Restricted / Internal Skill
+
+如果 Skill 文档属于内网、付费、私有或受限访问：
+
+- 公共仓库只登记最小 metadata；
+- 不镜像原文、附件、截图、凭证或内部链接；
+- 无授权内容访问时停止在 `metadata-only`，禁止猜测详细能力；
+- 用户或作者公告中的能力描述标为 `user_reported`；
+- 完成授权阅读后，再抽取 `document_observed` 规则；
+- 只有通过冲突、隐私和可迁移性审查的抽象规则才能进入 Sera canonical memory。
+
+当前首批内部 Benchmark：
+
+- `hx-skill` / 火效
+- `MarketUI skill`
+
+索引：`benchmark/internal-skills/registry.json`。
+
+工作流：`workflows/ingest-restricted-design-skill.md`。
 
 ## Productization Workflow
 
@@ -257,6 +311,9 @@ Intent
 20. **De-brand before reuse**：真实项目进入 Template / Component 公共层前必须删除品牌专属与敏感业务数据。
 21. **Relationship required**：Productized asset 必须关联 Case / Style / Component / Template / Skill 中至少两个对象，避免孤岛资产。
 22. **Generic demo required**：可出售模板必须证明脱离原品牌、原数据后仍能独立成立。
+23. **Restricted source stays restricted**：内网/私有 Design Skill 的原文、内部 URL、截图与附件不得镜像到公共仓库。
+24. **No benchmark auto-merge**：其他 Skill 的规则必须经过 Extract → Compare → Review，不直接覆盖 Sera canonical rules。
+25. **Reported claim ≠ verified capability**：发布公告或用户描述只能记为 `user_reported`，不能直接作为能力事实。
 
 ## Failure Handling
 
@@ -270,6 +327,8 @@ Drift extraction 失败时保留上一版 baseline，不用失败/缺失结果�
 
 Productization 时无法确认某内容是否敏感，则默认不进入公共 Demo / Template，只保留结构性抽象。
 
+Restricted Skill 无授权访问时，只登记 metadata 与来源状态；禁止凭名称推测能力。
+
 ## Design Philosophy
 
 Sera 的默认 prior：
@@ -280,9 +339,9 @@ Trust + Technology + Premium + Conversion
 
 它是路由起点，不是所有产品的硬编码答案。
 
-Productization 的长期目标：
+长期目标：
 
-> 不让优秀项目在交付结束后失效，而是把每一次真实设计工作继续转化为下一次可调用的设计能力。
+> 既不让优秀项目在交付结束后失效，也不让优秀外部经验停留在“看过”。每一条新设计能力都必须经过证据、比较和审查后，才能沉淀成下一次真正可调用的 Sera 能力。
 
 ## Version History
 
@@ -294,4 +353,5 @@ Productization 的长期目标：
 | 4.0 | 2026-08-31 | Evidence-first Extraction + Designlang Backend |
 | 4.1 | 2026-08-31 | Cross-site Learning + Pattern Promotion Policy |
 | 4.2 | 2026-08-31 | Living Design Benchmark + Semantic Drift Monitor |
-| **4.3** | **2026-08-31** | **Component / Template Productization Layer + Commercial Asset Pipeline** |
+| 4.3 | 2026-08-31 | Component / Template Productization Layer + Commercial Asset Pipeline |
+| **4.4** | **2026-08-31** | **Skill Benchmark Ingestion + Restricted-source policy; registered hx-skill and MarketUI skill** |

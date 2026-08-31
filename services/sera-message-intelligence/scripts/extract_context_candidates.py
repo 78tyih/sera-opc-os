@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 
 from sera_message_intelligence.config import get_settings
 from sera_message_intelligence.context_graph.pipeline import extract_context_candidates
+from sera_message_intelligence.context_graph.store import upsert_context_result
 from sera_message_intelligence.db import get_engine
 from sera_message_intelligence.intelligence.schemas import IntelligenceMessage
 from sera_message_intelligence.llm.client import OpenAICompatibleLLM
@@ -23,6 +24,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--date", help="Local extraction date in YYYY-MM-DD. Defaults to yesterday.")
     parser.add_argument("--output-root", default="reports")
     parser.add_argument("--max-chars", type=int, default=12000)
+    parser.add_argument(
+        "--persist",
+        action="store_true",
+        help="Conservatively resolve exact matches and upsert candidates into context_graph_objects.",
+    )
     return parser.parse_args()
 
 
@@ -59,8 +65,9 @@ def main() -> None:
     tz = ZoneInfo(settings.report_timezone)
     day = resolve_day(args.date, tz)
     start, end = utc_bounds(day, tz)
+    engine = get_engine()
 
-    with Session(get_engine()) as session:
+    with Session(engine) as session:
         rows = list_messages_between(session, start, end)
     messages = [to_intelligence_message(row) for row in rows]
 
@@ -85,7 +92,12 @@ def main() -> None:
         )
         print(
             json.dumps(
-                {"date": day.isoformat(), "messages": 0, "output": str(output_file)},
+                {
+                    "date": day.isoformat(),
+                    "messages": 0,
+                    "persisted": False,
+                    "output": str(output_file),
+                },
                 ensure_ascii=False,
             )
         )
@@ -118,21 +130,28 @@ def main() -> None:
         llm.close()
 
     output_file.write_text(result.model_dump_json(indent=2), encoding="utf-8")
-    print(
-        json.dumps(
-            {
-                "date": day.isoformat(),
-                "messages": len(messages),
-                "persons": len(result.persons),
-                "events": len(result.events),
-                "opportunities": len(result.opportunities),
-                "commitments": len(result.commitments),
-                "rejected": len(result.rejected_candidates),
-                "output": str(output_file),
-            },
-            ensure_ascii=False,
-        )
-    )
+
+    graph_summary = None
+    if args.persist:
+        with Session(engine) as session:
+            graph_summary = upsert_context_result(session, result)
+
+    response = {
+        "date": day.isoformat(),
+        "messages": len(messages),
+        "persons": len(result.persons),
+        "events": len(result.events),
+        "opportunities": len(result.opportunities),
+        "commitments": len(result.commitments),
+        "rejected": len(result.rejected_candidates),
+        "persisted": args.persist,
+        "output": str(output_file),
+    }
+    if graph_summary is not None:
+        response["graph_created"] = graph_summary.created
+        response["graph_updated"] = graph_summary.updated
+
+    print(json.dumps(response, ensure_ascii=False))
 
 
 if __name__ == "__main__":

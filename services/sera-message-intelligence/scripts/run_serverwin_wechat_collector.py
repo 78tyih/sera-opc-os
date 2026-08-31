@@ -38,6 +38,7 @@ def main() -> None:
     elif source_name == "webot_capture":
         source = WebotCaptureSource(
             webot_root=os.getenv("SMI_WEBOT_ROOT"),
+            webot_env_file=os.getenv("SMI_WEBOT_ENV_FILE") or None,
             groups=csv("SMI_WECHAT_GROUPS"),
             poll_seconds=float(os.getenv("SMI_POLL_SECONDS", "1.0")),
             wechat_data_dir=os.getenv("SMI_WECHAT_DATA_DIR") or None,

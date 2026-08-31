@@ -14,6 +14,7 @@
 ## P1 — WeChat read-only collector (Server Win)
 - [x] Server Win as default production WeChat runtime
 - [x] isolate native/WCDB dependency behind external webot capture adapter
+- [x] isolate webot app home / env from SMI runtime
 - [x] group allowlist / `*` passthrough
 - [x] polling + local durable checkpoint
 - [x] SQLite retry/outbox buffer
@@ -35,8 +36,9 @@
 - [x] OpenAI-compatible LLM adapter
 - [x] Markdown + HTML renderer
 - [x] daily-report CLI
+- [x] parameterized Server Win Daily Brief task installer
 - [ ] live LLM run on captured WeChat data
-- [ ] scheduled daily report task
+- [ ] choose/configure production daily report time
 
 ## P3 — Multi-IM
 - [ ] OpeniLink/iLink adapter

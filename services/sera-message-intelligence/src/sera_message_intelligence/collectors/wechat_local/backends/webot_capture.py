@@ -17,11 +17,13 @@ class WebotCaptureSource(WechatMessageSource):
     """
     def __init__(self, *, webot_root:str|Path|None=None, groups:list[str]|None=None,
                  poll_seconds:float=1.0, wechat_data_dir:str|None=None,
+                 webot_env_file:str|Path|None=None,
                  backend_factory:Callable[...,Any]|None=None):
         self.webot_root=Path(webot_root).resolve() if webot_root else None
         self.groups=groups or ["*"]
         self.poll_seconds=poll_seconds
         self.wechat_data_dir=wechat_data_dir
+        self.webot_env_file=Path(webot_env_file).resolve() if webot_env_file else None
         self.backend_factory=backend_factory
         self._backend=None
         self._thread=None
@@ -32,10 +34,18 @@ class WebotCaptureSource(WechatMessageSource):
             return self.backend_factory
         if not self.webot_root or not self.webot_root.exists():
             raise FileNotFoundError("WEBOT_ROOT must point to a vetted webot checkout on Server Win")
-        root=str(self.webot_root)
-        if root not in sys.path: sys.path.insert(0,root)
+
+        # webot resolves PROJECT_ROOT / .env at import time. Set these before
+        # importing its package so its WCDB key/data config remains isolated
+        # from SMI's own .env and working directory.
+        os.environ["WEBOT_APP_HOME"]=str(self.webot_root)
+        env_file=self.webot_env_file or (self.webot_root / ".env")
+        os.environ["WEBOT_ENV_FILE"]=str(env_file)
         if self.wechat_data_dir:
             os.environ["WECHAT_DATA_DIR"]=self.wechat_data_dir
+
+        root=str(self.webot_root)
+        if root not in sys.path: sys.path.insert(0,root)
         from src.wechat.wcdb_backend import WcdbBackend
         return WcdbBackend
 

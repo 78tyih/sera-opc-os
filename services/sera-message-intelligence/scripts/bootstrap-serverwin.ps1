@@ -2,7 +2,9 @@ param(
   [string]$RepoRoot = "D:\Sera\sera-opc-os",
   [string]$RuntimeRoot = "D:\Sera\MessageIntelligence",
   [string]$WebotRoot = "D:\Sera\deps\webot",
-  [switch]$InstallWebot
+  [switch]$InstallWebot,
+  [ValidatePattern('^$|^(?:[01]\d|2[0-3]):[0-5]\d$')]
+  [string]$DailyReportAt = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -40,7 +42,7 @@ if (Test-Path (Join-Path $WebotRoot "requirements.txt")) {
 $CoreEnv = Join-Path $ServiceRoot ".env"
 if (!(Test-Path $CoreEnv)) {
   Copy-Item (Join-Path $ServiceRoot ".env.example") $CoreEnv
-  Write-Warning "Created .env. Review SMI_INGEST_API_KEY before production use."
+  Write-Warning "Created .env. Review SMI_INGEST_API_KEY and LLM settings before production use."
 }
 $CollectorEnv = Join-Path $ServiceRoot "serverwin.env"
 if (!(Test-Path $CollectorEnv)) {
@@ -57,8 +59,12 @@ try {
 
 & (Join-Path $ServiceRoot "scripts\install-serverwin-core-task.ps1") -RepoRoot $RepoRoot -PythonExe $PythonExe
 & (Join-Path $ServiceRoot "scripts\install-serverwin-task.ps1") -RepoRoot $RepoRoot -PythonExe $PythonExe
+if ($DailyReportAt) {
+  & (Join-Path $ServiceRoot "scripts\install-serverwin-report-task.ps1") -RepoRoot $RepoRoot -PythonExe $PythonExe -At $DailyReportAt
+}
 
-Write-Host "Bootstrap complete. Review .env and serverwin.env, then start the two scheduled tasks."
+Write-Host "Bootstrap complete. Review .env and serverwin.env, then start the Core + Collector tasks."
 Write-Host "Core: Sera Message Intelligence - Core"
 Write-Host "Collector: Sera Message Intelligence - WeChat Collector"
+if ($DailyReportAt) { Write-Host "Daily Brief: $DailyReportAt" } else { Write-Host "Daily Brief schedule not installed. Pass -DailyReportAt HH:mm when ready." }
 Write-Host "Health: powershell -ExecutionPolicy Bypass -File scripts\health-check-serverwin.ps1"

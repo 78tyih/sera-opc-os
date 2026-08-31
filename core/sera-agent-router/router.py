@@ -28,6 +28,7 @@ def _builtin_routes():
         {"id":"propfirm-intel","intent":"PropFirm 情报/竞品","agent":"propfirm-agent","keywords":["propfirm","考试盘","竞品","情报","优惠","规则","规则更新","出金","推送","官网拆解","topstep","tradeify","fundednext","tradeday","apex","lucid"],"pipeline":["sera-intelligence-monitor","sera-browser-automation","sera-content-factory"],"finalize":["sera-knowledge-sync"]},
         {"id":"design-produce","intent":"设计/品牌/UI/海报","agent":"design-agent","keywords":["设计","海报","品牌","logo","界面","UI","设计稿","规范"],"pipeline":["sera-design-studio","figma-review"],"finalize":["sera-knowledge-sync"]},
         {"id":"trading-research","intent":"交易研究/复盘","agent":"trading-agent","keywords":["复盘","交易","策略","回测","ATAS","订单流","胜率","盈亏比","市场结构"],"pipeline":["trading-analysis","sera-finance-suite","sera-knowledge-reader"],"finalize":["sera-knowledge-sync"]},
+        {"id":"xianyu-seller","intent":"闲鱼卖家运营/客服/议价","agent":"core","keywords":["闲鱼","咸鱼","xianyu","goofish","闲鱼客服","闲鱼卖货","闲鱼上架","二手上架","自动议价"],"pipeline":["sera-xianyu-suite","sera-crm-adapter","sera-memory-system"],"finalize":["sera-knowledge-sync"]},
         {"id":"otc-bd","intent":"OTC 商务/客户","agent":"otc-agent","keywords":["客户","报价","跟进","OTC","商务","风控","资信","回复"],"pipeline":["sera-crm-adapter","sera-mail-hub","sera-memory-system"],"finalize":["sera-knowledge-sync"]},
         {"id":"knowledge-ops","intent":"知识/记忆/归档","agent":"core","keywords":["归档","同步","知识库","记录","记忆","上下文","交接","状态","上次"],"pipeline":["sera-context-system","sera-state-manager","sera-knowledge-sync"],"finalize":[]},
         {"id":"ceo-decision","intent":"CEO 决策","agent":"sera-ceo-agent","keywords":["评估项目","值不值得做","商业机会","要不要做","项目决策","ceo","战略决策"],"pipeline":["sera-decision-framework","sera-priority-engine"],"finalize":["sera-knowledge-sync"]},
@@ -72,6 +73,11 @@ EXECUTION_STEPS = {
         {"step":1,"task":"Analyze","skill":"trading-analysis","desc":"复盘/统计"},
         {"step":2,"task":"Research","skill":"sera-finance-suite","desc":"行情/数据辅助"},
         {"step":3,"task":"Report","skill":"sera-knowledge-sync","desc":"报告归档"}],
+    "xianyu-seller":[
+        {"step":1,"task":"Health","skill":"sera-xianyu-suite","desc":"检查闲鱼 Session、消息 Runtime 与模型配置"},
+        {"step":2,"task":"Operate","skill":"sera-xianyu-suite","desc":"客服、议价、商品草稿或受控发布"},
+        {"step":3,"task":"Record","skill":"sera-crm-adapter","desc":"沉淀买家线索与跟进状态"},
+        {"step":4,"task":"Learn","skill":"sera-memory-system","desc":"沉淀有效话术、议价结果与异常经验"}],
     "otc-bd":[
         {"step":1,"task":"Profile","skill":"sera-crm-adapter","desc":"客户画像"},
         {"step":2,"task":"Outreach","skill":"sera-mail-hub","desc":"沟通/回复"},
@@ -103,6 +109,8 @@ TESTS = [
     ("帮我做 TradeSpan 产品发布页","product-init"),
     ("复盘这周的交易","trading-research"),
     ("ATAS 订单流怎么解读","trading-research"),
+    ("帮我接管闲鱼客服并自动议价","xianyu-seller"),
+    ("把这个商品准备好闲鱼上架草稿","xianyu-seller"),
     ("这个客户跟进一下","otc-bd"),
     ("把报告归档到 Obsidian","knowledge-ops"),
     ("让 serawin 渲染","compute"),

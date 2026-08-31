@@ -4,7 +4,7 @@ Updated: 2026-08-31
 
 ## Executive status
 
-The software foundation for Message Core, the Server Win collector runtime, the evidence-backed intelligence pipeline and the first Personal Context Graph extraction layer is implemented on branch `feat/sera-message-intelligence-p0` / PR #4. The main remaining risk is no longer core architecture; it is **live Server Win validation of the external WeChat capture dependency and multi-account runtime**.
+The software foundation for Message Core, the Server Win collector runtime, the evidence-backed intelligence pipeline and the first durable Personal Context Graph layer is implemented on branch `feat/sera-message-intelligence-p0` / PR #4. The main remaining risk is no longer core architecture; it is **live Server Win validation of the external WeChat capture dependency and multi-account runtime**.
 
 ## P0 — Message Core
 
@@ -84,7 +84,7 @@ Planned:
 
 ## P4 — Personal Context Graph / Intelligence OS
 
-Status: **object model + first extraction pipeline implemented**
+Status: **object model + extraction + conservative durable upsert implemented**
 
 Completed:
 - durable object schemas for `ContextEvent`, `Person`, `Relationship`, `Opportunity`, `Commitment`, `Risk`, `Topic`, `ProjectContext`, `SelfSignal`;
@@ -98,25 +98,33 @@ Completed:
 - deterministic Person evidence merge across conversation chunks;
 - daily CLI: `scripts/extract_context_candidates.py`;
 - output: `reports/YYYY-MM-DD/context-candidates.json`;
-- regression tests for invalid evidence, invented identities, account isolation and cross-chunk Person merge.
+- durable PostgreSQL `context_graph_objects` store;
+- conservative exact Opportunity resolution by normalized title + related people;
+- conservative exact Commitment resolution by owner + beneficiaries + normalized summary;
+- candidate Opportunity IDs remapped to durable IDs before linked Commitments are persisted;
+- conflicting Commitment due dates preserved as explicit conflict inference rather than silently overwritten;
+- `--persist` CLI path for extraction -> resolution -> durable graph upsert;
+- tests covering invalid evidence, invented identities, account isolation, cross-chunk Person merge, Opportunity deduplication, identity-sensitive non-merge, linked-ID remapping and due-date conflict preservation.
 
-Next engineering sequence:
+Current durable path:
 
 ```text
-Context Candidate
-→ conservative Entity Resolution
-→ Temporal Merge
-→ Contradiction / Supersede Check
-→ Durable Graph Upsert
+PostgreSQL messages
+→ bounded Context Extraction
+→ context-candidates.json
+→ conservative exact resolution
+→ temporal merge
+→ context_graph_objects
 ```
 
-Opportunity and Commitment signals intentionally remain separate candidates until this resolution layer determines whether signals from different conversations or dates refer to the same durable object.
+The resolver intentionally favors false negatives over false-positive merges. Cross-platform Person resolution and fuzzy semantic Opportunity/Commitment resolution are still deferred.
 
-Planned after graph persistence:
-- Opportunity Radar;
+Next P4 targets:
+- Opportunity Radar built from durable graph changes;
 - People / Relationship Radar;
 - Commitment tracker;
 - Risk monitor;
+- explicit supersede / contradict / rejected lifecycle semantics;
 - project/topic memory;
 - Personal Intelligence Brief V2 based on graph changes;
 - policy-scoped agent access;
@@ -136,7 +144,8 @@ real WeChat message
 → PostgreSQL
 → Personal Intelligence Brief
 → context-candidates.json
-→ Person / Opportunity / Commitment evidence review
+→ --persist
+→ durable Person / Opportunity / Commitment objects
 ```
 
-After this proof, the next implementation target is durable Entity Resolution + Graph Upsert rather than adding more extraction object types.
+After this proof, the next implementation target should be **Opportunity Radar / People Radar views over the durable graph**, not another rewrite of the ingestion or extraction architecture.

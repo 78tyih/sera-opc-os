@@ -64,9 +64,15 @@
 - [x] namespace sender identity by platform + account + sender to prevent cross-account contamination
 - [x] fail-closed evidence validation for extracted candidates
 - [x] runnable `extract_context_candidates.py` daily candidate CLI
-- [ ] conservative cross-conversation / cross-platform person entity resolution
-- [ ] temporal Opportunity / Commitment merge + supersede/contradict semantics
-- [ ] durable graph persistence / object upsert store
+- [x] conservative exact Opportunity resolution by normalized title + related people
+- [x] conservative exact Commitment resolution by owner + beneficiaries + normalized summary
+- [x] durable `context_graph_objects` PostgreSQL object store
+- [x] candidate ID -> durable object ID remapping before linked Commitment upsert
+- [x] preserve conflicting Commitment due dates as explicit inference instead of silent overwrite
+- [x] optional `--persist` path from daily extraction CLI into durable graph upsert
+- [ ] conservative cross-platform Person entity resolution
+- [ ] semantic/fuzzy Opportunity / Commitment resolution beyond exact signatures
+- [ ] full temporal supersede / contradict / rejected state semantics
 - [ ] Opportunity Radar
 - [ ] People / Relationship Radar
 - [ ] Commitment tracker

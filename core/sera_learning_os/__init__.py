@@ -1,5 +1,10 @@
 """Sera Learning OS runtime API."""
 
+from .contradictions import (
+    init_contradiction_schema,
+    list_contradictions,
+    record_pattern_contradiction,
+)
 from .daily_review import build_daily_review, render_daily_review_markdown
 from .learning import (
     get_pattern,
@@ -31,4 +36,7 @@ __all__ = [
     "render_pattern_markdown",
     "render_proposal_markdown",
     "export_context_hub_snapshot",
+    "init_contradiction_schema",
+    "record_pattern_contradiction",
+    "list_contradictions",
 ]

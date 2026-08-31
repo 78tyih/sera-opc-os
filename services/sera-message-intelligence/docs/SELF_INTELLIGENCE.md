@@ -17,7 +17,7 @@ Raw messages
 → graph changes
 → repeated evidence across time / contexts
 → SelfSignal hypothesis
-→ optional user confirmation
+→ explicit user decision
 ```
 
 ## Allowed SelfSignal types
@@ -69,7 +69,7 @@ Example:
 
 ### L4 — User-confirmed knowledge
 
-Only explicit user confirmation can create L4.
+Only an explicit user decision can create L4.
 
 ```text
 status = confirmed_by_user
@@ -77,7 +77,7 @@ evidence_level = 4
 user_confirmation_ref = required
 ```
 
-A later model run cannot downgrade or overwrite a user-confirmed SelfSignal.
+The synthesis path cannot call the confirmation path automatically. A later model run cannot downgrade or overwrite a user-confirmed SelfSignal.
 
 ## Evidence validation
 
@@ -137,6 +137,50 @@ Week 4 signal
 
 Repeated similar SelfSignals across windows can later become evidence for a longer-term pattern, but that requires a separate synthesis step. This prevents temporary states from silently becoming permanent personality facts.
 
+## Explicit user decisions
+
+SelfSignal lifecycle decisions are separated from model synthesis:
+
+```text
+Model / evidence path
+→ hypothesis / supported
+
+Explicit user-decision path
+→ confirm / reject / supersede
+```
+
+Every user decision requires a non-empty `decision_reference`. The system adds it as a `user_confirmation` evidence reference and records the before/after mutation in Graph Change History.
+
+### Confirm
+
+```text
+confirm
+→ status = confirmed_by_user
+→ evidence_level = 4
+→ confidence = 1.0
+→ decision reference required
+```
+
+### Reject
+
+```text
+reject
+→ status = rejected_by_user
+→ keeps the evidence level that was actually earned
+→ decision reference required
+```
+
+### Supersede
+
+```text
+supersede
+→ status = superseded
+→ preserves the historical statement instead of deleting it
+→ decision reference required
+```
+
+A later model synthesis is not allowed to downgrade a terminal user decision. Another **explicit** user decision may reverse a prior user decision, and that reversal is itself audited in Graph Change History.
+
 ## CLI
 
 Generate the last seven days ending yesterday:
@@ -157,7 +201,25 @@ Persist validated signals to the durable graph:
 python scripts/generate_self_intelligence.py --days 7 --persist
 ```
 
-Outputs:
+List durable SelfSignals:
+
+```powershell
+python scripts/manage_self_signal.py --action list
+```
+
+Explicitly confirm one signal:
+
+```powershell
+python scripts/manage_self_signal.py `
+  --action confirm `
+  --id self_xxx `
+  --reference user-decision:confirm:2026-09-01 `
+  --note "This reflects my current core focus."
+```
+
+Reject or supersede uses the same CLI with `--action reject` / `--action supersede`.
+
+Outputs from synthesis:
 
 ```text
 reports/self-intelligence/YYYY-MM-DD_to_YYYY-MM-DD/
@@ -182,8 +244,8 @@ Together they transform message capture into a Personal Intelligence System rath
 
 ## Next steps
 
-- add user-facing Confirm / Reject / Supersede actions;
-- compare SelfSignals across multiple windows;
+- compare SelfSignals across multiple windows without collapsing them into permanent traits;
 - connect Topic / Project / Calendar / GitHub / Notion / financial facts as additional evidence sources;
 - calibrate thresholds from actual user corrections;
-- surface only the highest-value SelfSignals in the polished Personal Intelligence Brief V2.
+- surface only the highest-value SelfSignals in the polished Personal Intelligence Brief V2;
+- later expose the same explicit decision contract through a properly authenticated UI/API, without allowing Agent auto-confirmation.

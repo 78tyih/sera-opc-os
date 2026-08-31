@@ -86,12 +86,14 @@
 - [x] durable SelfSignal persistence without cross-window personality collapse
 - [x] protect user-confirmed SelfSignals from later model downgrade
 - [x] `generate_self_intelligence.py` 7/30-day style window + optional durable persistence
+- [x] explicit SelfSignal confirm / reject / supersede actions require user decision reference and are audited in Graph Change History
+- [x] `manage_self_signal.py` CLI keeps model synthesis and user confirmation as separate code paths
 - [ ] conservative cross-platform Person entity resolution
 - [ ] semantic/fuzzy Opportunity / Commitment resolution beyond exact signatures
 - [ ] full temporal supersede / contradict / rejected lifecycle semantics for all graph object types
 - [ ] Risk monitor
 - [ ] Topic momentum / project-context updates
-- [ ] user-facing confirm / reject / supersede actions for SelfSignals
+- [ ] polished UI/API for SelfSignal decisions with stronger user auth (no Agent auto-confirmation)
 - [ ] Personal Intelligence Brief V2 fusion of World Changes + Radars + Self Intelligence into one polished delivery artifact
 - [ ] plugin/capability API
 - [ ] policy-scoped agent access

@@ -234,6 +234,8 @@ class SelfSignal(ContextObject):
     window_end: datetime
     supporting_event_ids: list[str] = Field(default_factory=list)
     contradicting_event_ids: list[str] = Field(default_factory=list)
+    supporting_change_ids: list[int] = Field(default_factory=list)
+    contradicting_change_ids: list[int] = Field(default_factory=list)
     confidence: float = Field(ge=0, le=1)
     status: InferenceStatus = "hypothesis"
     evidence_level: SelfEvidenceLevel = 2
@@ -244,8 +246,12 @@ class SelfSignal(ContextObject):
     def validate_self_signal(self) -> "SelfSignal":
         if self.window_end < self.window_start:
             raise ValueError("window_end must be >= window_start")
-        if self.evidence_level >= 2 and not self.supporting_event_ids:
-            raise ValueError("pattern-level SelfSignal requires supporting_event_ids")
+        if self.evidence_level >= 2 and not (
+            self.supporting_event_ids or self.supporting_change_ids
+        ):
+            raise ValueError(
+                "pattern-level SelfSignal requires supporting event or graph-change evidence"
+            )
         if self.evidence_level >= 3 and self.source_diversity < 2:
             raise ValueError("cross-source SelfSignal requires source_diversity >= 2")
         if self.evidence_level == 4:

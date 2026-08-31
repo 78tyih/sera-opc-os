@@ -1,0 +1,155 @@
+version: "0.1.0"
+name: sera-learning-os-runtime-integration
+status: shadow
+
+purpose: >-
+  Connect task execution to Sera Learning OS without allowing autonomous
+  production Skill mutation.
+
+references:
+  skill: core/sera-learning-os/SKILL.md
+  runtime: core/sera_learning_os/learning.py
+  signal_schema: runtime/schemas/learning-signal.schema.yaml
+  architecture: architecture/v2/Sera-Learning-OS-WikiSkill-Upgrade-V1.2.md
+
+hooks:
+  task_started:
+    actions:
+      - build_task_scoped_context
+    wiki_access: false
+    notes: "Normal inference runtime should not receive the full Wiki."
+
+  tool_failed:
+    actions:
+      - append_runtime_event
+      - collect_error_signature
+    emit_learning_signal: conditional
+    conditions:
+      - repeated_error_signature
+      - task_blocked
+      - explicit_human_feedback
+
+  task_completed:
+    actions:
+      - append_runtime_event
+      - evaluate_outcome
+      - emit_learning_signal_if_meaningful
+    emit_learning_signal: conditional
+    conditions:
+      - repeat_success
+      - repeat_failure
+      - anti_pattern
+      - skill_gap
+      - model_behavior
+      - tool_behavior
+      - workflow_behavior
+      - rejected_fix
+      - human_feedback
+      - regression
+
+  session_end:
+    actions:
+      - memory_candidate_review
+      - learning_signal_review
+    notes: >-
+      Memory Candidate and Learning Signal are separate outputs. Stable facts,
+      decisions and governed experiences go through Memory governance. Repeated
+      execution patterns go through Learning OS.
+
+learning_pipeline:
+  capture:
+    handler: record_raw_signal
+    auto: true
+    safety:
+      - redact_secrets
+      - reject_private_chain_of_thought_fields
+      - prefer_trace_pointer_for_large_payloads
+
+  compile_pattern:
+    actor_role: wiki-maintainer
+    auto: proposal_only
+    minimum_status: provisional
+    requirements:
+      - evidence_reference
+      - scope
+      - portability_scope_or_unknown
+      - root_cause_for_failure_generalization_when_available
+    forbidden:
+      - direct_rule_promotion
+      - direct_skill_edit
+
+  propose_skill_change:
+    actor_role: skill-proposer
+    auto: proposal_only
+    requirements:
+      - source_pattern_ids
+      - baseline_skill_version
+      - candidate_version
+      - rollback_target
+      - portability
+      - evaluation_plan
+
+  evaluate_skill_change:
+    actor_role: evaluator
+    required: true
+    decisions:
+      - accepted
+      - rejected
+      - revise
+      - model_specific
+      - insufficient_evidence
+    requirements:
+      - baseline_results
+      - candidate_results
+      - regression_results
+      - model_environment_breakdown
+    production_write: false
+
+  release_skill:
+    actor_role: policy-authority-gate
+    auto: false
+    requires:
+      - evaluation_decision_accepted_or_scoped
+      - authority_check
+      - versioned_diff
+      - rollback_target
+      - skill_impact_record
+
+pattern_promotion:
+  provisional:
+    minimum_independent_evidence: 1
+  supported:
+    minimum_independent_evidence: 2
+  verified:
+    requirements:
+      - representative_validation_or_authority_confirmation
+      - no_unresolved_high_authority_conflict
+  contested:
+    trigger: meaningful_contradictory_evidence
+  superseded:
+    trigger: newer_pattern_explains_evidence_better
+
+runtime_context_policy:
+  default_include:
+    - founder_rules
+    - project_rules
+    - project_context
+    - current_state
+    - current_task
+    - relevant_memory
+    - relevant_skills
+    - latest_handoff
+  default_exclude:
+    - full_raw_trace_history
+    - full_wiki_corpus
+    - all_rejected_skill_proposals
+    - unrelated_skill_history
+
+invariants:
+  - "Raw is immutable."
+  - "Wiki accumulates."
+  - "Skills can roll back."
+  - "Runtime Context is disposable."
+  - "Rejected Skill changes remain learning evidence."
+  - "Evaluation does not itself modify production Skills."
+  - "Every production capability change must be traceable to evidence."

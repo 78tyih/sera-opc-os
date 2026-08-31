@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "strategy": "windows-user-sessions",
+  "instances": [
+    {
+      "name": "wechat-main",
+      "enabled": true,
+      "windows_user": "SeraWechat01",
+      "wechat_executable": "C:\\Program Files\\Tencent\\Weixin\\Weixin.exe",
+      "webot_root": "D:\\Sera\\deps\\webot",
+      "webot_env_file": "D:\\Sera\\MessageIntelligence\\instances\\wechat-main.webot.env",
+      "collector_env": "D:\\Sera\\MessageIntelligence\\instances\\wechat-main.env",
+      "expected_wxid_dir": "wxid_REPLACE_ME"
+    },
+    {
+      "name": "wechat-work",
+      "enabled": false,
+      "windows_user": "SeraWechat02",
+      "wechat_executable": "C:\\Program Files\\Tencent\\Weixin\\Weixin.exe",
+      "webot_root": "D:\\Sera\\deps\\webot",
+      "webot_env_file": "D:\\Sera\\MessageIntelligence\\instances\\wechat-work.webot.env",
+      "collector_env": "D:\\Sera\\MessageIntelligence\\instances\\wechat-work.env",
+      "expected_wxid_dir": "wxid_REPLACE_ME"
+    }
+  ]
+}

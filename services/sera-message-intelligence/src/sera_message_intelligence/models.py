@@ -1,0 +1,99 @@
+from datetime import datetime, timezone
+from typing import Any
+
+from sqlalchemy import JSON, DateTime, Index, Integer, String, Text, UniqueConstraint
+from sqlalchemy.orm import Mapped, mapped_column
+
+from .db import Base
+
+
+class Message(Base):
+    __tablename__ = "messages"
+    __table_args__ = (
+        UniqueConstraint("platform", "account_id", "external_message_id", name="uq_messages_external_id"),
+        UniqueConstraint("platform", "account_id", "fingerprint", name="uq_messages_fingerprint"),
+        Index("ix_messages_conversation_sent_at", "conversation_id", "sent_at"),
+        Index("ix_messages_account_sent_at", "account_id", "sent_at"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    schema_version: Mapped[str] = mapped_column(String(16), nullable=False, default="1.0")
+    platform: Mapped[str] = mapped_column(String(64), nullable=False)
+    account_id: Mapped[str] = mapped_column(String(255), nullable=False)
+    collector_instance_id: Mapped[str] = mapped_column(String(255), nullable=False)
+    external_message_id: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    conversation_id: Mapped[str] = mapped_column(String(512), nullable=False)
+    conversation_type: Mapped[str] = mapped_column(String(32), nullable=False, default="unknown")
+    conversation_name: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    sender_id: Mapped[str] = mapped_column(String(512), nullable=False)
+    sender_name: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    sent_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    received_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    message_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    text_content: Mapped[str | None] = mapped_column(Text, nullable=True)
+    attachments: Mapped[list[dict[str, Any]]] = mapped_column(JSON, nullable=False, default=list)
+    raw_payload: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False, default=dict)
+    fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
+
+
+class CollectorState(Base):
+    __tablename__ = "collector_states"
+
+    collector_instance_id: Mapped[str] = mapped_column(String(255), primary_key=True)
+    account_id: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    platform: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    status: Mapped[str] = mapped_column(String(32), nullable=False)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_heartbeat_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    last_message_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_checkpoint: Mapped[str | None] = mapped_column(Text, nullable=True)
+    messages_received: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    errors: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
+
+
+class ContextGraphObject(Base):
+    __tablename__ = "context_graph_objects"
+    __table_args__ = (
+        UniqueConstraint("object_type", "canonical_key", name="uq_context_graph_type_key"),
+        Index("ix_context_graph_last_seen", "last_seen_at"),
+    )
+
+    object_id: Mapped[str] = mapped_column(String(128), primary_key=True)
+    object_type: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    canonical_key: Mapped[str] = mapped_column(String(128), nullable=False)
+    payload: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False, default=dict)
+    first_seen_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    last_seen_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    evidence_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
+
+
+class ContextGraphChange(Base):
+    """Append-only history of meaningful durable graph mutations.
+
+    `before_payload` / `after_payload` are snapshots of the durable object at the
+    time of the change. Rerunning the same evidence should not create a new row.
+    """
+
+    __tablename__ = "context_graph_changes"
+    __table_args__ = (
+        Index("ix_context_graph_changes_effective_at", "effective_at"),
+        Index("ix_context_graph_changes_object_effective", "object_id", "effective_at"),
+        Index("ix_context_graph_changes_batch_id", "batch_id"),
+    )
+
+    change_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    object_id: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    object_type: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    change_kind: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    changed_fields: Mapped[list[str]] = mapped_column(JSON, nullable=False, default=list)
+    semantic_changes: Mapped[list[str]] = mapped_column(JSON, nullable=False, default=list)
+    evidence_ids: Mapped[list[str]] = mapped_column(JSON, nullable=False, default=list)
+    before_payload: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+    after_payload: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False, default=dict)
+    batch_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    effective_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    recorded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))

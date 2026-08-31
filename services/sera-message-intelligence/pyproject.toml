@@ -1,0 +1,32 @@
+[project]
+name = "sera-message-intelligence"
+version = "0.1.0"
+description = "Local-first multi-IM message intelligence service for Sera OPC OS"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.116,<1",
+  "uvicorn[standard]>=0.35,<1",
+  "pydantic>=2.11,<3",
+  "pydantic-settings>=2.10,<3",
+  "sqlalchemy>=2.0.43,<3",
+  "psycopg[binary]>=3.2.9,<4",
+  "httpx>=0.28,<1",
+  "zstandard>=0.23,<1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.4,<9",
+  "pytest-cov>=6.2,<7",
+]
+
+[build-system]
+requires = ["setuptools>=80"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

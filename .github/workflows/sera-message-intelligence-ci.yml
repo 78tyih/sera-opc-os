@@ -1,0 +1,47 @@
+name: Sera Message Intelligence CI
+
+on:
+  pull_request:
+    paths:
+      - "services/sera-message-intelligence/**"
+      - ".github/workflows/sera-message-intelligence-ci.yml"
+  push:
+    branches: [main]
+    paths:
+      - "services/sera-message-intelligence/**"
+      - ".github/workflows/sera-message-intelligence-ci.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/sera-message-intelligence
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: services/sera-message-intelligence/pyproject.toml
+      - name: Install
+        run: pip install -e '.[dev]'
+      - name: Compile Python
+        run: python -m compileall -q src scripts tests
+      - name: Parse PowerShell
+        shell: pwsh
+        run: |
+          $failed = $false
+          Get-ChildItem scripts -Filter *.ps1 | ForEach-Object {
+            $tokens = $null
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($_.FullName, [ref]$tokens, [ref]$errors) | Out-Null
+            if ($errors.Count -gt 0) {
+              $failed = $true
+              Write-Host "PowerShell parse errors in $($_.Name):"
+              $errors | ForEach-Object { Write-Host "  $($_.Message)" }
+            }
+          }
+          if ($failed) { exit 1 }
+      - name: Test
+        run: pytest -q

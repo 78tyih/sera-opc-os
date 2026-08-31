@@ -1,0 +1,151 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-08-31",
+  "schema": "sera-component-registry-v1",
+  "description": "Reusable UI component registry extracted from validated Sera projects and linked to styles, templates, and skills.",
+  "components": [
+    {
+      "id": "aurora-background",
+      "name": "Aurora Background",
+      "category": "foundation",
+      "source_projects": ["HTX OTC Landing Page", "HTX OTC Progress Hub"],
+      "style_refs": ["sera-fintech-premium", "sera-operations-dashboard"],
+      "template_refs": ["regulated-deal-desk", "execution-command-center"],
+      "use_cases": ["premium landing page", "dashboard shell", "AI product", "fintech product"],
+      "properties": ["soft radial light", "low-noise motion", "theme-aware", "content-safe contrast"],
+      "status": "ready"
+    },
+    {
+      "id": "floating-glass-navigation",
+      "name": "Floating Glass Navigation",
+      "category": "navigation",
+      "source_projects": ["HTX OTC Landing Page"],
+      "style_refs": ["sera-fintech-premium"],
+      "template_refs": ["regulated-deal-desk"],
+      "use_cases": ["marketing site", "product page", "premium service page"],
+      "properties": ["pill shell", "backdrop blur", "compact hierarchy", "light/dark adaptive"],
+      "status": "ready"
+    },
+    {
+      "id": "command-sidebar",
+      "name": "Command Sidebar",
+      "category": "navigation",
+      "source_projects": ["HTX OTC Progress Hub"],
+      "style_refs": ["sera-operations-dashboard"],
+      "template_refs": ["execution-command-center"],
+      "use_cases": ["long dashboard", "project command center", "client portal"],
+      "properties": ["grouped anchors", "scroll-spy", "collapsible", "mobile drawer"],
+      "status": "ready"
+    },
+    {
+      "id": "high-trust-hero",
+      "name": "High-Trust Hero",
+      "category": "hero",
+      "source_projects": ["HTX OTC Landing Page"],
+      "style_refs": ["sera-fintech-premium"],
+      "template_refs": ["regulated-deal-desk"],
+      "use_cases": ["regulated services", "B2B finance", "high-value SaaS", "institutional products"],
+      "properties": ["large value proposition", "two-path CTA", "trust note", "clear service boundary"],
+      "status": "ready"
+    },
+    {
+      "id": "trust-compliance-card",
+      "name": "Trust / Compliance Card",
+      "category": "trust",
+      "source_projects": ["HTX OTC Landing Page"],
+      "style_refs": ["sera-fintech-premium"],
+      "template_refs": ["regulated-deal-desk"],
+      "use_cases": ["compliance rules", "risk disclosure", "security principles", "eligibility requirements"],
+      "properties": ["semantic icon", "short rule title", "supporting explanation", "high scanability"],
+      "status": "ready"
+    },
+    {
+      "id": "process-stepper",
+      "name": "Process Stepper",
+      "category": "workflow",
+      "source_projects": ["HTX OTC Landing Page"],
+      "style_refs": ["sera-fintech-premium"],
+      "template_refs": ["regulated-deal-desk"],
+      "use_cases": ["onboarding", "deal flow", "application process", "service delivery"],
+      "properties": ["ordered stages", "client/platform actions", "expandable detail", "next-step clarity"],
+      "status": "ready"
+    },
+    {
+      "id": "multi-step-lead-form",
+      "name": "Multi-Step Lead Form",
+      "category": "conversion",
+      "source_projects": ["HTX OTC Landing Page"],
+      "style_refs": ["sera-fintech-premium"],
+      "template_refs": ["regulated-deal-desk"],
+      "use_cases": ["qualified lead capture", "service application", "enterprise inquiry"],
+      "properties": ["progressive disclosure", "optional details", "low-friction start", "escape hatch to direct contact"],
+      "status": "ready"
+    },
+    {
+      "id": "executive-summary-card",
+      "name": "Executive Summary Card",
+      "category": "management",
+      "source_projects": ["HTX OTC Progress Hub"],
+      "style_refs": ["sera-operations-dashboard"],
+      "template_refs": ["execution-command-center"],
+      "use_cases": ["weekly review", "client update", "leadership dashboard", "project health"],
+      "properties": ["progress", "completed", "blockers", "next milestone", "30-second readability"],
+      "status": "ready"
+    },
+    {
+      "id": "kpi-metric-card",
+      "name": "KPI Metric Card",
+      "category": "data",
+      "source_projects": ["HTX OTC Progress Hub"],
+      "style_refs": ["sera-operations-dashboard"],
+      "template_refs": ["execution-command-center"],
+      "use_cases": ["target tracking", "sales metrics", "launch metrics", "operations monitoring"],
+      "properties": ["current vs target", "visual progress", "trend/status", "next action"],
+      "status": "ready"
+    },
+    {
+      "id": "workstream-progress-card",
+      "name": "Workstream Progress Card",
+      "category": "management",
+      "source_projects": ["HTX OTC Progress Hub"],
+      "style_refs": ["sera-operations-dashboard"],
+      "template_refs": ["execution-command-center"],
+      "use_cases": ["multi-track projects", "department plans", "launch workstreams"],
+      "properties": ["goal", "progress", "subtask completion", "risk", "next action"],
+      "status": "ready"
+    },
+    {
+      "id": "status-pipeline-board",
+      "name": "Status Pipeline Board",
+      "category": "workflow",
+      "source_projects": ["HTX OTC Progress Hub"],
+      "style_refs": ["sera-operations-dashboard"],
+      "template_refs": ["execution-command-center"],
+      "use_cases": ["task pipeline", "sales pipeline", "review queue", "delivery queue"],
+      "properties": ["semantic status groups", "priority", "deadline", "next action", "progressive disclosure"],
+      "status": "ready"
+    },
+    {
+      "id": "timeline-gantt",
+      "name": "Timeline / Gantt",
+      "category": "time",
+      "source_projects": ["HTX OTC Progress Hub"],
+      "style_refs": ["sera-operations-dashboard"],
+      "template_refs": ["execution-command-center"],
+      "use_cases": ["launch calendar", "project roadmap", "campaign schedule", "delivery tracking"],
+      "properties": ["time scale", "workstream rows", "child task expansion", "owner and next action"],
+      "status": "ready"
+    },
+    {
+      "id": "dependency-map",
+      "name": "Dependency Map",
+      "category": "relationship",
+      "source_projects": ["HTX OTC Progress Hub"],
+      "style_refs": ["sera-operations-dashboard"],
+      "template_refs": ["execution-command-center"],
+      "use_cases": ["project dependency", "decision path", "approval chain", "cross-team coordination"],
+      "properties": ["main path", "supporting branches", "blocker visibility", "critical-path emphasis"],
+      "status": "ready"
+    }
+  ]
+}

@@ -5,6 +5,7 @@ Examples:
   python -m core.sera_learning_os.cli --db memory/learning-os.db maintain
   python -m core.sera_learning_os.cli --db memory/learning-os.db propose
   python -m core.sera_learning_os.cli --db memory/learning-os.db review --out daily-learning.md
+  python -m core.sera_learning_os.cli --db memory/learning-os.db export --context-hub ../SeraContextHub
 """
 
 from __future__ import annotations
@@ -18,6 +19,7 @@ import sys
 from .daily_review import build_daily_review, render_daily_review_markdown
 from .learning import init_learning_schema
 from .skill_proposer import propose_ready_skills
+from .wiki_export import export_context_hub_snapshot
 from .wiki_maintainer import compile_signal_to_wiki, maintain_uncompiled_signals
 
 
@@ -64,12 +66,20 @@ def cmd_review(conn: sqlite3.Connection, args) -> int:
     markdown = render_daily_review_markdown(review)
     if args.out:
         out_path = os.path.abspath(args.out)
-        os.makedirs(os.path.dirname(out_path), exist_ok=True)
+        parent = os.path.dirname(out_path)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
         with open(out_path, "w", encoding="utf-8") as fh:
             fh.write(markdown)
         print(out_path)
     else:
         print(markdown)
+    return 0
+
+
+def cmd_export(conn: sqlite3.Connection, args) -> int:
+    result = export_context_hub_snapshot(conn, args.context_hub, day=args.day)
+    print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
 
 
@@ -94,6 +104,11 @@ def build_parser() -> argparse.ArgumentParser:
     review.add_argument("--day", default=None, help="UTC date YYYY-MM-DD; default today")
     review.add_argument("--out", default=None, help="optional Markdown output path")
     review.set_defaults(func=cmd_review)
+
+    export = sub.add_parser("export", help="materialize Wiki snapshots into a SeraContextHub checkout")
+    export.add_argument("--context-hub", required=True, help="path to local SeraContextHub checkout")
+    export.add_argument("--day", default=None, help="UTC date YYYY-MM-DD; default today")
+    export.set_defaults(func=cmd_export)
     return parser
 
 

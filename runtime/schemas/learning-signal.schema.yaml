@@ -1,6 +1,6 @@
 $schema: "https://json-schema.org/draft/2020-12/schema"
 title: Sera Learning Signal
-version: "0.1.0"
+version: "0.2.0"
 description: >-
   Observable execution signal emitted by an Agent/Workflow at a meaningful task
   boundary. This is evidence for Learning OS, not a Rule or Skill by itself.
@@ -63,6 +63,29 @@ properties:
     description: Concrete, evidence-testable cause. Do not generalize from symptom alone.
   success_mechanism:
     type: [string, "null"]
+  recommended_action:
+    type: [string, "null"]
+    description: Actionable change suggested by observable evidence. It is not automatically authoritative.
+  affected_skills:
+    type: array
+    description: Skills plausibly affected by this signal. Enables governed Skill proposals only after Pattern verification.
+    items:
+      oneOf:
+        - type: string
+        - type: object
+          additionalProperties: false
+          required: [path]
+          properties:
+            path: {type: string, minLength: 1}
+            baseline_version: {type: [string, "null"]}
+            candidate_version: {type: [string, "null"]}
+            portability:
+              enum:
+                - universal
+                - model_family
+                - model_specific
+                - agent_shell_specific
+                - tool_environment_specific
   tool_events:
     type: array
     items:
@@ -121,3 +144,5 @@ x-sera-rules:
   - "This schema MUST NOT contain private chain-of-thought/private reasoning fields."
   - "One Learning Signal MAY create a provisional Pattern; it MUST NOT directly edit a production Skill."
   - "failure_mode is symptom; Pattern promotion should prefer root_cause evidence."
+  - "affected_skills metadata is advisory until the Pattern reaches verified status."
+  - "A Skill proposal is not a production release; Policy/Authority Gate remains mandatory."

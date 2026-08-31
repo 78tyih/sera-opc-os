@@ -1,9 +1,12 @@
+import os
 import sqlite3
+import tempfile
 import unittest
 
 from core.sera_learning_os.daily_review import build_daily_review, render_daily_review_markdown
 from core.sera_learning_os.learning import get_pattern, init_learning_schema
 from core.sera_learning_os.skill_proposer import propose_ready_skills
+from core.sera_learning_os.wiki_export import export_context_hub_snapshot
 from core.sera_learning_os.wiki_maintainer import compile_signal_to_wiki
 
 
@@ -61,7 +64,6 @@ class AutomaticEvolutionLoopTests(unittest.TestCase):
         self.assertEqual(len(created), 1)
         self.assertEqual(created[0]["status"], "proposed")
 
-        # Re-running the proposer must not duplicate the same proposal.
         second = propose_ready_skills(self.conn)
         self.assertTrue(any(p.get("reason") == "proposal_already_exists" for p in second))
 
@@ -84,6 +86,31 @@ class AutomaticEvolutionLoopTests(unittest.TestCase):
         self.assertEqual(review["patterns_updated"], 1)
         self.assertIn("系统今天从执行中学到了什么", markdown)
         self.assertIn("Governance Reminder", markdown)
+
+    def test_context_hub_export_materializes_patterns_proposals_and_daily_review(self):
+        for idx in (30, 31, 32):
+            compile_signal_to_wiki(self.conn, self._failure_signal(idx))
+        proposals = propose_ready_skills(self.conn)
+        self.assertTrue(any(p.get("proposal_id") for p in proposals))
+
+        with tempfile.TemporaryDirectory() as tmp:
+            result = export_context_hub_snapshot(self.conn, tmp)
+            self.assertEqual(result["patterns_exported"], 1)
+            self.assertEqual(result["proposals_exported"], 1)
+            self.assertFalse(result["git_commit_performed"])
+            self.assertTrue(os.path.exists(result["daily_review"]))
+
+            pattern_dir = os.path.join(tmp, "08_Wiki", "patterns")
+            proposal_dir = os.path.join(tmp, "08_Wiki", "proposals")
+            pattern_files = [name for name in os.listdir(pattern_dir) if name.endswith(".md")]
+            proposal_files = [name for name in os.listdir(proposal_dir) if name.endswith(".md")]
+            self.assertEqual(len(pattern_files), 1)
+            self.assertEqual(len(proposal_files), 1)
+
+            with open(os.path.join(pattern_dir, pattern_files[0]), "r", encoding="utf-8") as fh:
+                content = fh.read()
+            self.assertIn("generated_from_runtime: true", content)
+            self.assertIn("Production Skill write", content)
 
 
 if __name__ == "__main__":

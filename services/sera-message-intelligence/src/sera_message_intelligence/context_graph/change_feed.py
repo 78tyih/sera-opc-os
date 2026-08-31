@@ -13,6 +13,7 @@ ChangeCategory = Literal[
     "opportunity_change",
     "commitment_change",
     "people_change",
+    "self_change",
     "event_change",
 ]
 
@@ -40,6 +41,7 @@ class WorldChangeBrief(BaseModel):
     opportunity_changes: list[WorldChangeItem] = Field(default_factory=list)
     commitment_changes: list[WorldChangeItem] = Field(default_factory=list)
     people_changes: list[WorldChangeItem] = Field(default_factory=list)
+    self_changes: list[WorldChangeItem] = Field(default_factory=list)
     event_changes: list[WorldChangeItem] = Field(default_factory=list)
 
     @property
@@ -51,6 +53,7 @@ class WorldChangeBrief(BaseModel):
                 self.opportunity_changes,
                 self.commitment_changes,
                 self.people_changes,
+                self.self_changes,
                 self.event_changes,
             )
         )
@@ -64,13 +67,11 @@ def _title(change: ContextGraphChange) -> str:
         return str(payload.get("title") or change.object_id)
     if change.object_type == "commitment":
         return str(payload.get("summary") or change.object_id)
+    if change.object_type == "self_signal":
+        return str(payload.get("statement") or change.object_id)
     if change.object_type == "event":
         return str(payload.get("summary") or change.object_id)
     return change.object_id
-
-
-def _value(payload: dict[str, Any] | None, key: str) -> Any:
-    return payload.get(key) if payload else None
 
 
 def _format_value(value: Any) -> str:
@@ -90,6 +91,8 @@ def _category(change: ContextGraphChange) -> ChangeCategory:
         return "commitment_change"
     if change.object_type == "person":
         return "people_change"
+    if change.object_type == "self_signal":
+        return "self_change"
     return "event_change"
 
 
@@ -104,6 +107,7 @@ def _summary(change: ContextGraphChange) -> str:
             "opportunity": "New opportunity",
             "commitment": "New commitment",
             "person": "New person observed",
+            "self_signal": "New self-intelligence signal",
             "event": "New event",
         }
         return f"{labels.get(change.object_type, 'New context object')}: {title}."
@@ -137,6 +141,17 @@ def _summary(change: ContextGraphChange) -> str:
         details.append("person context changed")
     if "identity_label_changed" in semantics:
         details.append("identity label changed")
+    if "self_signal_status_changed" in semantics:
+        details.append(
+            f"status {_format_value(before.get('status'))} → {_format_value(after.get('status'))}"
+        )
+    if "self_signal_evidence_strength_changed" in semantics:
+        details.append(
+            "evidence strength changed "
+            f"L{_format_value(before.get('evidence_level'))} → L{_format_value(after.get('evidence_level'))}"
+        )
+    if "self_signal_user_confirmation_changed" in semantics:
+        details.append("user confirmation state changed")
     if "new_evidence" in semantics and not details:
         details.append("new supporting evidence")
 
@@ -208,6 +223,17 @@ def _priority(change: ContextGraphChange, as_of: datetime) -> float:
             base += 0.05
         return round(min(1.0, base), 4)
 
+    if change.object_type == "self_signal":
+        confidence = float(after.get("confidence") or 0.0)
+        evidence_level = float(after.get("evidence_level") or 0.0) / 4.0
+        diversity = min(1.0, float(after.get("source_diversity") or 1.0) / 3.0)
+        base = 0.45 * confidence + 0.30 * evidence_level + 0.15 * diversity
+        if after.get("status") == "confirmed_by_user":
+            base += 0.10
+        elif change.change_kind == "created":
+            base += 0.05
+        return round(min(1.0, base), 4)
+
     base = 0.35 + 0.20 * evidence_strength
     if change.change_kind == "created":
         base += 0.10
@@ -243,6 +269,7 @@ def build_world_change_brief(
         "opportunity_change": [],
         "commitment_change": [],
         "people_change": [],
+        "self_change": [],
         "event_change": [],
     }
     for change in changes:
@@ -257,6 +284,7 @@ def build_world_change_brief(
         "opportunity updates": len(buckets["opportunity_change"]),
         "commitment changes": len(buckets["commitment_change"]),
         "people changes": len(buckets["people_change"]),
+        "self-intelligence signals": len(buckets["self_change"]),
         "events": len(buckets["event_change"]),
     }
     material = [f"{count} {label}" for label, count in counts.items() if count]
@@ -275,6 +303,7 @@ def build_world_change_brief(
         opportunity_changes=buckets["opportunity_change"],
         commitment_changes=buckets["commitment_change"],
         people_changes=buckets["people_change"],
+        self_changes=buckets["self_change"],
         event_changes=buckets["event_change"],
     )
 
@@ -291,6 +320,7 @@ def render_world_change_markdown(brief: WorldChangeBrief) -> str:
         ("Opportunity Changes", brief.opportunity_changes),
         ("Commitments", brief.commitment_changes),
         ("People / Relationships", brief.people_changes),
+        ("Self Intelligence", brief.self_changes),
         ("Other Events", brief.event_changes),
     ]
     for heading, items in sections:

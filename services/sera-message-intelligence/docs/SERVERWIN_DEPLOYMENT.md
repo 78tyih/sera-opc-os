@@ -14,13 +14,23 @@ Windows interactive session
   │    ├─ checkpoint
   │    └─ heartbeat
   ├─ SMI FastAPI Message Core :8800
-  └─ PostgreSQL
+  └─ PostgreSQL (Docker, restart unless-stopped)
 
 Mac
-  └─ Tailscale -> Server Win API / future dashboard
+  └─ Tailscale -> Server Win future dashboard/control surface
 ```
 
 The default collector gateway is `http://127.0.0.1:8800`, so raw message traffic stays on Server Win unless explicitly changed.
+
+## Startup model
+
+There are three independently recoverable processes:
+
+1. PostgreSQL runs in Docker with `restart: unless-stopped`.
+2. Message Core runs as the scheduled task `Sera Message Intelligence - Core`.
+3. WeChat Collector runs as `Sera Message Intelligence - WeChat Collector` after interactive logon.
+
+The collector does not require Core to be ready first: if Core is unavailable, messages remain in the local SQLite outbox and drain when Core returns.
 
 ## Why Task Scheduler instead of a Windows Service
 
@@ -44,17 +54,31 @@ Native WCDB/key/patch code is **not vendored into SMI**. It remains an external,
 
 This gives at-least-once delivery with idempotent persistence.
 
-## First Server Win smoke test
+## Bootstrap
 
-1. Copy `serverwin.env.example` to `serverwin.env`.
-2. Set account ID, API key and `SMI_WEBOT_ROOT`.
+From an elevated PowerShell inside the service directory:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\bootstrap-serverwin.ps1 -RepoRoot D:\Sera\sera-opc-os
+```
+
+The bootstrap creates a dedicated venv, installs SMI, starts PostgreSQL, creates `.env` / `serverwin.env` templates if missing, and registers Core + Collector scheduled tasks.
+
+The script does **not** silently install webot by default. Either place a vetted checkout at `D:\Sera\deps\webot`, or explicitly pass `-InstallWebot`.
+
+## First live smoke test
+
+1. Review `.env` and change the ingest API key.
+2. Review `serverwin.env`; set `SMI_WECHAT_ACCOUNT_ID` and `SMI_WEBOT_ROOT`.
 3. Start with 5-10 explicit groups or `*`.
-4. Start Message Core/PostgreSQL.
-5. Install `scripts/install-serverwin-task.ps1`.
-6. Start the task and run `scripts/health-check-serverwin.ps1`.
-7. Confirm messages appear in PostgreSQL.
-8. Stop Message Core for several minutes and verify the spool grows.
-9. Restart Message Core and verify the spool drains without duplicate rows.
+4. Ensure WeChat is logged in on Server Win.
+5. Start `Sera Message Intelligence - Core`.
+6. Start `Sera Message Intelligence - WeChat Collector`.
+7. Run `scripts/health-check-serverwin.ps1`.
+8. Confirm messages appear in PostgreSQL.
+9. Stop Core for several minutes and verify the spool grows.
+10. Restart Core and verify the spool drains without duplicate rows.
+11. Reboot Server Win, log back in, and verify both tasks recover.
 
 ## Multi-account direction
 

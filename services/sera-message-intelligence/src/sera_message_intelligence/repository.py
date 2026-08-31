@@ -1,9 +1,11 @@
+from datetime import datetime, timezone
+
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from .models import Message
-from .schemas import IngestResult, MessageEventV1
+from .models import CollectorState, Message
+from .schemas import CollectorHeartbeat, IngestResult, MessageEventV1
 
 
 def _find_existing(session: Session, event: MessageEventV1) -> tuple[Message | None, str]:
@@ -53,3 +55,35 @@ def ingest_message(session: Session, event: MessageEventV1) -> IngestResult:
         return IngestResult(id=existing.id, inserted=False, deduplicated_by=reason, fingerprint=existing.fingerprint)
 
     return IngestResult(id=message.id, inserted=True, deduplicated_by="none", fingerprint=message.fingerprint)
+
+
+def upsert_collector_heartbeat(session: Session, heartbeat: CollectorHeartbeat) -> CollectorState:
+    state = session.get(CollectorState, heartbeat.collector_instance_id)
+    now = datetime.now(timezone.utc)
+    if state is None:
+        state = CollectorState(
+            collector_instance_id=heartbeat.collector_instance_id,
+            account_id=heartbeat.account_id,
+            platform=heartbeat.platform,
+            status=heartbeat.status,
+            started_at=now,
+            last_heartbeat_at=now,
+            last_message_at=heartbeat.last_message_at,
+            last_checkpoint=heartbeat.last_checkpoint,
+            messages_received=heartbeat.messages_received,
+            errors=heartbeat.errors,
+            updated_at=now,
+        )
+        session.add(state)
+    else:
+        state.account_id = heartbeat.account_id
+        state.platform = heartbeat.platform
+        state.status = heartbeat.status
+        state.last_heartbeat_at = now
+        state.last_message_at = heartbeat.last_message_at
+        state.last_checkpoint = heartbeat.last_checkpoint
+        state.messages_received = heartbeat.messages_received
+        state.errors = heartbeat.errors
+        state.updated_at = now
+    session.commit()
+    return state

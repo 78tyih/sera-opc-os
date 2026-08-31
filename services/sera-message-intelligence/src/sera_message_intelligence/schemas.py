@@ -81,3 +81,9 @@ class CollectorHeartbeat(BaseModel):
     last_message_at: datetime | None = None
     messages_received: int = 0
     errors: int = 0
+
+
+class CollectorHeartbeatResult(BaseModel):
+    collector_instance_id: str
+    status: CollectorStatus
+    updated: bool = True

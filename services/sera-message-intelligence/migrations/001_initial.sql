@@ -24,3 +24,20 @@ CREATE TABLE IF NOT EXISTS messages (
 
 CREATE INDEX IF NOT EXISTS ix_messages_conversation_sent_at ON messages (conversation_id, sent_at DESC);
 CREATE INDEX IF NOT EXISTS ix_messages_account_sent_at ON messages (account_id, sent_at DESC);
+
+CREATE TABLE IF NOT EXISTS collector_states (
+    collector_instance_id VARCHAR(255) PRIMARY KEY,
+    account_id VARCHAR(255) NOT NULL,
+    platform VARCHAR(64) NOT NULL,
+    status VARCHAR(32) NOT NULL,
+    started_at TIMESTAMPTZ,
+    last_heartbeat_at TIMESTAMPTZ NOT NULL,
+    last_message_at TIMESTAMPTZ,
+    last_checkpoint TEXT,
+    messages_received BIGINT NOT NULL DEFAULT 0,
+    errors BIGINT NOT NULL DEFAULT 0,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS ix_collector_states_account_id ON collector_states (account_id);
+CREATE INDEX IF NOT EXISTS ix_collector_states_platform ON collector_states (platform);

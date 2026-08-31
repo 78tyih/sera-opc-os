@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 
 from .config import get_settings
 from .db import Base, get_engine, get_session
-from .repository import ingest_message
-from .schemas import IngestResult, MessageEventV1
+from .repository import ingest_message, upsert_collector_heartbeat
+from .schemas import CollectorHeartbeat, CollectorHeartbeatResult, IngestResult, MessageEventV1
 
 
 app = FastAPI(title="Sera Message Intelligence", version="0.1.0", description="Local-first multi-IM message ingest and intelligence core.")
@@ -29,3 +29,9 @@ def healthz() -> dict[str, str]:
 @app.post("/v1/messages", response_model=IngestResult, status_code=status.HTTP_201_CREATED, dependencies=[Depends(require_ingest_key)])
 def ingest(event: MessageEventV1, session: Session = Depends(get_session)) -> IngestResult:
     return ingest_message(session, event)
+
+
+@app.post("/v1/collectors/heartbeat", response_model=CollectorHeartbeatResult, dependencies=[Depends(require_ingest_key)])
+def collector_heartbeat(heartbeat: CollectorHeartbeat, session: Session = Depends(get_session)) -> CollectorHeartbeatResult:
+    state = upsert_collector_heartbeat(session, heartbeat)
+    return CollectorHeartbeatResult(collector_instance_id=state.collector_instance_id, status=state.status)

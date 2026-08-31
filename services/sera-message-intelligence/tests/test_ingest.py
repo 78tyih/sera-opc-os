@@ -5,9 +5,9 @@ from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
 
 from sera_message_intelligence.db import Base
-from sera_message_intelligence.models import Message
-from sera_message_intelligence.repository import ingest_message
-from sera_message_intelligence.schemas import MessageEventV1
+from sera_message_intelligence.models import CollectorState, Message
+from sera_message_intelligence.repository import ingest_message, upsert_collector_heartbeat
+from sera_message_intelligence.schemas import CollectorHeartbeat, MessageEventV1
 
 
 def _engine():
@@ -50,9 +50,8 @@ def test_same_external_message_id_is_idempotent():
 
 def test_fingerprint_deduplicates_when_external_id_is_missing():
     engine = _engine()
-    event = _event(external_message_id=None)
     with Session(engine) as session:
-        first = ingest_message(session, event)
+        first = ingest_message(session, _event(external_message_id=None))
         second = ingest_message(session, _event(external_message_id=None))
         count = session.scalar(select(func.count()).select_from(Message))
     assert first.inserted is True
@@ -70,3 +69,19 @@ def test_distinct_messages_are_inserted():
     assert first.inserted is True
     assert second.inserted is True
     assert count == 2
+
+
+def test_collector_heartbeat_is_upserted():
+    engine = _engine()
+    first = CollectorHeartbeat(collector_instance_id="wechat-local-01", account_id="wx-account-01", platform="wechat", status="online", last_checkpoint="100", messages_received=10, errors=0)
+    second = CollectorHeartbeat(collector_instance_id="wechat-local-01", account_id="wx-account-01", platform="wechat", status="degraded", last_checkpoint="120", messages_received=12, errors=2)
+    with Session(engine) as session:
+        upsert_collector_heartbeat(session, first)
+        upsert_collector_heartbeat(session, second)
+        state = session.get(CollectorState, "wechat-local-01")
+        count = session.scalar(select(func.count()).select_from(CollectorState))
+    assert count == 1
+    assert state.status == "degraded"
+    assert state.last_checkpoint == "120"
+    assert state.messages_received == 12
+    assert state.errors == 2

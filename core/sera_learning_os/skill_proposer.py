@@ -7,6 +7,7 @@ production SKILL.md files.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import sqlite3
@@ -38,6 +39,10 @@ def _bump_patch(version: str) -> str:
         return "0.0.1-candidate"
     major, minor, patch = map(int, match.groups())
     return f"{major}.{minor}.{patch + 1}"
+
+
+def _stable_suffix(value: str) -> str:
+    return hashlib.sha1(value.encode("utf-8")).hexdigest()[:8]
 
 
 def _proposal_exists(conn: sqlite3.Connection, pattern_id: str, skill_path: str) -> bool:
@@ -98,7 +103,7 @@ def propose_from_pattern(
         baseline_version = str(skill.get("baseline_version") or "0.0.0")
         candidate_version = str(skill.get("candidate_version") or _bump_patch(baseline_version))
         portability = str(skill.get("portability") or "universal")
-        proposal_id = f"SEP.auto.{pattern['pattern_id'].split('.')[-1]}.{abs(hash(skill_path)) % 100000:05d}"
+        proposal_id = f"SEP.auto.{pattern['pattern_id'].split('.')[-1]}.{_stable_suffix(skill_path)}"
 
         proposal = {
             "proposal_id": proposal_id,

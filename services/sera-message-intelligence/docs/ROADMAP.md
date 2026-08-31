@@ -55,8 +55,29 @@
 - [ ] search and semantic retrieval
 - [ ] report delivery sink abstraction
 
-## P4 — Intelligence OS
-- [ ] people radar
-- [ ] project/topic memory
+## P4 — Personal Context Graph / Intelligence OS
+- [x] define durable object model: Event / Person / Relationship / Opportunity / Commitment / Risk / Topic / Project / SelfSignal
+- [x] define Opportunity Intelligence / Relationship Intelligence / Self Intelligence product contracts
+- [x] define evidence ladder for self inference and user-confirmed knowledge
+- [ ] Event extraction pipeline from validated messages
+- [ ] conservative person/entity resolution
+- [ ] temporal object merge + supersede/contradict semantics
+- [ ] Opportunity Radar
+- [ ] People / Relationship Radar
+- [ ] Commitment tracker
+- [ ] Risk monitor
+- [ ] Topic momentum / project-context updates
+- [ ] Self Intelligence weekly synthesis
+- [ ] Personal Intelligence Brief V2 built from graph changes rather than message summaries
 - [ ] plugin/capability API
 - [ ] policy-scoped agent access
+
+## P5 — Multi-source Personal Context Layer
+- [ ] GitHub / project facts
+- [ ] Notion tables and project state
+- [ ] Calendar and meeting events
+- [ ] Email
+- [ ] documents / research artifacts
+- [ ] financial account / transaction facts through authorized sources
+- [ ] agent runs / decisions / outputs
+- [ ] unified graph query API for agents

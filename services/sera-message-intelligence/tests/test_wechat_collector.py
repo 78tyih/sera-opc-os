@@ -1,10 +1,12 @@
 from datetime import datetime, timezone
 from pathlib import Path
+import pytest
 from sera_message_intelligence.collectors.wechat_local.raw_message import RawWechatMessage
 from sera_message_intelligence.collectors.wechat_local.source import PollBatch, WechatMessageSource
 from sera_message_intelligence.collectors.wechat_local.normalizer import normalize_wechat_message
 from sera_message_intelligence.collectors.wechat_local.spool import SqliteSpool
 from sera_message_intelligence.collectors.wechat_local.runner import WechatCollectorRunner
+from sera_message_intelligence.collectors.wechat_local.backends.webot_capture import resolve_pinned_wechat_account
 
 class FakeSource(WechatMessageSource):
     def open(self): pass
@@ -65,3 +67,17 @@ def test_webot_capture_is_read_only_and_normalizes():
     assert len(batch.messages)==1
     assert batch.messages[0].external_message_id=="42"
     assert batch.messages[0].message_type=="text"
+
+def test_exact_wxid_pin_requires_expected_session_db(tmp_path:Path):
+    base=tmp_path/"xwechat_files"
+    target=base/"wxid_alpha_1234"
+    session=target/"db_storage"/"session"/"session.db"
+    session.parent.mkdir(parents=True)
+    session.write_bytes(b"db")
+    wxid,resolved_base=resolve_pinned_wechat_account(base,"wxid_alpha_1234")
+    assert wxid=="wxid_alpha_1234"
+    assert Path(resolved_base)==base.resolve()
+    with pytest.raises(FileNotFoundError):
+        resolve_pinned_wechat_account(base,"wxid_missing_9999")
+    with pytest.raises(ValueError):
+        resolve_pinned_wechat_account(base,"..\\escape")

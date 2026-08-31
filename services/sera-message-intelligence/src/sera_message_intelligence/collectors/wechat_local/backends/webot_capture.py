@@ -8,6 +8,21 @@ from ..source import PollBatch, WechatMessageSource
 
 _TYPE_MAP={1:"text",3:"image",34:"voice",43:"video",47:"image",49:"file",10000:"system"}
 
+
+def resolve_pinned_wechat_account(base_dir: str | Path, wxid_dir: str) -> tuple[str, str]:
+    """Validate and resolve one exact wxid directory for a collector process."""
+    base=Path(base_dir).expanduser().resolve()
+    if not wxid_dir or Path(wxid_dir).name != wxid_dir:
+        raise ValueError("SMI_WECHAT_WXID_DIR must be one exact wxid_* directory name")
+    if not wxid_dir.startswith("wxid_"):
+        raise ValueError("SMI_WECHAT_WXID_DIR must start with wxid_")
+    target=base / wxid_dir
+    session_db=target / "db_storage" / "session" / "session.db"
+    if not session_db.exists():
+        raise FileNotFoundError(f"Pinned WeChat session database not found: {session_db}")
+    return target.name, str(base)
+
+
 class WebotCaptureSource(WechatMessageSource):
     """Read-only adapter around webot's WcdbBackend.
 
@@ -17,12 +32,13 @@ class WebotCaptureSource(WechatMessageSource):
     """
     def __init__(self, *, webot_root:str|Path|None=None, groups:list[str]|None=None,
                  poll_seconds:float=1.0, wechat_data_dir:str|None=None,
-                 webot_env_file:str|Path|None=None,
+                 wechat_wxid_dir:str|None=None, webot_env_file:str|Path|None=None,
                  backend_factory:Callable[...,Any]|None=None):
         self.webot_root=Path(webot_root).resolve() if webot_root else None
         self.groups=groups or ["*"]
         self.poll_seconds=poll_seconds
         self.wechat_data_dir=wechat_data_dir
+        self.wechat_wxid_dir=wechat_wxid_dir
         self.webot_env_file=Path(webot_env_file).resolve() if webot_env_file else None
         self.backend_factory=backend_factory
         self._backend=None
@@ -35,9 +51,6 @@ class WebotCaptureSource(WechatMessageSource):
         if not self.webot_root or not self.webot_root.exists():
             raise FileNotFoundError("WEBOT_ROOT must point to a vetted webot checkout on Server Win")
 
-        # webot resolves PROJECT_ROOT / .env at import time. Set these before
-        # importing its package so its WCDB key/data config remains isolated
-        # from SMI's own .env and working directory.
         os.environ["WEBOT_APP_HOME"]=str(self.webot_root)
         env_file=self.webot_env_file or (self.webot_root / ".env")
         os.environ["WEBOT_ENV_FILE"]=str(env_file)
@@ -46,6 +59,20 @@ class WebotCaptureSource(WechatMessageSource):
 
         root=str(self.webot_root)
         if root not in sys.path: sys.path.insert(0,root)
+
+        # Each multi-account collector is a separate process. If an exact
+        # wxid directory is configured, replace webot's "most recent wxid"
+        # selector inside this process only, before WcdbNativeClient is built.
+        if self.wechat_wxid_dir:
+            if not self.wechat_data_dir:
+                raise ValueError("SMI_WECHAT_DATA_DIR is required when SMI_WECHAT_WXID_DIR is set")
+            from src.wechat import wcdb_client as wcdb_client_module
+            base_dir=self.wechat_data_dir
+            wxid_dir=self.wechat_wxid_dir
+            def _pinned_selector(custom_base_dir: str = ""):
+                return resolve_pinned_wechat_account(custom_base_dir or base_dir, wxid_dir)
+            wcdb_client_module._find_wxid_and_dbpath=_pinned_selector
+
         from src.wechat.wcdb_backend import WcdbBackend
         return WcdbBackend
 

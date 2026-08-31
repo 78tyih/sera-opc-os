@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import logging
 import os
 from pathlib import Path
@@ -11,15 +12,23 @@ from sera_message_intelligence.collectors.wechat_local.runner import WechatColle
 from sera_message_intelligence.collectors.wechat_local.spool import SqliteSpool
 
 
+def parse_args() -> argparse.Namespace:
+    parser=argparse.ArgumentParser(description="Run one Server Win WeChat collector identity")
+    parser.add_argument("--env", dest="env_file", help="Per-account env file. Defaults to serverwin.env.")
+    return parser.parse_args()
+
+
 def load_env_file(path: Path) -> None:
     if not path.exists():
-        return
+        raise FileNotFoundError(f"collector env file not found: {path}")
     for raw in path.read_text(encoding="utf-8").splitlines():
         line = raw.strip()
         if not line or line.startswith("#") or "=" not in line:
             continue
         key, value = line.split("=", 1)
-        os.environ.setdefault(key.strip(), value.strip().strip('"'))
+        # An explicitly selected per-account file is the source of truth for
+        # this collector process and intentionally overrides inherited SMI vars.
+        os.environ[key.strip()] = value.strip().strip('"')
 
 
 def csv(name: str, default: str = "*") -> list[str]:
@@ -27,10 +36,13 @@ def csv(name: str, default: str = "*") -> list[str]:
 
 
 def main() -> None:
+    args=parse_args()
     here = Path(__file__).resolve().parent.parent
-    load_env_file(Path(os.getenv("SMI_SERVERWIN_ENV", here / "serverwin.env")))
+    env_file=Path(args.env_file or os.getenv("SMI_SERVERWIN_ENV", here / "serverwin.env")).expanduser().resolve()
+    load_env_file(env_file)
 
     logging.basicConfig(level=os.getenv("SMI_LOG_LEVEL", "INFO"), format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+    logging.getLogger(__name__).info("collector env: %s", env_file)
 
     source_name = os.getenv("SMI_WECHAT_SOURCE", "webot_capture")
     if source_name == "jsonl":
@@ -42,6 +54,7 @@ def main() -> None:
             groups=csv("SMI_WECHAT_GROUPS"),
             poll_seconds=float(os.getenv("SMI_POLL_SECONDS", "1.0")),
             wechat_data_dir=os.getenv("SMI_WECHAT_DATA_DIR") or None,
+            wechat_wxid_dir=os.getenv("SMI_WECHAT_WXID_DIR") or None,
         )
     else:
         raise SystemExit(f"Unsupported SMI_WECHAT_SOURCE={source_name!r}")

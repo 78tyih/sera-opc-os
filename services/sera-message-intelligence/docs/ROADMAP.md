@@ -15,13 +15,16 @@
 - [x] Server Win as default production WeChat runtime
 - [x] isolate native/WCDB dependency behind external webot capture adapter
 - [x] isolate webot app home / env from SMI runtime
+- [x] one-process/one-env/one-spool multi-account instance model
+- [x] exact `wxid_*` account pin validation
+- [x] per-instance Task Scheduler installer
 - [x] group allowlist / `*` passthrough
 - [x] polling + local durable checkpoint
 - [x] SQLite retry/outbox buffer
 - [x] heartbeat/status integration
-- [x] Task Scheduler install/remove/health scripts
 - [x] read-only callback contract
 - [ ] install and validate vetted webot checkout on Server Win
+- [ ] validate two live WeChat identities without cross-account contamination
 - [ ] 5–10 group live soak test
 - [ ] reboot/login recovery test
 - [ ] Message Core outage/recovery test on Server Win
@@ -29,6 +32,7 @@
 ## P2 — Intelligence pipeline
 - [x] conversation chunking
 - [x] evidence-bound chunk claims
+- [x] validated-claim-only final citation set
 - [x] cross-conversation topic/intelligence merge
 - [x] deterministic importance ranking
 - [x] evidence-backed Personal Intelligence Brief schema

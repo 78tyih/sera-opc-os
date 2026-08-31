@@ -1,6 +1,6 @@
 # Smoke Test — 一个狠人
 
-目标：验证 `sera-creator-intelligence` 在真实 Creator Corpus 上能稳定完成 Transcript → Video Intelligence → Argument Analysis → Score → Sample Creator Report。
+目标：验证 `sera-creator-intelligence` 在真实 Creator Corpus 上能稳定完成 Transcript → Video Intelligence → Argument Analysis → Score → Sample Creator Report → Notion Publish。
 
 ## Source
 
@@ -28,7 +28,7 @@
 
 ## Required Run
 
-1. 读取本目录 `SKILL.md`、两个 Schema 与模板。
+1. 读取本目录 `SKILL.md`、两个 Schema、模板与 `NOTION_PUBLISHER.md`。
 2. 检查已有 Phase 1 catalog；已有则复用。
 3. 对 10 条逐条获取 Transcript，记录来源与失败原因。
 4. 对每条生成：
@@ -44,6 +44,25 @@ python3 scripts/validate_bundle.py <creator-root>
 ```
 
 9. validator 必须 PASS；若 FAIL，先修复再报告。
+10. validator PASS 后执行 Notion 发布：
+   - 如果当前 Agent 有 Notion MCP/API：按 `NOTION_PUBLISHER.md` 发现并写入 `Creator Video Knowledge Base` 与 `Creator Intelligence Index`。
+   - 如果当前 Agent 没有 Notion 连接：生成 `publish/notion_publish_queue.jsonl`，不要因缺少 Notion 连接而让整个 Smoke Test 失败。
+11. 发布顺序：10 条视频页面 → 重新计算样本 Creator 聚合 → 更新“一个狠人” Creator 页面。
+12. 完成后立即停止，不得继续全量 Backfill。
+
+## Notion Expected State
+
+成功直写 Notion 时：
+
+- `Creator Video Knowledge Base` 中应有这 10 条样本（按 Video ID 幂等更新）。
+- `Creator Intelligence Index` 中“一个狠人”仍然只有 1 条 Creator 记录。
+- Creator 记录应更新：
+  - `Analyzed Items = 10`
+  - `Must Watch = <10 条中 must_watch 数量>`
+  - `Average Score = <10 条 Knowledge Score 均值>`
+  - `Report Version = v0.1-smoke-test` 或当前 schema version
+- Creator 页面正文写入本次 sample Creator Intelligence Report。
+- Smoke Test 结果不得自动标记为 `reviewed`；默认保持 `analyzed` / Creator `active`，等待人工审查。
 
 ## Acceptance Criteria
 
@@ -54,11 +73,18 @@ python3 scripts/validate_bundle.py <creator-root>
 - 每个 Watch Verdict 有 confidence + reason。
 - Sample Creator Report 至少包含：Coverage、Topic Distribution、Top Videos、Recurring Ideas、Best Video by Topic、Redundancy/Contradiction 初步观察。
 - 最终列出最值得优先看的 Top 3，并解释原因。
+- Notion 目标被请求时，每个条目都有 publish action/status；没有直连时必须有 queue。
 - 完成 10 条后停止；不要自动跑剩余 745 条。
 
 ## Failure Report
 
 失败必须写入 `state/failures.jsonl`，至少包含：video_id、stage、error、retryable、timestamp。
+
+Notion 发布日志写入：
+
+`publish/notion_publish_log.jsonl`
+
+至少记录：entity_type、dedupe_key、action、notion_page（若有）、timestamp、error（若有）。
 
 ## Final Response
 
@@ -70,4 +96,6 @@ python3 scripts/validate_bundle.py <creator-root>
 - 主要 Topic/Recurring Ideas
 - Argument Analysis 中发现的质量问题
 - validator 结果
+- Notion publish：created / updated / queued / failed 数量
+- Creator Index 是否成功更新
 - 是否建议进入全量 Backfill

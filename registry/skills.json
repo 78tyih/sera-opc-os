@@ -27,6 +27,7 @@
     {"id":"sera-macos-ui","name":"macOS UI","category":"adapter","status":"active","purpose":"macOS 界面自动化","source":"adapters/sera-macos-ui/","owner_agent":"core"},
     {"id":"sera-mail-hub","name":"Mail Hub","category":"adapter","status":"active","purpose":"邮件中心适配器","source":"adapters/sera-mail-hub/","owner_agent":"otc-agent"},
     {"id":"sera-wecom-suite","name":"WeCom Suite","category":"adapter","status":"active","purpose":"企业微信套件适配器","source":"adapters/sera-wecom-suite/","owner_agent":"core"},
+    {"id":"sera-xianyu-suite","name":"Xianyu Seller Suite","category":"adapter","status":"active","purpose":"闲鱼卖家适配器 — 消息监听、AI客服、议价、会话沉淀与受控商品发布","source":"adapters/sera-xianyu-suite/","owner_agent":"core","source_repo":"shaxiu/XianyuAutoAgent"},
     {"id":"kimi-style","name":"Kimi Design Style","category":"design-skill","status":"active","source_repo":"78tyih/kimi-design-refer","capability":["poster","landing page","brand design","editorial layout"],"owner_agent":"design-agent"},
     {"id":"htx-style","name":"HTX Design Style","category":"design-skill","status":"active","source_repo":"78tyih/htx-design-refer","capability":["OTC brand","landing page","financial UI","dark theme"],"owner_agent":"design-agent"},
     {"id":"svg-sketch","name":"SVG Sketch Workbench","category":"design-skill","status":"active","source_repo":"78tyih/svg-sketch-workbench","capability":["SVG prototyping","UI sketch","terminal-first design"],"owner_agent":"design-agent"}

@@ -66,3 +66,18 @@ def test_cross_group_brief_and_renderers():
     html = render_html(brief)
     assert "Evidence" in md and "Group a:1" in md
     assert "Intelligence Brief" in html and "Watch risk" in html
+
+
+class ExistingButUnvalidatedIdLLM:
+    def generate_json(self, *, system: str, prompt: str):
+        if "Summarize this conversation chunk" in prompt:
+            # Only message 1 is promoted to a validated claim even though m:2 is in the chunk.
+            return {"summary": "only first message matters", "claims": [{"kind": "key_point", "text": "validated", "message_ids": [1]}]}
+        assert '"message_ids": [1, 2]' not in prompt
+        return {"executive_summary": "bad merge", "items": [{"category": "important", "title": "Wrong citation", "summary": "uses a real but unvalidated message", "message_ids": [2], "confidence": 0.8, "importance": {"personal_relevance": 1, "actionability": 0, "urgency": 0, "novelty": 0, "source_weight": 0}}]}
+
+
+def test_final_merge_cannot_cite_real_but_unvalidated_message():
+    messages = [msg(1, "a", "validated source"), msg(2, "a", "real but not promoted")]
+    with pytest.raises(EvidenceError):
+        generate_daily_brief(brief_date=date(2026, 8, 31), messages=messages, llm=ExistingButUnvalidatedIdLLM())

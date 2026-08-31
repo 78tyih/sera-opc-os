@@ -8,27 +8,29 @@ The product goal is **one Personal Intelligence Brief across all monitored conve
 PostgreSQL messages
   -> group by platform/account/conversation
   -> bounded conversation chunks
-  -> LLM chunk summaries + evidence-bound claims
-  -> validate every claim message_id against the chunk
-  -> cross-conversation merge using only validated claims
+  -> LLM chunk claims bound to exact [m:ID] evidence
+  -> validate every claim message_id against its chunk
+  -> expose ONLY validated claims to the cross-conversation merge
   -> candidate intelligence items
-  -> validate every final message_id against original messages
-  -> application-calculated importance score
+  -> require every final message_id to be in the validated-claim ID set
   -> rebuild source references from database metadata
+  -> application-calculated importance score
   -> JSON + Markdown + HTML
 ```
 
 ## Evidence contract
 
-Messages are formatted as `[m:123] ...`. The LLM must attach exact message IDs to every factual claim.
+Messages are formatted as `[m:123] ...`. The Level-1 LLM must attach exact message IDs to every factual claim.
 
 Validation is fail-closed:
 
 - A chunk claim citing an ID outside its chunk raises `EvidenceError`.
-- A final brief item citing an ID not present in the report window raises `EvidenceError`.
+- Free-form chunk summaries and full chunk message-ID lists are **not** exposed to Level 2; only validated claims are.
+- A final brief item may cite only IDs that appeared in validated Level-1 claims. It is not enough for the ID to merely exist somewhere in the report window.
+- A final brief item citing an ID not present in stored report-window messages also raises `EvidenceError`.
 - Final `sources` are never trusted from model output; they are rebuilt from the stored messages.
 
-This does not make an LLM infallible, but it prevents unsupported IDs from silently entering reports and gives every surfaced item a path back to original chat evidence.
+This does not make an LLM infallible, but it narrows the synthesis surface and creates an auditable path from each surfaced item to explicitly promoted source messages.
 
 ## Importance score
 

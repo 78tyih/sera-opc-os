@@ -11,13 +11,19 @@
 - [x] CI workflow
 - [x] collector state persistence
 
-## P1 — WeChat read-only collector
-- [ ] isolate WCDB/native dependencies in `collectors/wechat-local`
-- [ ] group discovery / allowlist
-- [ ] polling + local checkpoint
-- [ ] retry buffer
-- [ ] heartbeat/status endpoint integration
-- [ ] 5–10 group soak test
+## P1 — WeChat read-only collector (Server Win)
+- [x] Server Win as default production WeChat runtime
+- [x] isolate native/WCDB dependency behind external webot capture adapter
+- [x] group allowlist / `*` passthrough
+- [x] polling + local durable checkpoint
+- [x] SQLite retry/outbox buffer
+- [x] heartbeat/status integration
+- [x] Task Scheduler install/remove/health scripts
+- [x] read-only callback contract
+- [ ] install and validate vetted webot checkout on Server Win
+- [ ] 5–10 group live soak test
+- [ ] reboot/login recovery test
+- [ ] Message Core outage/recovery test on Server Win
 
 ## P2 — Intelligence pipeline
 - [ ] conversation chunking

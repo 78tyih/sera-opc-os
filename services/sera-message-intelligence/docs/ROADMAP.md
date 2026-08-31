@@ -76,13 +76,23 @@
 - [x] People Radar prioritizes opportunity / commitment / recency over raw interaction volume
 - [x] Relationship Radar creates edges only from explicit shared Opportunity or Commitment context, never mere group co-presence
 - [x] `generate_people_radar.py` JSON + Markdown output
+- [x] append-only `context_graph_changes` history with before/after snapshots, semantic change labels and batch IDs
+- [x] idempotent graph-change classification: rerunning identical evidence creates no history noise
+- [x] deterministic Personal Intelligence Brief V2 / World Change Brief from graph changes
+- [x] `generate_world_change_brief.py` JSON + Markdown output
+- [x] evidence-gated Self Intelligence synthesis from validated graph changes
+- [x] SelfSignal evidence levels L2/L3 derived by application code; L4 reserved for explicit user confirmation
+- [x] reject unknown Change IDs, insufficient pattern evidence and sensitive/clinical identity inference
+- [x] durable SelfSignal persistence without cross-window personality collapse
+- [x] protect user-confirmed SelfSignals from later model downgrade
+- [x] `generate_self_intelligence.py` 7/30-day style window + optional durable persistence
 - [ ] conservative cross-platform Person entity resolution
 - [ ] semantic/fuzzy Opportunity / Commitment resolution beyond exact signatures
-- [ ] full temporal supersede / contradict / rejected state semantics
+- [ ] full temporal supersede / contradict / rejected lifecycle semantics for all graph object types
 - [ ] Risk monitor
 - [ ] Topic momentum / project-context updates
-- [ ] Self Intelligence weekly synthesis
-- [ ] Personal Intelligence Brief V2 built from graph changes rather than message summaries
+- [ ] user-facing confirm / reject / supersede actions for SelfSignals
+- [ ] Personal Intelligence Brief V2 fusion of World Changes + Radars + Self Intelligence into one polished delivery artifact
 - [ ] plugin/capability API
 - [ ] policy-scoped agent access
 

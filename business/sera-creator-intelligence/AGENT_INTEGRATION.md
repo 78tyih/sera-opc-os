@@ -1,30 +1,77 @@
 # Agent Integration — Sera Creator Intelligence
 
-`sera-creator-intelligence` is model-agnostic. The protocol is defined by `SKILL.md`, JSON schemas, templates and validation rules; no single LLM provider is authoritative.
+`sera-creator-intelligence` is model-agnostic. The protocol is defined by `SKILL.md`, Source Acquisition V2, JSON schemas, templates and validation rules; no single LLM or scraper provider is authoritative.
 
 ## Native Skill Runtimes
 
-For WorkBuddy / Codex / Trae / Claude Code / Cursor, expose or install the directory:
+For WorkBuddy / Codex / Trae / Claude Code / Cursor, expose or install:
 
 `business/sera-creator-intelligence/`
 
-The platform should read `SKILL.md` when the user's intent matches Creator/Channel analysis, transcript learning, video triage, argument breakdown, creator knowledge-base generation or monitoring.
+The platform should read `SKILL.md` when intent matches Creator/Channel analysis, transcript learning, video triage, argument breakdown, creator knowledge-base generation or monitoring.
 
 ## Generic Agents — DeepSeek / Kimi / other models
 
 If the runtime has repository/file access but no native Skill loader:
 
-1. Read `business/sera-creator-intelligence/SKILL.md` completely.
-2. Read the relevant schema(s):
+1. Read `SKILL.md` completely.
+2. Read `SOURCE_ACQUISITION_V2.md` before any YouTube transcript/audio acquisition.
+3. Read the relevant schemas:
+   - `schemas/transcript-acquisition.schema.json`
    - `schemas/video-intelligence.schema.json`
    - `schemas/creator-intelligence.schema.json`
-3. Read only the template needed for the requested output.
-4. If the user requests Notion/cloud publishing, also read `NOTION_PUBLISHER.md`.
-5. Execute the requested mode exactly as defined in the Skill.
-6. Write JSON source-of-truth first; render Markdown second.
-7. Run `scripts/validate_bundle.py <creator-root>` before reporting completion or publishing validated analysis as reviewed knowledge.
+4. Read only the output template needed for the task.
+5. If Notion/cloud publishing is requested, also read `NOTION_PUBLISHER.md`.
+6. Write normalized transcript JSON before downstream analysis.
+7. Write Video/Creator JSON source-of-truth before rendering Markdown.
+8. Run validators before claiming completion or publishing reviewed knowledge.
 
-Do not translate the Skill into a provider-specific permanent format. Keep the shared contract canonical in this directory.
+Do not fork the shared contract into a provider-specific permanent format.
+
+## Source Acquisition V2
+
+YouTube acquisition must no longer assume that cloud `youtube-transcript-api` or `yt-dlp` will work.
+
+Provider candidates:
+
+```text
+Supadata
+ScrapeCreators
+Apify transcript Actor
+Firecrawl transcript/page extraction
+Jina Reader transcript DOM extraction
+Firecrawl audio → ASR
+Local / Residential Runner
+```
+
+Every provider response must normalize to:
+
+`schemas/transcript-acquisition.schema.json`
+
+The downstream Agent consumes the normalized result, not a vendor payload.
+
+### Acquisition Gate
+
+Do not run Main Thesis / Claims / Evidence / Score / Watch Verdict unless an acceptable transcript is available.
+
+Title, description, search snippets, public mirrors and comments may enrich metadata but may not silently replace a missing transcript.
+
+### Provider Benchmark
+
+Before a full-channel backfill or after a material provider change, follow:
+
+`ACQUISITION_BENCHMARK.md`
+
+For the first benchmark use the canonical 10-video `一个狠人` sample.
+
+The benchmark must choose:
+
+- Primary Transcript Provider
+- Backup Transcript Provider
+- Managed Audio Fallback
+- Local / Residential Fallback
+
+Do not choose by marketing claims alone.
 
 ## Sera Router
 
@@ -40,16 +87,14 @@ Expected triggers include:
 - YouTube 知识库 / 博主知识库
 - 监控博主
 
-The route must precede generic video-production routing so content analysis is not mistaken for video creation.
+The route must precede generic video-production routing.
 
 ## Invocation Contract
-
-Minimum invocation object:
 
 ```json
 {
   "skill": "sera-creator-intelligence",
-  "mode": "inventory|video|triage|channel|refresh|ask|rebuild-report",
+  "mode": "inventory|acquisition-benchmark|video|triage|channel|refresh|ask|rebuild-report",
   "source": "channel/video/playlist/local-corpus",
   "output_root": "optional path",
   "analysis_focus": "optional",
@@ -58,34 +103,41 @@ Minimum invocation object:
 }
 ```
 
-`publish_targets` is optional. JSON/JSONL remains the mandatory machine source-of-truth even when Notion publishing is enabled.
+`acquisition-benchmark` is acquisition-only and must stop before LLM content analysis unless explicitly requested.
 
 ## Notion Publishing
 
-When `notion` is requested as a publish target:
+When `notion` is requested:
 
 1. Read `NOTION_PUBLISHER.md`.
-2. Discover the exact Notion databases by title through the connected Notion MCP/API; do not hardcode public-repo IDs.
+2. Discover exact databases by title through connected Notion MCP/API; do not hardcode public-repo IDs.
 3. Cache resolved IDs only in local non-Git runtime state.
 4. Dedupe videos by `Video ID` and creators by `Channel ID`/canonical URL.
 5. Create when missing; update when existing.
-6. Publish video pages first, recompute creator aggregates second, then update the Creator page/report.
+6. Publish video pages first, recompute creator aggregates second, then update Creator page/report.
 7. Record a local publish audit log.
-8. If Notion is unavailable, emit `publish/notion_publish_queue.jsonl` and continue the analysis instead of failing the whole run.
+8. If Notion is unavailable, emit `publish/notion_publish_queue.jsonl` and continue.
 
 ## Completion Contract
 
-An agent may claim completion only when:
+An Agent may claim completion only when:
 
-- requested scope has an explicit coverage count;
-- failures are recorded instead of hidden;
-- required JSON output parses;
+- requested scope has explicit coverage count;
+- acquisition attempts/failures are recorded instead of hidden;
+- normalized transcript JSON parses when acquisition succeeded;
+- content mismatch is explicitly gated;
+- required Video/Creator JSON parses;
 - claims are grounded to source/timestamp where available;
 - Fact / Interpretation / Prediction are separated;
 - Watch Verdict contains reason and confidence;
-- bundle validator passes, or the agent explicitly reports why validation cannot run;
-- if Notion publishing was requested, every item has a publish status (`create/update/skip/fail/queued`) in the audit log or publish queue.
+- bundle validator passes, or limitation is explicitly reported;
+- if Notion publishing was requested, each item has publish status (`create/update/skip/fail/queued`).
 
-## Smoke Test
+## Benchmark Before Smoke Test
 
-For the first real execution, follow `SMOKE_TEST.md` and process only the specified 10-item sample. Do not launch a full-channel backfill before the sample is reviewed.
+For `一个狠人`:
+
+1. Run `ACQUISITION_BENCHMARK.md` first if no production provider stack has been selected.
+2. STOP and review provider results.
+3. Only after a source stack is promoted should `SMOKE_TEST.md` run Transcript → Intelligence → Score → Notion.
+4. Never launch the 755-item backfill before the 10-item analysis sample is reviewed.

@@ -9,9 +9,8 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+psycopg://smi:smi@localhost:5432/smi"
     ingest_api_key: str | None = None
     log_level: str = "INFO"
+    collector_stale_seconds: int = 90
 
-    # OpenAI-compatible endpoint. DeepSeek and other compatible providers can
-    # be used without changing the intelligence pipeline.
     llm_base_url: str | None = None
     llm_api_key: str | None = None
     llm_model: str | None = None

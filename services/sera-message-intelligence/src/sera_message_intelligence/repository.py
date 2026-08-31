@@ -89,11 +89,10 @@ def upsert_collector_heartbeat(session: Session, heartbeat: CollectorHeartbeat) 
     return state
 
 
+def list_collector_states(session: Session) -> list[CollectorState]:
+    return list(session.scalars(select(CollectorState).order_by(CollectorState.account_id.asc(), CollectorState.collector_instance_id.asc())).all())
+
+
 def list_messages_between(session: Session, start: datetime, end: datetime) -> list[Message]:
-    """Return messages in [start, end), ordered for deterministic reporting."""
-    stmt = (
-        select(Message)
-        .where(Message.sent_at >= start, Message.sent_at < end)
-        .order_by(Message.sent_at.asc(), Message.id.asc())
-    )
+    stmt = select(Message).where(Message.sent_at >= start, Message.sent_at < end).order_by(Message.sent_at.asc(), Message.id.asc())
     return list(session.scalars(stmt).all())

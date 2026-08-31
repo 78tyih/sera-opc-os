@@ -6,67 +6,58 @@ Server Win is the default long-running runtime for WeChat collection. Mac is a c
 
 ```text
 Windows interactive session
-  ├─ WeChat / Weixin identity A
-  ├─ WeChat / Weixin identity B ...
+  ├─ WeChat / Weixin identities
   ├─ vetted webot checkout (replaceable capture dependency)
-  ├─ collector process A -> spool A -> Message Core
-  ├─ collector process B -> spool B -> Message Core
+  ├─ one collector process/task/spool per identity
   ├─ SMI FastAPI Message Core :8800
   ├─ PostgreSQL (Docker, restart unless-stopped)
   └─ optional Daily Brief scheduled task
 
 Mac
-  └─ Tailscale -> Server Win future dashboard/control surface
+  └─ Tailscale -> Server Win API / future dashboard
 ```
-
-The default collector gateway is `http://127.0.0.1:8800`, so raw message traffic stays on Server Win unless explicitly changed.
 
 ## Multi-account rule
 
 **One WeChat identity = one process + one env + one webot env/key + one spool + one Scheduled Task.**
 
-Never multiplex several identities in one Python collector process. This provides failure isolation and prevents account metadata from being mixed.
+Use `scripts/install-serverwin-wechat-instance.ps1` for additional identities. Pin `SMI_WECHAT_WXID_DIR` when multiple `wxid_*` directories exist under the configured data parent. The pin must resolve to a directory containing `db_storage\session\session.db`; startup fails rather than silently selecting another account.
 
-For every identity, use unique values for:
+## Collector observability
 
-- `SMI_WECHAT_ACCOUNT_ID`
-- `SMI_COLLECTOR_INSTANCE_ID`
-- `SMI_WEBOT_ENV_FILE`
-- `SMI_SPOOL_PATH`
+Collectors heartbeat to Message Core. Query:
 
-When several `wxid_*` directories share a common WeChat data parent, also set:
+```text
+GET /v1/collectors
+x-smi-api-key: <same local API key>
+```
 
-- `SMI_WECHAT_DATA_DIR` = common parent
-- `SMI_WECHAT_WXID_DIR` = exact directory name for this identity
+The API exposes both `reported_status` and `effective_status`. A process can die before reporting `offline`, so Message Core marks a collector effectively offline when its heartbeat is older than `SMI_COLLECTOR_STALE_SECONDS` (default 90 seconds).
 
-The webot adapter replaces its "most recently modified wxid" discovery inside that collector process with an exact validated account selector. The target must contain `db_storage\session\session.db`; otherwise startup fails rather than silently attaching to another account.
+On Server Win run:
 
-Install additional identities with `scripts/install-serverwin-wechat-instance.ps1`. See `instances/README.md`.
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\health-check-serverwin.ps1 -RepoRoot D:\Sera\sera-opc-os
+```
+
+It checks the local Core, WeChat process presence and current collector heartbeat states without printing API keys or WCDB keys.
 
 ## webot configuration isolation
 
-SMI sets `WEBOT_APP_HOME` to `SMI_WEBOT_ROOT` before importing webot and sets `WEBOT_ENV_FILE` to the per-instance `SMI_WEBOT_ENV_FILE`. This keeps `WCDB_KEY` and client-specific native settings separate from SMI's database/API/LLM configuration.
-
-Do not copy a WCDB key into Git or into any checked-in example file.
+SMI sets `WEBOT_APP_HOME` to `SMI_WEBOT_ROOT` and `WEBOT_ENV_FILE` to the per-instance `SMI_WEBOT_ENV_FILE` before importing webot. Do not copy WCDB keys into Git.
 
 ## Startup model
 
-1. PostgreSQL runs in Docker with `restart: unless-stopped`.
-2. Message Core runs as `Sera Message Intelligence - Core`.
-3. Each WeChat identity has its own AtLogOn collector Scheduled Task.
-4. Daily Brief can be installed after a clock time is explicitly chosen.
+1. PostgreSQL: Docker `restart: unless-stopped`.
+2. Message Core: `Sera Message Intelligence - Core` scheduled task.
+3. Each WeChat identity: its own AtLogOn collector task.
+4. Daily Brief: optional daily task after a clock time is explicitly chosen.
 
-A collector does not require Core to be ready first: if Core is unavailable, messages remain in its local SQLite outbox and drain when Core returns.
-
-## Why Task Scheduler instead of a Windows Service
-
-WeChat is an interactive desktop application. A traditional Windows Service runs in Session 0 and is a poor lifecycle owner for a logged-in desktop WeChat session. Collectors therefore run as **AtLogOn Scheduled Tasks** with the interactive user token, automatic restart, one running instance and no execution time limit.
+If Core is unavailable, collector messages stay in that identity's SQLite outbox and drain when Core returns.
 
 ## Read-only guarantee
 
-`WebotCaptureSource` registers a callback that always returns `None`. SMI never calls `send_text`.
-
-Native WCDB/key/patch code is **not vendored into SMI**. It remains an external replaceable dependency because WeChat client internals are version-sensitive and carry compatibility/compliance risk.
+`WebotCaptureSource` registers a callback that always returns `None`. SMI never calls `send_text`. Native WCDB/key/patch code is not vendored into SMI.
 
 ## Bootstrap first identity
 
@@ -74,20 +65,17 @@ Native WCDB/key/patch code is **not vendored into SMI**. It remains an external 
 powershell -ExecutionPolicy Bypass -File scripts\bootstrap-serverwin.ps1 -RepoRoot D:\Sera\sera-opc-os
 ```
 
-To also install a Daily Brief schedule, explicitly choose a time with `-DailyReportAt HH:mm`. There is no hard-coded production report time.
+For a Daily Brief schedule pass `-DailyReportAt HH:mm`; there is no hard-coded production report time.
 
 ## First live smoke test
 
-1. Review `.env`: change ingest API key and configure LLM endpoint/model/key.
-2. Create one per-account collector env from `serverwin.env.example`.
-3. Create/verify that identity's separate webot env/key.
-4. Pin `SMI_WECHAT_WXID_DIR` when more than one account directory is present.
-5. Start with 5-10 explicit groups or `*`.
-6. Ensure the corresponding WeChat identity is logged in on Server Win.
-7. Start Core + the identity collector task.
-8. Confirm messages appear in PostgreSQL under the expected `account_id`.
-9. Stop Core for several minutes and verify only that identity's spool grows.
-10. Restart Core and verify spool drain without duplicates.
-11. Repeat for the second identity before scaling further.
-12. Run `python scripts/generate_daily_brief.py --date YYYY-MM-DD` and inspect JSON/Markdown/HTML.
-13. Reboot Server Win, log back in, and verify tasks recover.
+1. Review `.env`: API key + LLM settings.
+2. Create one collector env and one separate webot env/key per identity.
+3. Pin exact `wxid_*` directories when multiple identities share a data parent.
+4. Start Core and first collector.
+5. Run the health check and confirm effective status is `online`.
+6. Confirm messages land under the expected `account_id`.
+7. Stop Core; verify only that identity's spool grows; restart Core and verify drain without duplicates.
+8. Add second identity and verify both independently remain online with no cross-account contamination.
+9. Generate a live daily brief and inspect evidence IDs.
+10. Reboot/log back in and verify task recovery.

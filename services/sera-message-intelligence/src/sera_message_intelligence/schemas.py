@@ -87,3 +87,18 @@ class CollectorHeartbeatResult(BaseModel):
     collector_instance_id: str
     status: CollectorStatus
     updated: bool = True
+
+
+class CollectorStateView(BaseModel):
+    collector_instance_id: str
+    account_id: str
+    platform: str
+    reported_status: CollectorStatus
+    effective_status: CollectorStatus
+    started_at: datetime | None = None
+    last_heartbeat_at: datetime
+    last_message_at: datetime | None = None
+    last_checkpoint: str | None = None
+    messages_received: int
+    errors: int
+    heartbeat_age_seconds: float = Field(ge=0)

@@ -26,12 +26,17 @@
 - [ ] Message Core outage/recovery test on Server Win
 
 ## P2 — Intelligence pipeline
-- [ ] conversation chunking
-- [ ] chunk summaries
-- [ ] cross-conversation topic merge
-- [ ] importance ranking
-- [ ] evidence-backed Personal Intelligence Brief
-- [ ] Markdown + HTML renderer
+- [x] conversation chunking
+- [x] evidence-bound chunk claims
+- [x] cross-conversation topic/intelligence merge
+- [x] deterministic importance ranking
+- [x] evidence-backed Personal Intelligence Brief schema
+- [x] PostgreSQL daily-window query
+- [x] OpenAI-compatible LLM adapter
+- [x] Markdown + HTML renderer
+- [x] daily-report CLI
+- [ ] live LLM run on captured WeChat data
+- [ ] scheduled daily report task
 
 ## P3 — Multi-IM
 - [ ] OpeniLink/iLink adapter

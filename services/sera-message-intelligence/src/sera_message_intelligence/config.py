@@ -10,6 +10,13 @@ class Settings(BaseSettings):
     ingest_api_key: str | None = None
     log_level: str = "INFO"
 
+    # OpenAI-compatible endpoint. DeepSeek and other compatible providers can
+    # be used without changing the intelligence pipeline.
+    llm_base_url: str | None = None
+    llm_api_key: str | None = None
+    llm_model: str | None = None
+    report_timezone: str = "Asia/Singapore"
+
 
 @lru_cache
 def get_settings() -> Settings:

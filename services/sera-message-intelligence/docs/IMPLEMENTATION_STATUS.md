@@ -4,7 +4,7 @@ Updated: 2026-08-31
 
 ## Executive status
 
-The software foundation for Message Core, the Server Win collector runtime and the first evidence-backed intelligence pipeline is implemented on branch `feat/sera-message-intelligence-p0` / PR #4. The main remaining risk is no longer core architecture; it is **live Server Win validation of the external WeChat capture dependency and multi-account runtime**.
+The software foundation for Message Core, the Server Win collector runtime, the evidence-backed intelligence pipeline and the first Personal Context Graph extraction layer is implemented on branch `feat/sera-message-intelligence-p0` / PR #4. The main remaining risk is no longer core architecture; it is **live Server Win validation of the external WeChat capture dependency and multi-account runtime**.
 
 ## P0 — Message Core
 
@@ -82,13 +82,43 @@ Planned:
 - search and semantic retrieval;
 - delivery sinks.
 
-## P4 — Intelligence OS
+## P4 — Personal Context Graph / Intelligence OS
 
-Status: **not started**
+Status: **object model + first extraction pipeline implemented**
 
-Planned:
-- People Radar;
+Completed:
+- durable object schemas for `ContextEvent`, `Person`, `Relationship`, `Opportunity`, `Commitment`, `Risk`, `Topic`, `ProjectContext`, `SelfSignal`;
+- observation vs inference separation with evidence references and confidence;
+- Self Intelligence evidence ladder and user-confirmation invariants;
+- bounded message-chunk extraction into Person / Event / Opportunity / Commitment candidates;
+- deterministic Person creation from observed senders only;
+- sender identity namespaced by `platform + account_id + sender_id`, preventing two WeChat accounts from silently merging the same sender ID;
+- fail-closed rejection when model output cites unknown message IDs or unknown sender refs;
+- model-derived Event / Opportunity / Commitment output stays `hypothesis` rather than becoming confirmed memory;
+- deterministic Person evidence merge across conversation chunks;
+- daily CLI: `scripts/extract_context_candidates.py`;
+- output: `reports/YYYY-MM-DD/context-candidates.json`;
+- regression tests for invalid evidence, invented identities, account isolation and cross-chunk Person merge.
+
+Next engineering sequence:
+
+```text
+Context Candidate
+→ conservative Entity Resolution
+→ Temporal Merge
+→ Contradiction / Supersede Check
+→ Durable Graph Upsert
+```
+
+Opportunity and Commitment signals intentionally remain separate candidates until this resolution layer determines whether signals from different conversations or dates refer to the same durable object.
+
+Planned after graph persistence:
+- Opportunity Radar;
+- People / Relationship Radar;
+- Commitment tracker;
+- Risk monitor;
 - project/topic memory;
+- Personal Intelligence Brief V2 based on graph changes;
 - policy-scoped agent access;
 - plugin/capability API;
 - long-term learning from resolved actions and decisions.
@@ -98,3 +128,15 @@ Planned:
 The external webot extractor first tries an already-running WeChat process, then asks for a full exit/re-login and waits for a valid 64-character WCDB key. A long spinner generally means the hook phase is running but no valid key has been observed yet.
 
 Before multi-account runtime is enabled, key onboarding must be performed **sequentially, one account at a time**, with all other WeChat processes closed. See `WEBOT_KEY_EXTRACTION.md`.
+
+## Next live proof
+
+```text
+real WeChat message
+→ PostgreSQL
+→ Personal Intelligence Brief
+→ context-candidates.json
+→ Person / Opportunity / Commitment evidence review
+```
+
+After this proof, the next implementation target is durable Entity Resolution + Graph Upsert rather than adding more extraction object types.

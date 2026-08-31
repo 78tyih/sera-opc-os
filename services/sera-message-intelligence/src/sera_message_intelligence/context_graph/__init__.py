@@ -1,3 +1,14 @@
+from .change_feed import (
+    WorldChangeBrief,
+    WorldChangeItem,
+    build_world_change_brief,
+    render_world_change_markdown,
+)
+from .change_history import (
+    append_graph_change,
+    classify_payload_change,
+    list_graph_changes,
+)
 from .extraction import ContextExtractionResult, ContextGraphExtractor
 from .people_radar import (
     PeopleRelationshipRadar,
@@ -54,13 +65,20 @@ __all__ = [
     "Risk",
     "SelfSignal",
     "Topic",
+    "WorldChangeBrief",
+    "WorldChangeItem",
+    "append_graph_change",
     "build_context_radar",
     "build_people_relationship_radar",
+    "build_world_change_brief",
     "canonical_key_for",
+    "classify_payload_change",
     "extract_context_candidates",
+    "list_graph_changes",
     "list_graph_objects",
     "render_context_radar_markdown",
     "render_people_radar_markdown",
+    "render_world_change_markdown",
     "upsert_context_result",
     "upsert_graph_object",
 ]

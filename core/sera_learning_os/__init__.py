@@ -3,6 +3,7 @@
 from .contradiction_export import export_contradictions_snapshot, render_contradictions_markdown
 from .contradictions import init_contradiction_schema, list_contradictions, record_pattern_contradiction
 from .daily_review import build_daily_review, render_daily_review_markdown
+from .github_release_adapter import build_github_action_plan, validate_github_materialization_receipt
 from .learning import (
     get_pattern,
     init_learning_schema,
@@ -28,6 +29,15 @@ from .regression import (
     record_regression_check,
     record_release_readiness,
 )
+from .release_controller import (
+    build_pr_payload,
+    current_release_state,
+    get_release_request,
+    init_release_schema,
+    list_release_events,
+    prepare_release_request,
+    record_release_event,
+)
 from .shadow_patch import (
     generate_shadow_patch,
     get_shadow_patch,
@@ -51,5 +61,8 @@ __all__ = [
     "export_portability_snapshot", "init_shadow_patch_schema", "generate_shadow_patch",
     "get_shadow_patch", "validate_shadow_baseline", "init_regression_schema",
     "record_regression_check", "list_regression_checks", "assess_release_readiness",
-    "record_release_readiness",
+    "record_release_readiness", "init_release_schema", "build_pr_payload",
+    "prepare_release_request", "record_release_event", "get_release_request",
+    "list_release_events", "current_release_state", "build_github_action_plan",
+    "validate_github_materialization_receipt",
 ]

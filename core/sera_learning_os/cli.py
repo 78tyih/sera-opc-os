@@ -6,6 +6,8 @@ Examples:
   python -m core.sera_learning_os.cli --db memory/learning-os.db propose
   python -m core.sera_learning_os.cli --db memory/learning-os.db probe --proposal SEP.x --probe-id P1 --model codex --metric task_success_rate --baseline 0.7 --candidate 0.8
   python -m core.sera_learning_os.cli --db memory/learning-os.db assess-portability SEP.x
+  python -m core.sera_learning_os.cli --db memory/learning-os.db release-plan --proposal SEP.x --patch PATCH.x --readiness READY.x --target-repo owner/repo --production-file core/x/SKILL.md
+  python -m core.sera_learning_os.cli --db memory/learning-os.db release-event REL.x draft_pr_opened --actor github-adapter
   python -m core.sera_learning_os.cli --db memory/learning-os.db review --out daily-learning.md
   python -m core.sera_learning_os.cli --db memory/learning-os.db export --context-hub ../SeraContextHub
 """
@@ -24,6 +26,7 @@ from .learning import init_learning_schema
 from .pipeline import process_learning_signal
 from .portability import assess_and_record_portability, assess_portability, record_portability_probe
 from .portability_export import export_portability_snapshot
+from .release_controller import prepare_release_request, record_release_event
 from .skill_proposer import propose_ready_skills
 from .wiki_export import export_context_hub_snapshot
 from .wiki_maintainer import maintain_uncompiled_signals
@@ -46,6 +49,11 @@ def _load_json(path: str) -> dict:
     if not isinstance(value, dict):
         raise ValueError("learning signal JSON must be an object")
     return value
+
+
+def _load_text(path: str) -> str:
+    with open(path, "r", encoding="utf-8") as fh:
+        return fh.read()
 
 
 def cmd_ingest(conn: sqlite3.Connection, args) -> int:
@@ -86,6 +94,40 @@ def cmd_probe(conn: sqlite3.Connection, args) -> int:
 
 def cmd_assess_portability(conn: sqlite3.Connection, args) -> int:
     result = assess_portability(conn, args.proposal) if args.dry_run else assess_and_record_portability(conn, args.proposal)
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 1 if result.get("error") else 0
+
+
+def cmd_release_plan(conn: sqlite3.Connection, args) -> int:
+    production = _load_text(args.production_file)
+    result = prepare_release_request(
+        conn,
+        proposal_id=args.proposal,
+        patch_id=args.patch,
+        readiness_id=args.readiness,
+        target_repo=args.target_repo,
+        current_production_content=production,
+        base_branch=args.base_branch,
+        risk_class=args.risk_class,
+        actor=args.actor,
+    )
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 1 if result.get("error") else 0
+
+
+def cmd_release_event(conn: sqlite3.Connection, args) -> int:
+    payload = {}
+    if args.payload_json:
+        payload = json.loads(args.payload_json)
+        if not isinstance(payload, dict):
+            raise ValueError("--payload-json must decode to an object")
+    result = record_release_event(
+        conn,
+        request_id=args.request_id,
+        event_type=args.event_type,
+        actor=args.actor,
+        payload=payload,
+    )
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 1 if result.get("error") else 0
 
@@ -156,6 +198,28 @@ def build_parser() -> argparse.ArgumentParser:
     assess.add_argument("proposal")
     assess.add_argument("--dry-run", action="store_true", help="calculate recommendation without recording Evaluation")
     assess.set_defaults(func=cmd_assess_portability)
+
+    release_plan = sub.add_parser("release-plan", help="prepare a Draft-PR release request from a release_ready Shadow Patch")
+    release_plan.add_argument("--proposal", required=True)
+    release_plan.add_argument("--patch", required=True)
+    release_plan.add_argument("--readiness", required=True)
+    release_plan.add_argument("--target-repo", required=True)
+    release_plan.add_argument("--production-file", required=True, help="current production SKILL.md used for baseline hash validation")
+    release_plan.add_argument("--base-branch", default="main")
+    release_plan.add_argument("--risk-class", choices=["low", "medium", "high", "critical"], default="medium")
+    release_plan.add_argument("--actor", default="release-controller")
+    release_plan.set_defaults(func=cmd_release_plan)
+
+    release_event = sub.add_parser("release-event", help="append one governed release lifecycle event")
+    release_event.add_argument("request_id")
+    release_event.add_argument("event_type", choices=[
+        "draft_pr_opened", "branch_ci_passed", "branch_ci_failed",
+        "approval_granted", "approval_denied", "merged", "post_release_verified",
+        "post_release_regression", "rollback_requested", "rolled_back", "cancelled",
+    ])
+    release_event.add_argument("--actor", required=True)
+    release_event.add_argument("--payload-json", default=None)
+    release_event.set_defaults(func=cmd_release_event)
 
     review = sub.add_parser("review", help="generate Daily Learning Review")
     review.add_argument("--day", default=None, help="UTC date YYYY-MM-DD; default today")
